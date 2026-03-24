@@ -1,9 +1,10 @@
-"use client";
+"use client"
 
-import { Dialog as CommandDialogPrimitive } from "@base-ui/react/dialog";
-import { SearchIcon } from "lucide-react";
-import type * as React from "react";
-import { cn } from "@/lib/utils";
+import { Dialog as CommandDialogPrimitive } from "@base-ui/react/dialog"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Search01Icon } from "@hugeicons/core-free-icons"
+import type * as React from "react"
+import { cn } from "@/lib/utils"
 import {
   Autocomplete,
   AutocompleteCollection,
@@ -14,13 +15,13 @@ import {
   AutocompleteItem,
   AutocompleteList,
   AutocompleteSeparator,
-} from "@/components/ui/autocomplete";
+} from "@/components/ui/autocomplete"
 
-const CommandDialog = CommandDialogPrimitive.Root;
+const CommandDialog = CommandDialogPrimitive.Root
 
-const CommandDialogPortal = CommandDialogPrimitive.Portal;
+const CommandDialogPortal = CommandDialogPrimitive.Portal
 
-const CommandCreateHandle = CommandDialogPrimitive.createHandle;
+const CommandCreateHandle = CommandDialogPrimitive.createHandle
 
 function CommandDialogTrigger(props: CommandDialogPrimitive.Trigger.Props) {
   return (
@@ -28,7 +29,7 @@ function CommandDialogTrigger(props: CommandDialogPrimitive.Trigger.Props) {
       data-slot="command-dialog-trigger"
       {...props}
     />
-  );
+  )
 }
 
 function CommandDialogBackdrop({
@@ -39,12 +40,12 @@ function CommandDialogBackdrop({
     <CommandDialogPrimitive.Backdrop
       className={cn(
         "fixed inset-0 z-50 bg-black/32 backdrop-blur-sm transition-all duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0",
-        className,
+        className
       )}
       data-slot="command-dialog-backdrop"
       {...props}
     />
-  );
+  )
 }
 
 function CommandDialogViewport({
@@ -55,12 +56,12 @@ function CommandDialogViewport({
     <CommandDialogPrimitive.Viewport
       className={cn(
         "fixed inset-0 z-50 flex flex-col items-center px-4 py-[max(--spacing(4),4vh)] sm:py-[10vh]",
-        className,
+        className
       )}
       data-slot="command-dialog-viewport"
       {...props}
     />
-  );
+  )
 }
 
 function CommandDialogPopup({
@@ -74,8 +75,8 @@ function CommandDialogPopup({
       <CommandDialogViewport>
         <CommandDialogPrimitive.Popup
           className={cn(
-            "-translate-y-[calc(1.25rem*var(--nested-dialogs))] relative row-start-2 flex max-h-105 min-h-0 w-full min-w-0 max-w-xl scale-[calc(1-0.1*var(--nested-dialogs))] flex-col rounded-2xl border bg-popover not-dark:bg-clip-padding text-popover-foreground opacity-[calc(1-0.1*var(--nested-dialogs))] shadow-lg/5 outline-none transition-[scale,opacity,translate] duration-200 ease-in-out will-change-transform before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-2xl)-1px)] before:bg-muted/72 before:shadow-[0_1px_--theme(--color-black/4%)] data-nested:data-ending-style:translate-y-8 data-nested:data-starting-style:translate-y-8 data-nested-dialog-open:origin-top data-ending-style:scale-98 data-starting-style:scale-98 data-ending-style:opacity-0 data-starting-style:opacity-0 **:data-[slot=scroll-area-viewport]:data-has-overflow-y:pe-1 dark:before:shadow-[0_-1px_--theme(--color-white/6%)]",
-            className,
+            "relative row-start-2 flex max-h-105 min-h-0 w-full max-w-xl min-w-0 -translate-y-[calc(1.25rem*var(--nested-dialogs))] scale-[calc(1-0.1*var(--nested-dialogs))] flex-col rounded-2xl border bg-popover text-popover-foreground opacity-[calc(1-0.1*var(--nested-dialogs))] shadow-lg/5 transition-[scale,opacity,translate] duration-200 ease-in-out will-change-transform outline-none not-dark:bg-clip-padding before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-2xl)-1px)] before:bg-muted/72 before:shadow-[0_1px_--theme(--color-black/4%)] data-ending-style:scale-98 data-ending-style:opacity-0 data-nested:data-ending-style:translate-y-8 data-nested-dialog-open:origin-top data-starting-style:scale-98 data-starting-style:opacity-0 data-nested:data-starting-style:translate-y-8 **:data-[slot=scroll-area-viewport]:data-has-overflow-y:pe-1 dark:before:shadow-[0_-1px_--theme(--color-white/6%)]",
+            className
           )}
           data-slot="command-dialog-popup"
           {...props}
@@ -84,7 +85,7 @@ function CommandDialogPopup({
         </CommandDialogPrimitive.Popup>
       </CommandDialogViewport>
     </CommandDialogPortal>
-  );
+  )
 }
 
 function Command({
@@ -100,7 +101,7 @@ function Command({
       open
       {...props}
     />
-  );
+  )
 }
 
 function CommandInput({
@@ -114,15 +115,17 @@ function CommandInput({
         autoFocus
         className={cn(
           "border-transparent! bg-transparent! shadow-none before:hidden has-focus-visible:ring-0",
-          className,
+          className
         )}
         placeholder={placeholder}
         size="lg"
-        startAddon={<SearchIcon />}
+        startAddon={
+          <HugeiconsIcon icon={Search01Icon} size={16} color="currentColor" />
+        }
         {...props}
       />
     </div>
-  );
+  )
 }
 
 function CommandList({
@@ -135,7 +138,7 @@ function CommandList({
       data-slot="command-list"
       {...props}
     />
-  );
+  )
 }
 
 function CommandEmpty({
@@ -148,16 +151,16 @@ function CommandEmpty({
       data-slot="command-empty"
       {...props}
     />
-  );
+  )
 }
 
 function CommandPanel({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      className="-mx-px not-has-[+[data-slot=command-footer]]:-mb-px relative min-h-0 rounded-t-xl not-has-[+[data-slot=command-footer]]:rounded-b-2xl border border-b-0 bg-popover bg-clip-padding shadow-xs/5 [clip-path:inset(0_1px)] not-has-[+[data-slot=command-footer]]:[clip-path:inset(0_1px_1px_1px_round_0_0_calc(var(--radius-2xl)-1px)_calc(var(--radius-2xl)-1px))] before:pointer-events-none before:absolute before:inset-0 before:rounded-t-[calc(var(--radius-xl)-1px)] **:data-[slot=scroll-area-scrollbar]:mt-2"
+      className="relative -mx-px min-h-0 rounded-t-xl border border-b-0 bg-popover bg-clip-padding shadow-xs/5 [clip-path:inset(0_1px)] not-has-[+[data-slot=command-footer]]:-mb-px not-has-[+[data-slot=command-footer]]:rounded-b-2xl not-has-[+[data-slot=command-footer]]:[clip-path:inset(0_1px_1px_1px_round_0_0_calc(var(--radius-2xl)-1px)_calc(var(--radius-2xl)-1px))] before:pointer-events-none before:absolute before:inset-0 before:rounded-t-[calc(var(--radius-xl)-1px)] **:data-[slot=scroll-area-scrollbar]:mt-2"
       {...props}
     />
-  );
+  )
 }
 
 function CommandGroup({
@@ -170,7 +173,7 @@ function CommandGroup({
       data-slot="command-group"
       {...props}
     />
-  );
+  )
 }
 
 function CommandGroupLabel({
@@ -183,13 +186,13 @@ function CommandGroupLabel({
       data-slot="command-group-label"
       {...props}
     />
-  );
+  )
 }
 
 function CommandCollection({
   ...props
 }: React.ComponentProps<typeof AutocompleteCollection>) {
-  return <AutocompleteCollection data-slot="command-collection" {...props} />;
+  return <AutocompleteCollection data-slot="command-collection" {...props} />
 }
 
 function CommandItem({
@@ -202,7 +205,7 @@ function CommandItem({
       data-slot="command-item"
       {...props}
     />
-  );
+  )
 }
 
 function CommandSeparator({
@@ -215,33 +218,33 @@ function CommandSeparator({
       data-slot="command-separator"
       {...props}
     />
-  );
+  )
 }
 
 function CommandShortcut({ className, ...props }: React.ComponentProps<"kbd">) {
   return (
     <kbd
       className={cn(
-        "ms-auto font-medium font-sans text-muted-foreground/72 text-xs tracking-widest",
-        className,
+        "ms-auto font-sans text-xs font-medium tracking-widest text-muted-foreground/72",
+        className
       )}
       data-slot="command-shortcut"
       {...props}
     />
-  );
+  )
 }
 
 function CommandFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "flex items-center justify-between gap-2 rounded-b-[calc(var(--radius-2xl)-1px)] border-t px-5 py-3 text-muted-foreground text-xs",
-        className,
+        "flex items-center justify-between gap-2 rounded-b-[calc(var(--radius-2xl)-1px)] border-t px-5 py-3 text-xs text-muted-foreground",
+        className
       )}
       data-slot="command-footer"
       {...props}
     />
-  );
+  )
 }
 
 export {
@@ -262,4 +265,4 @@ export {
   CommandSeparator,
   CommandShortcut,
   CommandDialogPrimitive,
-};
+}

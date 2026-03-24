@@ -1,16 +1,17 @@
-"use client";
+"use client"
 
-import { mergeProps } from "@base-ui/react/merge-props";
-import { useRender } from "@base-ui/react/use-render";
+import { mergeProps } from "@base-ui/react/merge-props"
+import { useRender } from "@base-ui/react/use-render"
+import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
   MoreHorizontalIcon,
-} from "lucide-react";
-import type * as React from "react";
+} from "@hugeicons/core-free-icons"
+import type * as React from "react"
 
-import { cn } from "@/lib/utils";
-import { type Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils"
+import { type Button, buttonVariants } from "@/components/ui/button"
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -20,7 +21,7 @@ function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
       data-slot="pagination"
       {...props}
     />
-  );
+  )
 }
 
 function PaginationContent({
@@ -33,17 +34,17 @@ function PaginationContent({
       data-slot="pagination-content"
       {...props}
     />
-  );
+  )
 }
 
 function PaginationItem({ ...props }: React.ComponentProps<"li">) {
-  return <li data-slot="pagination-item" {...props} />;
+  return <li data-slot="pagination-item" {...props} />
 }
 
 type PaginationLinkProps = {
-  isActive?: boolean;
-  size?: React.ComponentProps<typeof Button>["size"];
-} & useRender.ComponentProps<"a">;
+  isActive?: boolean
+  size?: React.ComponentProps<typeof Button>["size"]
+} & useRender.ComponentProps<"a">
 
 function PaginationLink({
   className,
@@ -61,17 +62,17 @@ function PaginationLink({
             size,
             variant: isActive ? "outline" : "ghost",
           }),
-          className,
+          className
         ),
     "data-active": isActive,
     "data-slot": "pagination-link",
-  };
+  }
 
   return useRender({
     defaultTagName: "a",
     props: mergeProps<"a">(defaultProps, props),
     render,
-  });
+  })
 }
 
 function PaginationPrevious({
@@ -85,10 +86,15 @@ function PaginationPrevious({
       size="default"
       {...props}
     >
-      <ChevronLeftIcon className="sm:-ms-1" />
+      <HugeiconsIcon
+        icon={ArrowLeft01Icon}
+        size={16}
+        color="currentColor"
+        className="sm:-ms-1"
+      />
       <span className="max-sm:hidden">Previous</span>
     </PaginationLink>
-  );
+  )
 }
 
 function PaginationNext({
@@ -103,9 +109,14 @@ function PaginationNext({
       {...props}
     >
       <span className="max-sm:hidden">Next</span>
-      <ChevronRightIcon className="sm:-me-1" />
+      <HugeiconsIcon
+        icon={ArrowRight01Icon}
+        size={16}
+        color="currentColor"
+        className="sm:-me-1"
+      />
     </PaginationLink>
-  );
+  )
 }
 
 function PaginationEllipsis({
@@ -119,10 +130,10 @@ function PaginationEllipsis({
       data-slot="pagination-ellipsis"
       {...props}
     >
-      <MoreHorizontalIcon className="size-5 sm:size-4" />
+      <HugeiconsIcon icon={MoreHorizontalIcon} size={16} color="currentColor" />
       <span className="sr-only">More pages</span>
     </span>
-  );
+  )
 }
 
 export {
@@ -133,4 +144,4 @@ export {
   PaginationPrevious,
   PaginationNext,
   PaginationEllipsis,
-};
+}
