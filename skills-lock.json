@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "skills": {
+    "coss": {
+      "source": "cosscom/coss",
+      "sourceType": "github",
+      "computedHash": "a27721963f8accdc693a55cf9f5cf41008d9b60b0af08ab030e5c8b2c030befd"
+    },
+    "emil-design-eng": {
+      "source": "emilkowalski/skill",
+      "sourceType": "github",
+      "computedHash": "eff737930f2b993a2a6cb4df3cf4876ba0cf8383db591819e2398f439217d85a"
+    },
+    "fixing-motion-performance": {
+      "source": "ibelick/ui-skills",
+      "sourceType": "github",
+      "computedHash": "c1aca76fe18e8594f401cf78e5e76be24f182ce63167a398bdd4458f2a07639f"
+    },
+    "make-interfaces-feel-better": {
+      "source": "jakubkrehel/make-interfaces-feel-better",
+      "sourceType": "github",
+      "computedHash": "5f6e56c5c21945b635e1078243e38be5315730fd0980ce402f37dd6e5fe04ced"
+    },
+    "next-best-practices": {
+      "source": "vercel-labs/next-skills",
+      "sourceType": "github",
+      "computedHash": "c31ddd68ba5798a79a516c619b1e1fc4408cc4876ad600fefa4f5add4425719d"
+    },
+    "react-useeffect": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "computedHash": "1fdf524f8335afac6f44d3460d6d20e71db9c1d14643e4a31ea17d6463504447"
+    },
+    "seo-audit": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "941f6f4db0f79248f6480256cf1838ed19bc1a0d70f499bb756f491142625cb4"
+    },
+    "tailwind-css-patterns": {
+      "source": "giuseppe-trisciuoglio/developer-kit",
+      "sourceType": "github",
+      "computedHash": "a176b5112acc3ae03a28f77d0178e998433693bf3cab0ba6136bfd71883e5468"
+    },
+    "tailwind-design-system": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "0fc7b79d08ee5168d46c6887014cbe5bd02f2c5e458858470e20fc8ecedefb46"
+    },
+    "tailwindcss-advanced-layouts": {
+      "source": "josiahsiegel/claude-plugin-marketplace",
+      "sourceType": "github",
+      "computedHash": "bf3eb96bcdcceb54cf2c0ba01daa18275c169627f37f5a861490c78e8055a5ce"
+    },
+    "typescript-advanced-types": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "ee8377c523a911be41c31037b477805773ca5ab5ade181e44ca7dd3cd8df6692"
+    },
+    "userinterface-wiki": {
+      "source": "raphaelsalaja/userinterface-wiki",
+      "sourceType": "github",
+      "computedHash": "1d1fbf49afa29712573e39bea7669b932160ae93bdf96a16d729849641b1fa22"
+    },
+    "vercel-composition-patterns": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "10eb4ec94577b79ae98c63ce3e7f35f8a6a06436a4011bff083b397de6960eeb"
+    },
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "3ff06f0712886f7c2660d6746856c22d3127bd6568ddde29ddad8b72dbaaa226"
+    }
+  }
+}
