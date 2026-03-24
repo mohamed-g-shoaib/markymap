@@ -1,17 +1,19 @@
-import { Google_Sans, Google_Sans_Code } from "next/font/google"
+import localFont from "next/font/local"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 
-const sans = Google_Sans({
-  subsets: ["latin"],
+const sans = localFont({
+  src: "../public/fonts/google-sans-variable.ttf",
   variable: "--font-sans",
+  display: "swap",
 })
 
-const mono = Google_Sans_Code({
-  subsets: ["latin"],
+const mono = localFont({
+  src: "../public/fonts/google-sans-code-variable.ttf",
   variable: "--font-mono",
+  display: "swap",
 })
 
 export default function RootLayout({
