@@ -1,0 +1,10 @@
+{
+  "servers": {
+    "my-mcp-server-98b27b03": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@hugeicons/mcp-server"]
+    }
+  },
+  "inputs": []
+}

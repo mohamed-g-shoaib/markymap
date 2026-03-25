@@ -21,7 +21,8 @@
     "coverage/**",
     "dist/**",
     "node_modules/**",
-    "next-env.d.ts"
+    "next-env.d.ts",
+    "components/ui/**"
   ],
   "settings": {
     "react": {
