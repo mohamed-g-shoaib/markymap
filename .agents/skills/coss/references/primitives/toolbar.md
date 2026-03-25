@@ -70,4 +70,3 @@ import { Toggle } from "@/components/ui/toggle-group"
 
 - core toolbar patterns: `p-toolbar-1`
 - related composition references: `p-toggle-group-1`, `p-group-1`, `p-select-1`
-

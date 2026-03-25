@@ -109,6 +109,7 @@ Sidebar with grouped navigation and footer:
 ```
 
 Key composition rules:
+
 - Wrap app with `SidebarProvider` at the layout level.
 - Use `SidebarContent` (not "SidebarPanel") as the scrollable body between header/footer.
 - Navigation items use `SidebarMenu` > `SidebarMenuItem` > `SidebarMenuButton`.
