@@ -220,7 +220,8 @@
   }
   body {
     @apply relative isolate min-h-svh bg-background text-foreground;
-    padding-bottom: calc(env(safe-area-inset-bottom) + 2rem);
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
     text-wrap: pretty;
   }
   h1,
@@ -234,6 +235,7 @@
   }
   html {
     scroll-padding-bottom: calc(env(safe-area-inset-bottom) + 2rem);
+    scroll-padding-top: 4rem;
   }
   code,
   pre,
@@ -295,6 +297,50 @@
 
 .tooltip {
   transform-origin: var(--transform-origin);
+}
+
+.markmap {
+  --markmap-text-color: var(--foreground);
+  --markmap-code-color: var(--muted-foreground);
+  --markmap-code-bg: color-mix(
+    in srgb,
+    var(--foreground) 6%,
+    var(--background)
+  );
+  --markmap-circle-open-bg: var(--background);
+  --markmap-a-color: color-mix(in srgb, var(--info) 78%, var(--foreground));
+  --markmap-a-hover-color: color-mix(
+    in srgb,
+    var(--info) 88%,
+    var(--foreground)
+  );
+  --markmap-highlight-bg: color-mix(in srgb, var(--warning) 42%, transparent);
+}
+
+.dark .markmap {
+  --markmap-text-color: var(--foreground);
+  --markmap-code-color: color-mix(
+    in srgb,
+    var(--foreground) 90%,
+    var(--background)
+  );
+  --markmap-code-bg: color-mix(
+    in srgb,
+    var(--foreground) 12%,
+    var(--background)
+  );
+  --markmap-circle-open-bg: color-mix(
+    in srgb,
+    var(--foreground) 10%,
+    var(--background)
+  );
+  --markmap-a-color: color-mix(in srgb, var(--info) 70%, var(--foreground));
+  --markmap-a-hover-color: color-mix(
+    in srgb,
+    var(--info) 84%,
+    var(--foreground)
+  );
+  --markmap-highlight-bg: color-mix(in srgb, var(--warning) 36%, transparent);
 }
 
 ::-webkit-scrollbar {
@@ -364,6 +410,10 @@
       color: var(--action-foreground-hover);
     }
   }
+}
+
+@utility layout-page-inset {
+  padding-block: clamp(0.75rem, 1.2vw, 1.5rem);
 }
 
 @utility motion-interactive-color {
@@ -521,5 +571,61 @@
 
   @media (prefers-reduced-motion: reduce) {
     transition-duration: 0ms;
+  }
+}
+
+@keyframes hero-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@utility animate-hero-enter {
+  animation: hero-enter 400ms var(--ease-out) both;
+}
+
+.hero-delay-0 {
+  animation-delay: 0ms;
+}
+
+.hero-delay-100 {
+  animation-delay: 100ms;
+}
+
+.hero-delay-200 {
+  animation-delay: 200ms;
+}
+
+.hero-delay-260 {
+  animation-delay: 260ms;
+}
+
+.hero-delay-320 {
+  animation-delay: 320ms;
+}
+
+.hero-delay-380 {
+  animation-delay: 380ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes hero-enter {
+    from {
+      opacity: 0;
+      transform: none;
+      filter: none;
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
   }
 }
