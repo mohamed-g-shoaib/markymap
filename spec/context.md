@@ -3,7 +3,7 @@
 > **This file is the persistent working-memory document for this repository.**
 > Read it at the start of every session before touching any code. Update it after every significant task, decision, or discovery. It is the single most important file for maintaining quality across long conversations and resumed sessions.
 
-> **Last updated:** After Session 4 — landing page wireframe spec created and skills-audited.
+> **Last updated:** After Session 15 — AGENTS quick-guide refresh + coss ui lint scope update.
 
 ---
 
@@ -25,9 +25,9 @@ Additional UX polish layers: dark/light mode (keyboard-toggled, with theme sound
 
 ## Current Reality
 
-### What Exists Today (Scaffold Phase)
+### What Exists Today (Lean Landing + Active Editor Shell)
 
-The project is in its **initial scaffold state**. The infrastructure is fully set up and production-quality; application features have not yet been built.
+The project has moved past scaffold-only status. Core infrastructure is complete, and the current UI baseline includes a lean marketing route and a functional editor shell.
 
 **Infrastructure / DX — DONE:**
 
@@ -59,21 +59,23 @@ The project is in its **initial scaffold state**. The infrastructure is fully se
 - **Skills audit completed** — implementation plan reviewed against `react-useeffect`, `vercel-react-best-practices`, `next-best-practices` skills; 4 violations found and corrected (see audit table below)
 - Landing page wireframe spec created at `spec/landing-page/markymap-landing.md` — fully skills-audited before writing
 
-**Packages staged for next session:**
+**Package status:**
 
-- `markmap-lib` and `markmap-view` — NOT YET INSTALLED. Run `pnpm add markmap-lib markmap-view` as first step of editor/landing-demo implementation.
-- `motion` (Framer Motion) — NOT needed for landing page. Landing page uses CSS transitions + IntersectionObserver only.
+- `markmap-lib` and `markmap-view` are installed in `package.json` (`^0.18.12` each) and ready for editor/landing-demo implementation.
+- `motion` (Framer Motion) is intentionally not installed for the landing page. Landing page motion uses CSS transitions + IntersectionObserver only.
 
-**Application Features — NOT YET BUILT:**
+**Application Features — Current vs Pending:**
 
-- Markmap editor (markdown → interactive mindmap)
-- localStorage persistence layer
-- Auto-save logic
-- Import / Export UI and logic
-- AI integration (route handler + UI)
-- Navigation / routing beyond the root page
-- SEO metadata, OG image, robots.txt, sitemap
-- Any real page content beyond the scaffold `app/page.tsx`
+- Implemented now:
+  - Lean landing at `/` (`HERO` + `LIVE DEMO`)
+  - Playground route at `/playground` with editor shell
+  - Live markmap rendering in marketing demo and playground canvas
+  - localStorage-backed content persistence and save-state UX
+  - Import/export/reset actions in editor shell
+- Not yet built:
+  - AI integration (route handler + UI)
+  - SEO layer (`robots.ts`, `sitemap.ts`, OG image generation)
+  - Advanced map controls/settings beyond current baseline
 
 ---
 
@@ -284,21 +286,22 @@ Not `<Icon className="..." />` — that is the Lucide pattern and will not work.
 
 High-value files to understand before making any changes:
 
-| File                            | Why It Matters                                                                 |
-| ------------------------------- | ------------------------------------------------------------------------------ |
-| `app/globals.css`               | All shared CSS, design tokens, motion utilities — the style bible              |
-| `app/layout.tsx`                | Root layout: fonts, ThemeProvider wrapper, html attributes                     |
-| `app/page.tsx`                  | Entry page — currently scaffold, to be replaced with editor UI                 |
-| `components/theme-provider.tsx` | Sound system wiring, theme hotkey, click sound delegation                      |
-| `components/ui/`                | All available UI components — check here before building anything              |
-| `lib/audio/sound-engine.ts`     | Audio API: `getAudioContext()`, `decodeAudioData()`, `playSound()`             |
-| `lib/audio/sound-types.ts`      | `SoundAsset`, `UseSoundOptions`, `UseSoundReturn` type definitions             |
-| `hooks/use-sound.ts`            | Sound hook — use this for all sound playback in components                     |
-| `hooks/use-hover-capability.ts` | Pointer capability detection hook                                              |
-| `hooks/use-media-query.ts`      | Media query hook — `useSyncExternalStore`, SSR-safe, reactive to query changes |
-| `lib/utils.ts`                  | `cn()` — always use for class merging                                          |
-| `package.json`                  | Dependency reality — check here before assuming a package exists               |
-| `spec/skills.md`                | Full skill index — consult before starting any non-trivial task                |
+| File                                   | Why It Matters                                                                 |
+| -------------------------------------- | ------------------------------------------------------------------------------ |
+| `app/globals.css`                      | All shared CSS, design tokens, motion utilities — the style bible              |
+| `app/layout.tsx`                       | Root layout: fonts, ThemeProvider wrapper, html attributes                     |
+| `app/(marketing)/page.tsx`             | Active landing route composition (currently `HERO` + `LIVE DEMO`)              |
+| `app/(playground)/playground/page.tsx` | Active playground route wrapper for `EditorShell`                              |
+| `components/theme-provider.tsx`        | Sound system wiring, theme hotkey, click sound delegation                      |
+| `components/ui/`                       | All available UI components — check here before building anything              |
+| `lib/audio/sound-engine.ts`            | Audio API: `getAudioContext()`, `decodeAudioData()`, `playSound()`             |
+| `lib/audio/sound-types.ts`             | `SoundAsset`, `UseSoundOptions`, `UseSoundReturn` type definitions             |
+| `hooks/use-sound.ts`                   | Sound hook — use this for all sound playback in components                     |
+| `hooks/use-hover-capability.ts`        | Pointer capability detection hook                                              |
+| `hooks/use-media-query.ts`             | Media query hook — `useSyncExternalStore`, SSR-safe, reactive to query changes |
+| `lib/utils.ts`                         | `cn()` — always use for class merging                                          |
+| `package.json`                         | Dependency reality — check here before assuming a package exists               |
+| `spec/skills.md`                       | Full skill index — consult before starting any non-trivial task                |
 
 ---
 
@@ -366,6 +369,158 @@ High-value files to understand before making any changes:
 - Updated `AGENTS.md` with full project knowledge and Hugeicons MCP server documentation
 - `react-day-picker` is installed → `calendar.tsx` is operational
 
+### Session 5 — Context Sync + Package Status Update
+
+- Re-read `AGENTS.md`, `spec/context.md`, and all files in `spec/landing-page/` + `spec/markmap-packages/` to refresh project context.
+- Verified dependency reality in `package.json`: `markmap-lib` and `markmap-view` are installed at `^0.18.12`.
+- Updated context/spec notes to remove stale "not yet installed" guidance.
+
+### Session 6 — Base UI Handbook Re-Read + Route Recovery
+
+- Re-read all files in `spec/base-ui/` and re-validated composition patterns.
+- Confirmed the correct Base UI pattern is `render` composition (not Radix `asChild`).
+- Audited source files for `asChild` usage and confirmed none remain in app code.
+- Restored valid App Router entrypoints by adding `app/(marketing)/page.tsx` and `app/(playground)/playground/page.tsx`.
+- Verified clean compile with `pnpm typecheck`.
+
+### Session 7 — Implementation Start (Landing + Playground Foundations)
+
+- Loaded required skills from `spec/skills.md`: `coss`, `vercel-react-best-practices`, `next-best-practices`, `vercel-composition-patterns`, and `react-useeffect`.
+- Implemented foundational hooks:
+  - `hooks/use-in-view.ts`
+  - `hooks/use-scroll-y.ts`
+  - `hooks/use-carousel-controls.ts`
+- Implemented marketing UI foundation in `app/(marketing)/ui/`:
+  - `page-container.tsx`, `nav.tsx`, `hero.tsx`, `demo-seed.ts`, `demo.tsx`, `how-it-works.tsx`, `final-cta.tsx`, `footer.tsx`
+- Replaced placeholder root route with assembled marketing page in `app/(marketing)/page.tsx` and added metadata.
+- Added playground editor foundation:
+  - `lib/storage.ts`
+  - `components/editor/markdown-input.tsx`
+  - `components/editor/markmap-canvas.tsx`
+  - `components/editor/editor-shell.tsx`
+  - Wired into `app/(playground)/playground/page.tsx`
+- Updated global styling in `app/globals.css`:
+  - Added `scroll-padding-top`
+  - Added hero enter animation utilities (`animate-hero-enter`, delay classes)
+- Verification:
+  - `pnpm fmt` completed successfully
+  - `pnpm typecheck` completed successfully
+
+### Session 8 — Playground Workflow Actions (Import/Export/Reset)
+
+- Added practical editor actions in `components/editor/editor-shell.tsx`:
+  - Import markdown from local files (`.md`, `text/plain`)
+  - Export current markdown as `markymap.md`
+  - Reset content to default playground seed
+- Added save-state UX in the editor toolbar:
+  - `Auto-save enabled` / `Saving...` / `Saved HH:MM` / `Local save failed`
+  - Save status now reflects actual localStorage write result
+- Updated `lib/storage.ts`:
+  - `saveContent()` now returns a boolean success flag instead of silent void
+  - Editor uses this result to surface save errors
+- Validation:
+  - `pnpm typecheck` completed successfully
+
+### Session 9 — Runtime Error Fix Pass (Marketing + Markmap)
+
+- Fixed `useSyncExternalStore` infinite loop and server snapshot warning in `hooks/use-carousel-controls.ts`:
+  - Replaced object snapshots with stable numeric bitmask snapshots
+  - Added immediate `onStoreChange()` call on subscribe so controls initialize correctly
+- Fixed footer hydration mismatch in `app/(marketing)/ui/footer.tsx`:
+  - Added mount gate and deterministic pre-mount theme fallback (`system`) for SSR/client parity
+- Fixed `SVGLength` `NotSupportedError` for markmap SVG setup in:
+  - `components/editor/markmap-canvas.tsx`
+  - `app/(marketing)/ui/demo.tsx`
+  - Added `ensureSvgSize()` and `ResizeObserver` sync to keep concrete `width`/`height` attributes before create/update
+- Cleared follow-up diagnostics for Tailwind class tokens in the touched files.
+- Validation:
+  - `pnpm typecheck` completed successfully
+  - `get_errors` returned no issues in all touched files
+
+### Session 10 — Landing Wireframe Redesign (Spec-Level)
+
+- Re-reviewed both landing specs:
+  - `spec/landing-page/index.md` (reference project)
+  - `spec/landing-page/markymap-landing.md` (Markymap)
+- Confirmed structural similarity was too high (hero rhythm and how-it-works interaction grammar).
+- Replaced `spec/landing-page/markymap-landing.md` with a distinct Markymap-first wireframe:
+  - New hero direction: asymmetric thesis + branch ledger panel
+  - New how-it-works direction: pipeline rail + sticky stage (no carousel)
+  - Added trust-strip section and adjusted final CTA semantics
+  - Added explicit wide marketing canvas strategy (up to 1800px)
+  - Added explicit full-bleed playground requirement (no max-width shell)
+- Added acceptance checklist and explicit non-goals to prevent regression into template-like structure.
+
+### Session 11 — Landing Redesign Implementation (UI Pass)
+
+- Implemented redesigned marketing structure in code:
+  - Added wide/measure variants in `app/(marketing)/ui/page-container.tsx` (wide defaults to `max-w-[1800px]`)
+  - Updated `app/(marketing)/page.tsx` section rhythm and inserted new `TrustStripSection`
+  - Refactored nav into floating utility-rail behavior in `app/(marketing)/ui/nav.tsx`
+  - Rebuilt hero into asymmetric thesis + branch ledger panel in `app/(marketing)/ui/hero.tsx`
+  - Replaced how-it-works interaction model with desktop pipeline rail + sticky stage and mobile accordion in `app/(marketing)/ui/how-it-works.tsx`
+- Added new marketing components:
+  - `app/(marketing)/ui/how-it-works-stage.tsx`
+  - `app/(marketing)/ui/trust-strip.tsx`
+  - `app/(marketing)/ui/theme-switcher-multi-button.tsx` (Hugeicons + coss button pattern)
+- Footer theme controls were migrated to the new multi-button switcher in `app/(marketing)/ui/footer.tsx`.
+- Removed inline-style regression by moving hero stagger delays to class-based tokens in `app/globals.css` (`hero-delay-260`, `hero-delay-320`, `hero-delay-380`).
+- Applied full-bleed playground shell requirement by removing the page-level max-width container in `app/(playground)/playground/page.tsx`.
+- Validation:
+  - `get_errors` reports no issues in all touched implementation files.
+  - Workspace still contains a pre-existing TypeScript diagnostic in `tsconfig.json` (`ignoreDeprecations` value), unrelated to this UI pass.
+
+### Session 12 — Landing Simplification Pass (Section Removal)
+
+- Simplified the marketing route by removing non-essential sections and utilities from `app/(marketing)/page.tsx`.
+- Removed from route and codebase:
+  - navbar (`app/(marketing)/ui/nav.tsx`)
+  - how-it-works (`app/(marketing)/ui/how-it-works.tsx`)
+  - how-it-works stage helper (`app/(marketing)/ui/how-it-works-stage.tsx`)
+  - trust strip (`app/(marketing)/ui/trust-strip.tsx`)
+  - final CTA (`app/(marketing)/ui/final-cta.tsx`)
+  - footer (`app/(marketing)/ui/footer.tsx`)
+  - footer theme switcher helper (`app/(marketing)/ui/theme-switcher-multi-button.tsx`)
+- Hero was reduced to a single primary CTA and the branch-ledger panel was removed.
+- Resulting marketing route structure:
+  - `HERO`
+  - `LIVE DEMO`
+
+### Session 13 — Spacing + Copy Alignment Pass
+
+- Adjusted page rhythm for no-navbar/no-footer composition:
+  - `app/(marketing)/page.tsx` spacing/padding reduced (`space-y-14 sm:space-y-16`, `pb-8 sm:pb-10`)
+  - `app/(marketing)/ui/hero.tsx` top/bottom padding reduced (`pt-16 sm:pt-20`, `pb-4 sm:pb-6`)
+- Updated hero messaging to match lean layout and removed unnecessary source line wrapping in hero text content.
+- Re-synced wireframe source-of-truth to a lean architecture in `spec/landing-page/markymap-landing.md`.
+
+### Session 14 — Full Validation Pass (Rules + Skills)
+
+- Ran full validation sweep for pages, components, and global styling:
+  - `pnpm build` passed (all routes prerendered successfully: `/`, `/playground`)
+  - `pnpm typecheck` passed
+  - `pnpm lint` completed with warnings only (no errors)
+  - `pnpm fmt:check` reported formatting drift in a subset of files
+- Standards/policy validation findings:
+  - Theme infrastructure currently uses a custom context/provider in `components/theme-provider.tsx` instead of `next-themes` provider wiring described in `AGENTS.md`.
+  - Formatting drift exists in key app/editor files and should be normalized with `pnpm fmt` when ready.
+  - Existing lint warnings are concentrated in `components/ui/*` and appear pre-existing/structural rather than runtime-blocking.
+- Confirmed no blocked constraints in active app source for critical red lines:
+  - No `next/router` usage in app code
+  - No inline `style={{}}` usage in app code
+  - No raw `<img>` usage in app code
+- Current risk profile:
+  - Runtime and build health are good.
+  - Remaining work is standards alignment (theme-provider stack consistency + formatting/lint cleanup).
+
+### Session 15 — Agent Guide + Lint Scope Maintenance
+
+- Replaced `AGENTS.md` with a concise quick-look guide intended for fast LLM onboarding.
+- Kept deep operational/project history in `spec/context.md` rather than `AGENTS.md`.
+- Updated lint policy in `.oxlintrc.json` to ignore `components/ui/**`.
+- Rationale: `components/ui` is treated as upstream coss snapshot code and should preserve upstream parity.
+- Validation: `pnpm lint` warnings were previously concentrated in `components/ui/*`; after ignore update, lint checks focus on app/editor/feature code.
+
 ---
 
 ## Important Constraints And Reminders
@@ -388,9 +543,10 @@ High-value files to understand before making any changes:
 - `spec/base-ui/` contains the Base UI handbook. Read it before using any coss ui component with complex behavior (popover, dialog, select, etc.).
 - `spec/references/` contains design philosophy from Emil and Dimi — read it before making any UI design decisions. Key: editorial calm, narrow columns, spacing over cards, no gradient text, no oversized hero.
 - Landing page spec is at `spec/landing-page/markymap-landing.md` — read it before building any marketing page component.
-- Three new hooks are needed before building the landing page: `hooks/use-in-view.ts`, `hooks/use-scroll-y.ts`, `hooks/use-carousel-controls.ts` — all use `useSyncExternalStore` or `IntersectionObserver`, all SSR-safe.
+- Landing helper hooks (`hooks/use-in-view.ts`, `hooks/use-scroll-y.ts`, `hooks/use-carousel-controls.ts`) already exist; the current lean landing route does not require all of them to be active.
 - The `useEffectEvent` pattern (React 19) is already in use in `theme-provider.tsx` — prefer it over dependency array gymnastics for event handlers inside effects.
-- `markmap-lib` and `markmap-view` are **not yet installed** — run `pnpm add markmap-lib markmap-view` as the very first step of the editor build. Full API reference is at `spec/markmap-packages/context.md`.
+- Base UI composition uses `render` props and `useRender`; never use Radix-style `asChild` in this project.
+- `markmap-lib` and `markmap-view` are installed and ready to import. Full API reference is at `spec/markmap-packages/context.md`.
 - The implementation plan in `spec/markmap-packages/context.md` has been **skills-audited and corrected**. Do not use the original unaudited version. The canonical patterns are: `useEffectEvent` for the mount effect, lazy `useState` for localStorage init, `useRef` for debounce timer.
 - **Never suppress `react-hooks/exhaustive-deps`** — always use `useEffectEvent` instead. This rule has no exceptions in this codebase.
 - `react-day-picker` is installed and `calendar.tsx` is fully operational.
@@ -418,11 +574,11 @@ The landing page wireframe spec is at `spec/landing-page/markymap-landing.md`. K
 
 - **Route:** `/` via `app/(marketing)/page.tsx`
 - **Playground route:** `/playground` via `app/(playground)/playground/page.tsx`
-- **Sections:** NAV → HERO → LIVE DEMO → HOW IT WORKS → FINAL CTA → FOOTER
+- **Sections (current):** HERO → LIVE DEMO
 - **Demo:** A real live split-panel markmap (textarea + SVG canvas) using `markmap-lib` + `markmap-view`, seeded with the Markymap features map, saved to `markymap:demo:content` in localStorage
 - **Animation:** CSS transitions + IntersectionObserver only via `hooks/use-in-view.ts`. No `motion` library.
-- **New hooks needed:** `hooks/use-in-view.ts`, `hooks/use-scroll-y.ts`, `hooks/use-carousel-controls.ts`
-- **Copy:** "Markdown that maps itself." / "Write in plain markdown. It becomes an interactive, zoomable mindmap — instantly. Auto-saved. Always yours."
+- **Hooks status:** `hooks/use-in-view.ts`, `hooks/use-scroll-y.ts`, `hooks/use-carousel-controls.ts` are already implemented in the repository.
+- **Copy (current hero):** "Turn plain notes into a map you can actually navigate." + supporting lines focused on structure and revisitation.
 - **Anti-patterns documented:** No gradient text, no hero image, no email capture, no blob backgrounds, no inline styles, no arbitrary Tailwind values
 
 ### Editor Implementation — Ready to Build
@@ -436,18 +592,10 @@ The markmap research is complete. The next session should execute Tasks 1–9 fr
 
 1.  Create route group `app/(marketing)/` with `page.tsx` + `layout.tsx`
 2.  Create route group `app/(playground)/playground/` with `page.tsx` + `layout.tsx`
-3.  `hooks/use-in-view.ts` — IntersectionObserver, returns `[ref, isInView]`
-4.  `hooks/use-scroll-y.ts` — `useSyncExternalStore` scroll position, SSR-safe
-5.  `hooks/use-carousel-controls.ts` — carousel scroll state tracker
-6.  `app/(marketing)/ui/page-container.tsx` — layout utility
-7.  `app/(marketing)/ui/nav.tsx` — fixed nav, scroll-aware styling
-8.  `app/(marketing)/ui/hero.tsx` — headline, sub, CTAs, CSS stagger animation
-9.  `pnpm add markmap-lib markmap-view` — required for demo section
-10. `app/(marketing)/ui/demo-seed.ts` — DEMO_SEED markdown constant
-11. `app/(marketing)/ui/demo.tsx` — live split-panel markmap (`"use client"`)
-12. `app/(marketing)/ui/how-it-works.tsx` + step visuals
-13. `app/(marketing)/ui/final-cta.tsx`
-14. `app/(marketing)/ui/footer.tsx` — theme toggle, sounds, wordmark watermark
+3.  `app/(marketing)/ui/page-container.tsx` — wide/measure layout utility
+4.  `app/(marketing)/ui/hero.tsx` — lean headline, supporting copy, single CTA, mount animation
+5.  `app/(marketing)/ui/demo-seed.ts` — DEMO_SEED markdown constant
+6.  `app/(marketing)/ui/demo.tsx` — live split-panel markmap (`"use client"`)
 
 **Editor (after landing page):**
 
@@ -482,7 +630,7 @@ Listed in rough priority order:
 ### Editor Architecture (when building)
 
 - The editor should be a Client Component (requires `useState`, event handlers)
-- The outer page (`app/page.tsx`) can remain a Server Component that renders the editor as a leaf
+- The playground route (`app/(playground)/playground/page.tsx`) can remain a Server Component that renders client editor leaf nodes
 - Split: `components/editor/markdown-input.tsx` (textarea/editor) + `components/editor/markmap-canvas.tsx` (SVG renderer)
 - Shared state between input and canvas: use React state lifted to a shared parent, or a lightweight state store if complexity warrants it
 

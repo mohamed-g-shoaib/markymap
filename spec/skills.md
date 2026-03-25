@@ -18,21 +18,22 @@ Skills in this repository live under `.agents/skills/`. Depending on the skill p
 
 ## Skills Index
 
-| #   | Skill                                                         | Publisher      | Version / Notes                              | Path                                          |
-| --- | ------------------------------------------------------------- | -------------- | -------------------------------------------- | --------------------------------------------- |
-| 1   | [Vercel React Best Practices](#1-vercel-react-best-practices) | Vercel         | `v1.0.0`                                     | `.agents/skills/vercel-react-best-practices/` |
-| 2   | [Next.js Best Practices](#2-nextjs-best-practices)            | Project-local  | Topic index skill                            | `.agents/skills/next-best-practices/`         |
-| 3   | [React Composition Patterns](#3-react-composition-patterns)   | Vercel         | `v1.0.0`                                     | `.agents/skills/vercel-composition-patterns/` |
-| 4   | [Design Engineering](#4-design-engineering)                   | Project-local  | Single-file skill                            | `.agents/skills/emil-design-eng/`             |
-| 5   | [React useEffect](#5-react-useeffect)                         | Project-local  | Official-docs-inspired guidance              | `.agents/skills/react-useeffect/`             |
-| 6   | [SEO Audit](#6-seo-audit)                                     | Project-local  | `v1.1.0`                                     | `.agents/skills/seo-audit/`                   |
-| 7   | [Make Interfaces Feel Better](#7-make-interfaces-feel-better) | Project-local  | UI polish skill with focused reference files | `.agents/skills/make-interfaces-feel-better/` |
-| 8   | [User Interface Wiki](#8-user-interface-wiki)                 | Raphael Salaja | `v3.0.0`                                     | `.agents/skills/userinterface-wiki/`          |
-| 9   | [Tailwind CSS Patterns](#9-tailwind-css-patterns)             | Project-local  | Utility-first styling guide                  | `.agents/skills/tailwind-css-patterns/`       |
-| 10  | [Tailwind Design System](#10-tailwind-design-system)          | Project-local  | Tailwind v4 design-system skill              | `.agents/skills/tailwind-design-system/`      |
-| 11  | [TypeScript Advanced Types](#11-typescript-advanced-types)    | Project-local  | Single-file advanced type-system guide       | `.agents/skills/typescript-advanced-types/`   || 12  | [coss ui](#12-coss-ui)                                       | cosscom        | Components based on Base UI                  | `.agents/skills/coss/`                        |
-| 13  | [Fixing Motion Performance](#13-fixing-motion-performance)   | Project-local  | Audit and fix animation jank                 | `.agents/skills/fixing-motion-performance/`   |
-| 14  | [Tailwind Advanced Layouts](#14-tailwind-advanced-layouts)   | Project-local  | Grid and Flexbox mastery                     | `.agents/skills/tailwindcss-advanced-layouts/` |
+| #   | Skill                                                         | Publisher      | Version / Notes                              | Path                                           |
+| --- | ------------------------------------------------------------- | -------------- | -------------------------------------------- | ---------------------------------------------- | --- | --- | ---------------------- | ------- | --------------------------- | ---------------------- |
+| 1   | [Vercel React Best Practices](#1-vercel-react-best-practices) | Vercel         | `v1.0.0`                                     | `.agents/skills/vercel-react-best-practices/`  |
+| 2   | [Next.js Best Practices](#2-nextjs-best-practices)            | Project-local  | Topic index skill                            | `.agents/skills/next-best-practices/`          |
+| 3   | [React Composition Patterns](#3-react-composition-patterns)   | Vercel         | `v1.0.0`                                     | `.agents/skills/vercel-composition-patterns/`  |
+| 4   | [Design Engineering](#4-design-engineering)                   | Project-local  | Single-file skill                            | `.agents/skills/emil-design-eng/`              |
+| 5   | [React useEffect](#5-react-useeffect)                         | Project-local  | Official-docs-inspired guidance              | `.agents/skills/react-useeffect/`              |
+| 6   | [SEO Audit](#6-seo-audit)                                     | Project-local  | `v1.1.0`                                     | `.agents/skills/seo-audit/`                    |
+| 7   | [Make Interfaces Feel Better](#7-make-interfaces-feel-better) | Project-local  | UI polish skill with focused reference files | `.agents/skills/make-interfaces-feel-better/`  |
+| 8   | [User Interface Wiki](#8-user-interface-wiki)                 | Raphael Salaja | `v3.0.0`                                     | `.agents/skills/userinterface-wiki/`           |
+| 9   | [Tailwind CSS Patterns](#9-tailwind-css-patterns)             | Project-local  | Utility-first styling guide                  | `.agents/skills/tailwind-css-patterns/`        |
+| 10  | [Tailwind Design System](#10-tailwind-design-system)          | Project-local  | Tailwind v4 design-system skill              | `.agents/skills/tailwind-design-system/`       |
+| 11  | [TypeScript Advanced Types](#11-typescript-advanced-types)    | Project-local  | Single-file advanced type-system guide       | `.agents/skills/typescript-advanced-types/`    |     | 12  | [coss ui](#12-coss-ui) | cosscom | Components based on Base UI | `.agents/skills/coss/` |
+| 13  | [Fixing Motion Performance](#13-fixing-motion-performance)    | Project-local  | Audit and fix animation jank                 | `.agents/skills/fixing-motion-performance/`    |
+| 14  | [Tailwind Advanced Layouts](#14-tailwind-advanced-layouts)    | Project-local  | Grid and Flexbox mastery                     | `.agents/skills/tailwindcss-advanced-layouts/` |
+
 ---
 
 ## 1. Vercel React Best Practices
@@ -418,9 +419,11 @@ Comprehensive TypeScript type-system guidance in one file. The skill walks throu
 **When to load:** Building UIs with coss primitives (buttons, dialogs, selects, forms, menus, tabs, inputs, toasts, etc.), migrating from shadcn/Radix to coss/Base UI, composing trigger-based overlays, or troubleshooting coss component behavior.
 
 ### Purpose
+
 coss ui is a component library built on Base UI with a shadcn-like developer experience. It provides high-quality primitives and particles for modern React applications.
 
 ### Top 10 Rules by Priority
+
 1. **Use existing primitives and particles first** - Before inventing custom markup
 2. **Prefer composition over custom behavior** - Use the built-in composition APIs
 3. **Follow coss naming and APIs exactly** - Check the docs for correct props and slots
@@ -433,11 +436,12 @@ coss ui is a component library built on Base UI with a shadcn-like developer exp
 10. **Prefer styled coss exports** - Use `*Primitive` exports only when deep customization is needed
 
 ### Available Files
-| File | Description |
-| ---- | ----------- |
-| `SKILL.md` | Entry point with principles, usage workflow, and component discovery |
-| `references/rules/` | Specific rule files for styling, forms, composition, and migration |
-| `references/primitives/` | Detailed reference guides for all 53 primitives |
+
+| File                     | Description                                                          |
+| ------------------------ | -------------------------------------------------------------------- |
+| `SKILL.md`               | Entry point with principles, usage workflow, and component discovery |
+| `references/rules/`      | Specific rule files for styling, forms, composition, and migration   |
+| `references/primitives/` | Detailed reference guides for all 53 primitives                      |
 
 ---
 
@@ -447,9 +451,11 @@ coss ui is a component library built on Base UI with a shadcn-like developer exp
 **When to load:** Adding or changing UI animations (CSS, WAAPI, Motion, rAF, GSAP), refactoring janky interactions, or implementing scroll-linked motion where performance stutter occurs.
 
 ### Purpose
+
 Audit and fix animation performance issues including layout thrashing, compositor properties, scroll-linked motion, and blur effects.
 
 ### Top 10 Rules by Priority
+
 1. **Never interleave layout reads/writes** - Prevents layout thrashing in the same frame
 2. **Default to transform and opacity** - Use compositor-only properties for smooth motion
 3. **Measure once, then animate** - Batch all DOM reads before starts writing
@@ -462,8 +468,9 @@ Audit and fix animation performance issues including layout thrashing, composito
 10. **Prefer FLIP-style transitions** - For layout-like effects that need to be performant
 
 ### Available Files
-| File | Description |
-| ---- | ----------- |
+
+| File       | Description                                                              |
+| ---------- | ------------------------------------------------------------------------ |
 | `SKILL.md` | Entry point withrendering glossary, rule categories, and quick reference |
 
 ---
@@ -474,10 +481,11 @@ Audit and fix animation performance issues including layout thrashing, composito
 **When to load:** Implementing complex Grid/Flexbox structures, responsive layouts with specific area requirements, or using advanced Tailwind v4 layout features.
 
 ### Purpose
+
 A deep dive into mastering Grid Template Areas, Subgrid, Auto-fill/fit patterns, and complex flex layouts using modern Tailwind CSS.
 
 ### Available Files
-| File | Description |
-| ---- | ----------- |
-| `SKILL.md` | Self-contained guide with patterns for Grid, Subgrid, and Flexbox |
 
+| File       | Description                                                       |
+| ---------- | ----------------------------------------------------------------- |
+| `SKILL.md` | Self-contained guide with patterns for Grid, Subgrid, and Flexbox |

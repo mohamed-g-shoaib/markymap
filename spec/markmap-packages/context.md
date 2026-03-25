@@ -565,7 +565,7 @@ the markmap editor in Markymap.
 ### Component Split
 
 ```
-app/page.tsx                     ← Server Component (RSC)
+app/(playground)/playground/page.tsx  ← Server Component (RSC)
 └── components/editor/
     ├── editor-shell.tsx         ← "use client" boundary, owns shared state
     ├── markdown-input.tsx       ← "use client", textarea for raw markdown
@@ -731,13 +731,14 @@ so the user's zoom state is not reset on every keystroke.
 
 Tasks in order of dependency. Each task is self-contained and can be completed independently.
 
-### Task 1 — Install packages
+### Task 1 — Verify packages are installed
 
 ```bash
-pnpm add markmap-lib markmap-view
+pnpm list markmap-lib markmap-view
 ```
 
-Verify types are included. Both packages ship their own TypeScript declarations.
+If either package is missing, install it with `pnpm add markmap-lib markmap-view`.
+Both packages ship their own TypeScript declarations.
 
 ### Task 2 — Create the Markmap canvas component
 
@@ -795,9 +796,9 @@ File: `components/editor/editor-shell.tsx`
 - Passes `markdown` and `setMarkdown` down to both `MarkdownInput` and `MarkmapCanvas`
 - Renders a split-pane layout: input left, canvas right
 
-### Task 5 — Wire up the root page
+### Task 5 — Wire up the playground route page
 
-File: `app/page.tsx`
+File: `app/(playground)/playground/page.tsx`
 
 - Remains a Server Component
 - Imports and renders `EditorShell` as a leaf client component
@@ -1018,11 +1019,11 @@ And adjust imports based on what the packages actually export.
 
 ## Summary — What to Build First
 
-1. `pnpm add markmap-lib markmap-view`
+1. Verify `markmap-lib` and `markmap-view` are present (`pnpm list markmap-lib markmap-view`)
 2. `lib/storage.ts` — localStorage read/write with try/catch
 3. `components/editor/markmap-canvas.tsx` — SVG renderer, module-level transformer
 4. `components/editor/markdown-input.tsx` — controlled textarea
 5. `components/editor/editor-shell.tsx` — state owner, auto-save, layout
-6. Update `app/page.tsx` to render `EditorShell`
+6. Wire `EditorShell` into `app/(playground)/playground/page.tsx`
 7. Add export/import utilities
 8. Build the toolbar with coss ui components
