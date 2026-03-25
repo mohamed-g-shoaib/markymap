@@ -1,8 +1,8 @@
-"use client";
+"use client"
 
-import { Field as FieldPrimitive } from "@base-ui/react/field";
+import { Field as FieldPrimitive } from "@base-ui/react/field"
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 function Field({ className, ...props }: FieldPrimitive.Root.Props) {
   return (
@@ -11,20 +11,20 @@ function Field({ className, ...props }: FieldPrimitive.Root.Props) {
       data-slot="field"
       {...props}
     />
-  );
+  )
 }
 
 function FieldLabel({ className, ...props }: FieldPrimitive.Label.Props) {
   return (
     <FieldPrimitive.Label
       className={cn(
-        "inline-flex items-center gap-2 font-medium text-base/4.5 text-foreground sm:text-sm/4",
-        className,
+        "inline-flex items-center gap-2 text-base/4.5 font-medium text-foreground sm:text-sm/4",
+        className
       )}
       data-slot="field-label"
       {...props}
     />
-  );
+  )
 }
 
 function FieldItem({ className, ...props }: FieldPrimitive.Item.Props) {
@@ -34,7 +34,7 @@ function FieldItem({ className, ...props }: FieldPrimitive.Item.Props) {
       data-slot="field-item"
       {...props}
     />
-  );
+  )
 }
 
 function FieldDescription({
@@ -43,25 +43,25 @@ function FieldDescription({
 }: FieldPrimitive.Description.Props) {
   return (
     <FieldPrimitive.Description
-      className={cn("text-muted-foreground text-xs", className)}
+      className={cn("text-xs text-muted-foreground", className)}
       data-slot="field-description"
       {...props}
     />
-  );
+  )
 }
 
 function FieldError({ className, ...props }: FieldPrimitive.Error.Props) {
   return (
     <FieldPrimitive.Error
-      className={cn("text-destructive-foreground text-xs", className)}
+      className={cn("text-xs text-destructive-foreground", className)}
       data-slot="field-error"
       {...props}
     />
-  );
+  )
 }
 
-const FieldControl = FieldPrimitive.Control;
-const FieldValidity = FieldPrimitive.Validity;
+const FieldControl = FieldPrimitive.Control
+const FieldValidity = FieldPrimitive.Validity
 
 export {
   Field,
@@ -72,4 +72,4 @@ export {
   FieldItem,
   FieldValidity,
   FieldPrimitive,
-};
+}

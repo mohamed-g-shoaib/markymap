@@ -1,8 +1,8 @@
-"use client";
+"use client"
 
-import { Fieldset as FieldsetPrimitive } from "@base-ui/react/fieldset";
+import { Fieldset as FieldsetPrimitive } from "@base-ui/react/fieldset"
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 function Fieldset({ className, ...props }: FieldsetPrimitive.Root.Props) {
   return (
@@ -11,7 +11,7 @@ function Fieldset({ className, ...props }: FieldsetPrimitive.Root.Props) {
       data-slot="fieldset"
       {...props}
     />
-  );
+  )
 }
 function FieldsetLegend({
   className,
@@ -23,7 +23,7 @@ function FieldsetLegend({
       data-slot="fieldset-legend"
       {...props}
     />
-  );
+  )
 }
 
-export { Fieldset, FieldsetLegend, FieldsetPrimitive };
+export { Fieldset, FieldsetLegend, FieldsetPrimitive }
