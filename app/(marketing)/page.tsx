@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function MarketingPage() {
   return (
-    <main className="flex h-dvh flex-col gap-3 overflow-hidden layout-page-inset sm:gap-4">
+    <main className="flex h-dvh flex-col gap-5 overflow-hidden layout-page-inset sm:gap-6">
       <HeroSection />
       <PageContainer className="flex min-h-0 flex-1 flex-col">
         <LiveDemoSection />
