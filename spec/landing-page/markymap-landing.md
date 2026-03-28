@@ -98,7 +98,17 @@ Provide immediate proof using real markmap rendering.
 
 1. Split markdown/map panels
 2. markmap-lib + markmap-view integration
-3. localStorage-backed demo content
+3. Preview-only editable state seeded from DEMO_SEED on each visit (no persistence)
+
+### Remove
+
+1. Demo helper copy above the card ("No account needed. Edit the markdown and watch it map.")
+2. Demo faux window chrome/header row (red/yellow/green dots + preview URL strip)
+
+### Visual Parity Rule
+
+1. Landing demo card framing should match the playground panel style.
+2. Demo should start directly with the split editor/map body, with no extra top chrome.
 
 ### Layout Rhythm
 
@@ -154,4 +164,6 @@ Deleted from marketing ui scope in this revision:
 3. Hero has a single CTA.
 4. Hero has no branch-ledger panel.
 5. No references/imports remain to removed sections.
-6. Spec and context docs match the live implementation.
+6. Demo helper copy above the card is not rendered.
+7. Demo traffic-light header strip is not rendered.
+8. Spec and context docs match the live implementation.

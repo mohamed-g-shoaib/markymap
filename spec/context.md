@@ -3,7 +3,7 @@
 > **This file is the persistent working-memory document for this repository.**
 > Read it at the start of every session before touching any code. Update it after every significant task, decision, or discovery. It is the single most important file for maintaining quality across long conversations and resumed sessions.
 
-> **Last updated:** After Session 15 — AGENTS quick-guide refresh + coss ui lint scope update.
+> **Last updated:** After Session 21 — added comprehensive markmap full-functionality spec.
 
 ---
 
@@ -521,6 +521,52 @@ High-value files to understand before making any changes:
 - Rationale: `components/ui` is treated as upstream coss snapshot code and should preserve upstream parity.
 - Validation: `pnpm lint` warnings were previously concentrated in `components/ui/*`; after ignore update, lint checks focus on app/editor/feature code.
 
+### Session 16 — Landing Demo Cleanup (Header + Helper Copy Removal)
+
+- Updated `app/(marketing)/ui/demo.tsx` to remove the landing-only demo chrome header (red/yellow/green dots + URL text row).
+- Removed the helper line above the demo card: "No account needed. Edit the markdown and watch it map."
+- Kept the split markdown/map panel body unchanged so behavior remains identical while visual framing now matches the playground card style.
+- Verified diagnostics for touched file with `get_errors`: no issues.
+
+### Session 17 — Landing Demo Persistence Removed
+
+- Updated `app/(marketing)/ui/demo.tsx` so homepage demo edits no longer read from or write to localStorage.
+- Removed landing demo persistence helpers (`loadInitialMarkdown`, save timer ref, and `DEMO_STORAGE_KEY` usage).
+- Updated `app/(marketing)/ui/demo-seed.ts` by deleting now-unused `DEMO_STORAGE_KEY` export.
+- Result: landing demo remains editable for immediate preview, but always starts from `DEMO_SEED` on each visit/refresh.
+
+### Session 18 — Theme Persistence Flash Fix (FOUC Prevention)
+
+- Confirmed dark-mode flash on reload was caused by theme application happening in `useEffect` inside `components/theme-provider.tsx` (post-paint).
+- Added a pre-hydration initialization script in `app/layout.tsx` using `next/script` with `strategy="beforeInteractive"`.
+- Script resolves theme from localStorage key `theme` (with system fallback), sets `.dark` on `<html>`, and sets `color-scheme` before first paint.
+- Result: active dark theme is applied immediately on reload, avoiding light-then-dark flicker.
+
+### Session 19 — Theme Persistence Refactor (Cookies, SSR-First)
+
+- Reverted the `next/script` pre-hydration theme-init approach in `app/layout.tsx`.
+- Implemented cookie-based SSR theme bootstrap: `app/layout.tsx` now reads `theme` via `cookies()` and applies `.dark` class on `<html>` server-side when appropriate.
+- Updated `components/theme-provider.tsx` to use cookie persistence (`document.cookie`) instead of localStorage for theme writes.
+- `ThemeProvider` now accepts `initialTheme` from layout, aligns initial client state with server theme, and keeps runtime theme toggling behavior intact.
+- Result: first paint uses server-known theme state from cookies, removing light-flash regressions for persisted dark-mode users.
+
+### Session 20 — System Theme Flash Follow-up (Resolved Cookie)
+
+- Addressed remaining flash case when `theme=system`: server could not infer dark/light on first HTML render.
+- Added secondary cookie `theme-resolved` (`light|dark`) written by `ThemeProvider` whenever resolved theme is applied.
+- Updated `app/layout.tsx` SSR theme logic to use:
+  - `theme=dark` → render `<html class="dark">`
+  - `theme=system` + `theme-resolved=dark` → render `<html class="dark">`
+  - otherwise render light.
+- Result: subsequent reloads in system mode now render with the previously resolved mode on first paint, eliminating recurring light flash.
+
+### Session 21 — Markmap Full Functionality Spec Added
+
+- Created `spec/markmap-packages/full-functionality-spec.md`.
+- Captured complete implemented-vs-missing analysis for markdown + mindmap functionality.
+- Included prioritized execution phases, acceptance criteria, and file references.
+- This spec is now the canonical planning reference for completing editor/map feature parity beyond the current baseline.
+
 ---
 
 ## Important Constraints And Reminders
@@ -575,7 +621,8 @@ The landing page wireframe spec is at `spec/landing-page/markymap-landing.md`. K
 - **Route:** `/` via `app/(marketing)/page.tsx`
 - **Playground route:** `/playground` via `app/(playground)/playground/page.tsx`
 - **Sections (current):** HERO → LIVE DEMO
-- **Demo:** A real live split-panel markmap (textarea + SVG canvas) using `markmap-lib` + `markmap-view`, seeded with the Markymap features map, saved to `markymap:demo:content` in localStorage
+- **Demo:** A real live split-panel markmap (textarea + SVG canvas) using `markmap-lib` + `markmap-view`, seeded from `DEMO_SEED` as non-persistent preview content.
+- **Demo framing:** No landing-only helper line and no faux traffic-light header; preview starts directly at the split editor/map body.
 - **Animation:** CSS transitions + IntersectionObserver only via `hooks/use-in-view.ts`. No `motion` library.
 - **Hooks status:** `hooks/use-in-view.ts`, `hooks/use-scroll-y.ts`, `hooks/use-carousel-controls.ts` are already implemented in the repository.
 - **Copy (current hero):** "Turn plain notes into a map you can actually navigate." + supporting lines focused on structure and revisitation.
