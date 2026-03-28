@@ -8,7 +8,7 @@ import { Transformer } from "markmap-lib"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { DEMO_SEED, DEMO_STORAGE_KEY } from "@/app/(marketing)/ui/demo-seed"
+import { DEMO_SEED } from "@/app/(marketing)/ui/demo-seed"
 
 const transformer = new Transformer()
 
@@ -32,24 +32,11 @@ function ensureSvgSize(svg: SVGSVGElement) {
   svg.setAttribute("height", String(height))
 }
 
-function loadInitialMarkdown() {
-  try {
-    return localStorage.getItem(DEMO_STORAGE_KEY) ?? DEMO_SEED
-  } catch {
-    return DEMO_SEED
-  }
-}
-
 export function LiveDemoSection() {
   const svgRef = React.useRef<SVGSVGElement>(null)
   const mmRef = React.useRef<Markmap | null>(null)
-  const saveTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const [markdown, setMarkdown] = React.useState(DEMO_SEED)
-
-  React.useEffect(() => {
-    setMarkdown(loadInitialMarkdown())
-  }, [])
 
   const initMarkmap = React.useEffectEvent(() => {
     if (!svgRef.current) return
@@ -73,10 +60,6 @@ export function LiveDemoSection() {
     initMarkmap()
 
     return () => {
-      if (saveTimerRef.current) {
-        clearTimeout(saveTimerRef.current)
-      }
-
       mmRef.current?.destroy()
       mmRef.current = null
     }
@@ -126,41 +109,12 @@ export function LiveDemoSection() {
   const handleMarkdownChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    const nextValue = event.target.value
-    setMarkdown(nextValue)
-
-    if (saveTimerRef.current) {
-      clearTimeout(saveTimerRef.current)
-    }
-
-    saveTimerRef.current = setTimeout(() => {
-      try {
-        localStorage.setItem(DEMO_STORAGE_KEY, nextValue)
-      } catch {
-        // Ignore storage failures.
-      }
-    }, 300)
+    setMarkdown(event.target.value)
   }
 
   return (
     <section id="demo" className="flex min-h-0 flex-1 flex-col">
-      <p className="mb-2 text-center text-sm text-muted-foreground">
-        No account needed. Edit the markdown and watch it map.
-      </p>
-
       <Card className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        <div className="hidden items-center justify-between border-b bg-muted/40 px-4 py-2.5 sm:flex">
-          <div className="flex items-center gap-2">
-            <span className="size-3 rounded-full bg-destructive/60" />
-            <span className="size-3 rounded-full bg-warning/60" />
-            <span className="size-3 rounded-full bg-success/60" />
-          </div>
-          <p className="text-xs text-muted-foreground">
-            markymap.app/playground
-          </p>
-          <span className="w-16" />
-        </div>
-
         <div className="grid min-h-0 flex-1 grid-cols-1 sm:grid-cols-[1fr_auto_1fr]">
           <div className="flex min-h-0 flex-col overflow-hidden">
             <div className="flex h-10 items-center justify-between border-b bg-background px-4">

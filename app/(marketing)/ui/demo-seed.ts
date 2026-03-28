@@ -1,5 +1,3 @@
-export const DEMO_STORAGE_KEY = "markymap:demo:content"
-
 export const DEMO_SEED = `# Markymap
 
 ## Write
