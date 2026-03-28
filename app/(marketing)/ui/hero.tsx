@@ -9,15 +9,15 @@ export function HeroSection() {
   return (
     <section>
       <PageContainer>
-        <div className="max-w-5xl">
+        <div className="max-w-5xl space-y-5 sm:space-y-6">
           <h1 className="hero-delay-0 max-w-4xl animate-hero-enter text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
             Markymap turns plain notes into maps you can actually navigate.
           </h1>
-          <p className="hero-delay-100 mt-4 max-w-3xl animate-hero-enter text-base text-pretty text-muted-foreground sm:text-lg">
+          <p className="hero-delay-100 max-w-3xl animate-hero-enter text-base text-pretty text-muted-foreground sm:text-lg">
             Shape your structure fast, keep context attached to every branch,
             and revisit complex ideas without losing the thread.
           </p>
-          <div className="hero-delay-200 mt-7 flex animate-hero-enter flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
+          <div className="hero-delay-200 flex animate-hero-enter flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
             <Button render={<Link href="/playground" />}>
               Open playground
               <HugeiconsIcon

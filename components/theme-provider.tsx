@@ -11,7 +11,9 @@ import { switchOnSound } from "@/lib/audio/switch-on"
 type Theme = "light" | "dark" | "system"
 type ResolvedTheme = "light" | "dark"
 
-const THEME_STORAGE_KEY = "theme"
+const THEME_COOKIE_KEY = "theme"
+const RESOLVED_THEME_COOKIE_KEY = "theme-resolved"
+const THEME_COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 365
 
 type ThemeContextValue = {
   resolvedTheme: ResolvedTheme
@@ -30,21 +32,52 @@ function getSystemTheme(): ResolvedTheme {
     : "light"
 }
 
-function getStoredTheme(): Theme {
-  if (typeof window === "undefined") {
-    return "system"
-  }
-
-  try {
-    const value = localStorage.getItem(THEME_STORAGE_KEY)
-    if (value === "light" || value === "dark" || value === "system") {
-      return value
-    }
-  } catch {
-    // Ignore storage failures.
+function parseThemeValue(value: string | undefined): Theme {
+  if (value === "light" || value === "dark" || value === "system") {
+    return value
   }
 
   return "system"
+}
+
+function getThemeFromCookie(): Theme {
+  if (typeof document === "undefined") {
+    return "system"
+  }
+
+  const cookiePrefix = `${THEME_COOKIE_KEY}=`
+  const themeCookie = document.cookie
+    .split(";")
+    .map((cookie) => cookie.trim())
+    .find((cookie) => cookie.startsWith(cookiePrefix))
+
+  if (!themeCookie) {
+    return "system"
+  }
+
+  const [, rawValue = ""] = themeCookie.split("=", 2)
+
+  try {
+    return parseThemeValue(decodeURIComponent(rawValue))
+  } catch {
+    return "system"
+  }
+}
+
+function setThemeCookie(theme: Theme) {
+  if (typeof document === "undefined") {
+    return
+  }
+
+  document.cookie = `${THEME_COOKIE_KEY}=${encodeURIComponent(theme)}; path=/; max-age=${THEME_COOKIE_MAX_AGE_SECONDS}; samesite=lax`
+}
+
+function setResolvedThemeCookie(resolvedTheme: ResolvedTheme) {
+  if (typeof document === "undefined") {
+    return
+  }
+
+  document.cookie = `${RESOLVED_THEME_COOKIE_KEY}=${encodeURIComponent(resolvedTheme)}; path=/; max-age=${THEME_COOKIE_MAX_AGE_SECONDS}; samesite=lax`
 }
 
 function applyTheme(resolvedTheme: ResolvedTheme) {
@@ -69,20 +102,31 @@ const CLICKABLE_SELECTOR = [
   "[role='tab']",
 ].join(", ")
 
-function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = React.useState<Theme>("system")
-  const [resolvedTheme, setResolvedTheme] =
-    React.useState<ResolvedTheme>("light")
+type ThemeProviderProps = {
+  children: React.ReactNode
+  initialTheme?: Theme
+}
+
+function ThemeProvider({
+  children,
+  initialTheme = "system",
+}: ThemeProviderProps) {
+  const [theme, setThemeState] = React.useState<Theme>(initialTheme)
+  const [resolvedTheme, setResolvedTheme] = React.useState<ResolvedTheme>(
+    initialTheme === "system" ? "light" : initialTheme
+  )
 
   React.useEffect(() => {
-    const initialTheme = getStoredTheme()
+    const cookieTheme = getThemeFromCookie()
+    const nextTheme = cookieTheme === "system" ? initialTheme : cookieTheme
     const nextResolvedTheme =
-      initialTheme === "system" ? getSystemTheme() : initialTheme
+      nextTheme === "system" ? getSystemTheme() : nextTheme
 
-    setThemeState(initialTheme)
+    setThemeState(nextTheme)
     setResolvedTheme(nextResolvedTheme)
     applyTheme(nextResolvedTheme)
-  }, [])
+    setResolvedThemeCookie(nextResolvedTheme)
+  }, [initialTheme])
 
   React.useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
@@ -95,6 +139,7 @@ function ThemeProvider({ children }: { children: React.ReactNode }) {
       const nextResolvedTheme = getSystemTheme()
       setResolvedTheme(nextResolvedTheme)
       applyTheme(nextResolvedTheme)
+      setResolvedThemeCookie(nextResolvedTheme)
     }
 
     mediaQuery.addEventListener("change", handleSystemThemeChange)
@@ -112,11 +157,8 @@ function ThemeProvider({ children }: { children: React.ReactNode }) {
     setResolvedTheme(nextResolvedTheme)
     applyTheme(nextResolvedTheme)
 
-    try {
-      localStorage.setItem(THEME_STORAGE_KEY, nextTheme)
-    } catch {
-      // Ignore storage failures.
-    }
+    setThemeCookie(nextTheme)
+    setResolvedThemeCookie(nextResolvedTheme)
   }, [])
 
   const contextValue = React.useMemo(
