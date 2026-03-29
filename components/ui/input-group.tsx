@@ -51,6 +51,7 @@ function InputGroupAddon({
     <div
       className={cn(inputGroupAddonVariants({ align }), className)}
       data-align={align}
+      role="group"
       data-slot="input-group-addon"
       onMouseDown={(e) => {
         const target = e.target as HTMLElement
