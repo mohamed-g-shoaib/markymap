@@ -567,6 +567,298 @@ High-value files to understand before making any changes:
 - Included prioritized execution phases, acceptance criteria, and file references.
 - This spec is now the canonical planning reference for completing editor/map feature parity beyond the current baseline.
 
+### Session 22 — Phase 1 Task 1 (JSON Options End-to-End)
+
+- Implemented JSON options state ownership in `components/editor/editor-shell.tsx` and initialized it from storage.
+- Added shared options module `lib/markmap-options.ts` with typed `MarkmapJsonOptions` and `DEFAULT_MARKMAP_JSON_OPTIONS`.
+- Updated storage layer in `lib/storage.ts` to persist and load `{ markdown, jsonOptions }` together using `markymap:editor-state` while retaining legacy markdown key fallback.
+- Wired editor -> canvas options flow by passing `jsonOptions` into `components/editor/markmap-canvas.tsx`.
+- Added explicit options update path in canvas: `mm.setOptions(deriveOptions(...))` when options state changes.
+- Kept React 19 `useEffectEvent` mount/resize patterns intact and did not introduce inline styles.
+- Validation:
+  - `get_errors` reports no issues in all touched implementation files.
+  - `pnpm typecheck` still fails on a pre-existing `tsconfig.json` deprecation setting (`baseUrl` requires `ignoreDeprecations`), unrelated to this task.
+
+### Session 23 — Typecheck Baseline Fix (TS6 baseUrl Deprecation)
+
+- Resolved the TypeScript 6 deprecation failure in `tsconfig.json` by removing deprecated `baseUrl` usage instead of suppressing diagnostics.
+- Kept alias mapping via `paths` unchanged (`@/*` -> `./*`).
+- Validation now passes cleanly:
+  - `pnpm typecheck` succeeds.
+  - `get_errors` reports no issues in touched files (`tsconfig.json`, editor + canvas + storage + options module).
+
+### Session 24 — Toolbar Controls + Spec Refresh
+
+- Performed status audit against `spec/markmap-packages/full-functionality-spec.md` and aligned stale sections with current implementation.
+- Extended map toolbar in `components/editor/markmap-canvas.tsx` with:
+  - zoom out / zoom in
+  - reset scale (100%)
+  - fit view
+  - zoom toggle and pan toggle (JSON options-backed)
+  - restore defaults for core JSON options
+- Added options update plumbing in `components/editor/editor-shell.tsx` so canvas toolbar changes update editor-owned `jsonOptions` state and persist immediately.
+- Validation:
+  - `pnpm typecheck` passes.
+  - `get_errors` reports no issues in touched files.
+
+### Session 25 — Structured Import/Export (Markdown + JSON Options)
+
+- Implemented bundle format import/export in `components/editor/editor-shell.tsx`:
+  - export `.json` now writes `{ version: 1, markdown, jsonOptions }`
+  - import accepts `.json` bundle and restores both markdown + options
+  - markdown-only `.md` import/export remains supported for compatibility
+- Added basic malformed bundle guardrail: `.json` files that do not match schema now fail import and set save-state to error.
+- Updated `spec/markmap-packages/full-functionality-spec.md` status sections to reflect:
+  - JSON options core flow complete
+  - toolbar controls partially complete with concrete implemented controls listed
+  - import/export fidelity partially complete with versioned structured schema baseline
+- Validation:
+  - `pnpm typecheck` passes.
+  - `get_errors` reports no issues in touched files.
+
+### Session 26 — Interaction Controls Clarification (Zoom/Drag/Defaults)
+
+- Updated map toolbar labels in `components/editor/markmap-canvas.tsx` for clearer semantics:
+  - `Zoom On` / `Zoom Off`
+  - `Drag On` / `Drag Off` (replaces ambiguous `Pan` label)
+  - `Option Defaults` (clarifies this resets options, not viewport)
+- Fixed drag toggle behavior by applying a custom `mm.zoom.filter(...)` based on current options.
+  - Prior behavior: `pan` option only affected wheel pan; drag still worked.
+  - New behavior: when `Drag Off`, drag interactions are blocked while wheel zoom can remain enabled if `Zoom On`.
+- Validation:
+  - `pnpm typecheck` passes.
+  - `get_errors` reports no issues in touched file.
+
+### Session 37 — Compact Demo + Frontmatter Guidance Correction
+
+- Updated `app/(marketing)/ui/demo-seed.ts` to a shorter, scan-first example intended for real user comprehension (purpose, simple plan, folded launch branch, minimal markdown extras).
+- Simplified starter snippets in `components/editor/editor-shell.tsx` so they are practical and readable rather than exhaustive.
+- Removed previously showcased frontmatter keys that are currently ineffective in this app context (`colorFreezeLevel`, `color`, `maxWidth`, `htmlParser`, `activeNode`) to avoid misleading users.
+- Narrowed frontmatter guidance to layout-focused options with reliable behavior (`initialExpandLevel`, `spacingHorizontal`, `spacingVertical`).
+- Validation:
+  - `pnpm typecheck` passes.
+
+### Session 27 — Zoom Controls Fixes (Scale Semantics)
+
+- Fixed zoom-out behavior in `components/editor/markmap-canvas.tsx` by correcting `rescale` usage to pass a relative factor (`targetScale / currentScale`) rather than an absolute scale.
+- Updated scale reset semantics so the percent button resets to absolute `100%` (1x) instead of performing a no-op relative rescale.
+- Added live zoom percentage display tied to current viewport transform, so the button label reflects actual scale.
+- Validation:
+  - `pnpm typecheck` passes.
+  - `get_errors` reports no issues in touched file.
+
+### Session 28 — Expand/Collapse Helpers Added
+
+- Implemented toolbar helpers in `components/editor/markmap-canvas.tsx`:
+  - `Collapse All`
+  - `Expand All`
+- Implementation approach:
+  - transform current markdown via `Transformer`
+  - recursively apply fold payload state (`fold: 1` collapsed / `fold: 0` expanded) on non-root branch nodes
+  - push updated tree into existing Markmap instance via `mm.setData(...)`
+- Updated `spec/markmap-packages/full-functionality-spec.md` to mark expand/collapse helpers as implemented under toolbar controls.
+- Validation:
+  - `pnpm typecheck` passes.
+  - `get_errors` reports no issues in touched file.
+
+### Session 29 — Import UX Guardrails Improved
+
+- Upgraded import parsing in `components/editor/editor-shell.tsx` to return structured parse results with explicit failure reasons.
+- Added user-facing import status messaging for:
+  - empty files
+  - invalid JSON bundle format
+  - unsupported bundle versions
+  - file read failures
+- Import status now surfaces in the header status area (destructive text) instead of generic save failure only.
+- Retained compatibility behavior:
+  - `.json` imports require valid Markymap bundle schema
+  - `.md` imports continue to load as markdown content
+- Updated `spec/markmap-packages/full-functionality-spec.md` to reflect malformed-import guardrails as implemented.
+- Validation:
+  - `pnpm typecheck` passes.
+  - `get_errors` reports no issues in touched file.
+
+### Session 30 — Schema Evolution Layer Added (Import/Export)
+
+- Added centralized bundle module `lib/editor-exchange.ts` to own versioned parsing and serialization.
+- Introduced explicit schema constant (`EDITOR_EXCHANGE_VERSION`) and serializer helper (`createEditorExchangeV1`).
+- Refactored `components/editor/editor-shell.tsx` to consume shared parser/serializer utilities.
+- Added migration path for legacy unversioned JSON bundles (`{ markdown, jsonOptions }`) to import as version `1`.
+- This establishes the migration table pattern for future schema versions while preserving current `.json` and `.md` workflows.
+- Validation:
+  - `pnpm typecheck` passes.
+  - `get_errors` reports no issues in touched files.
+
+### Session 31 — Drawer-Based Authoring Guidance (No Page Growth)
+
+- Added `Markmap Tips` overlay in `components/editor/editor-shell.tsx` using coss `Drawer` (`position="bottom"`, `variant="inset"`, drag bar + close button).
+- Kept one-screen interface constraint intact: guidance lives in overlay and does not increase page height or require page scrolling.
+- Included in-app guidance + copy-ready templates for:
+  - JSON frontmatter options
+  - magic comments (`fold`, `foldAll`)
+- Added quick insert actions that append selected templates directly into markdown editor content.
+- Updated `spec/markmap-packages/full-functionality-spec.md` to mark authoring guidance baseline as complete.
+- Validation:
+  - `pnpm typecheck` passes.
+  - `get_errors` reports no issues in touched file.
+
+### Session 32 — Guide-First Nested Drawer + Insert Feedback
+
+- Refined editor guidance UX in `components/editor/editor-shell.tsx`:
+  - primary drawer now opens with a beginner-friendly markdown-for-mindmaps guide first
+  - snippet examples moved into a nested drawer opened by clear text action (`Open Ready-to-Use Snippets`)
+- Added explicit success feedback on snippet insertion actions:
+  - clicked insert button switches to success state (`Inserted`) briefly
+  - success state uses `Button` `variant="default"` while idle state remains `variant="outline"`
+- Kept one-screen interface constraint intact since all guidance remains overlay-based.
+- Validation:
+  - `pnpm typecheck` passes.
+  - `get_errors` reports no issues in touched file.
+
+### Session 33 — Comprehensive Authoring Guide + Expressive Demo Seed
+
+- Expanded `components/editor/editor-shell.tsx` guidance content to be substantially more comprehensive for mindmap authoring:
+  - structure and branch depth strategy
+  - list usage patterns
+  - rich markdown usage (links, emphasis, code, tables)
+  - frontmatter behavior tuning
+  - fold/foldAll pre-collapse strategies
+- Added an official-style starter snippet (with expressive `markmap` frontmatter options) to nested snippet drawer and insert action feedback states.
+- Updated homepage demo seed in `app/(marketing)/ui/demo-seed.ts` to use the expressive starter example so landing demo better showcases markmap capabilities.
+- Validation:
+  - `pnpm typecheck` passes.
+  - `get_errors` reports no issues in touched files.
+
+### Session 34 — Rendering Checklist Coverage + Shared Accent Styling
+
+- Updated `components/editor/editor-shell.tsx` starter snippet to include explicit rendering checklist lines:
+  - strong/strike/italic/highlight
+  - inline code
+  - task checkbox
+  - KaTeX inline formula with fold magic comment
+  - maxWidth long-line example
+  - ordered list items
+- Updated `app/(marketing)/ui/demo-seed.ts` to include same expressive checklist content so homepage demo better reflects real markmap capabilities.
+- Changed `Open Ready-to-Use Snippets` trigger from link-styled text to actual `Button` (`variant="outline"`, `size="xs"`).
+- Added shared guide accent utility classes in `app/globals.css` (`guide-section`, `guide-heading`, `guide-copy`, `guide-example`) and applied them in drawer guide/snippet surfaces.
+- Validation:
+  - `pnpm typecheck` passes.
+  - `get_errors` reports no issues in touched files.
+
+### Session 35 — Demo Cleanup + Drawer Accent Visibility Fixes
+
+- Updated `app/(marketing)/ui/demo-seed.ts` to remove requested sections from demo content:
+  - removed frontmatter block from top of demo seed
+  - removed quote block under `### Quote` that was not rendering as desired
+- Improved visibility of guidance UI accents in `app/globals.css` by strengthening shared utility contrast:
+  - `guide-section`
+  - `guide-example`
+  - added `guide-drawer-shell` utility for explicit drawer boundary/ring
+- Applied shared accent/ring classes in `components/editor/editor-shell.tsx`:
+  - both tips and snippets `DrawerPopup` now use `guide-drawer-shell`
+  - guide/snippet content sections now consistently use `guide-section`
+- Validation:
+  - `pnpm typecheck` passes.
+  - `get_errors` reports no issues in touched files.
+
+### Session 36 — Accent Styling Rollback (Cleaner Drawer UI)
+
+- Reverted the guide accent experiment due to visual quality concerns.
+- Removed custom accent utility classes from `app/globals.css`:
+  - `guide-section`
+  - `guide-heading`
+  - `guide-copy`
+  - `guide-example`
+  - `guide-drawer-shell`
+- Updated `components/editor/editor-shell.tsx` to use neutral token-based styles directly for guide/snippet sections and code examples.
+- Removed custom drawer shell class usage from both tips and snippets drawers.
+- Result: cleaner, less noisy drawer UI with standard border/background styling and restored visual consistency.
+- Validation:
+  - `pnpm typecheck` passes.
+  - `get_errors` reports no issues in touched files.
+
+### Session 37 — Frontmatter Runtime Wiring + UX Control Rework
+
+- Added shared transform helper `lib/markmap-transform.ts` to extract parsed `frontmatter.markmap` options from `markmap-lib` transform results.
+- Wired frontmatter options into runtime rendering for both:
+  - `components/editor/markmap-canvas.tsx` (playground map)
+  - `app/(marketing)/ui/demo.tsx` (landing live demo)
+- Result: markmap frontmatter options now apply during create/update cycles (including color/maxWidth/expand-level related view behavior, plus html parser selector handling via transformer frontmatter parsing).
+- Updated editor starter/demo content to include requested folded `Options` node with rich markdown checklist samples.
+- Reworked editor top controls in `components/editor/editor-shell.tsx`:
+  - grouped import/export/reset actions under one menu
+  - added Hugeicons-based triggers
+  - reduced header clutter and right-aligned controls
+- Added reset auto-fit behavior by introducing a `fitSignal` prop to `MarkmapCanvas` and incrementing it on editor reset.
+- Improved authoring help quality:
+  - added explicit markdown-writing basics section to `Mindmap Markdown Guide`
+  - increased guide/snippet text sizes for readability
+- Increased default drawer readability globally by raising base drawer popup/body typography in `components/ui/drawer.tsx`.
+- Validation:
+  - `pnpm typecheck` passes.
+  - `get_errors` clean in touched files after final patch.
+
+### Session 38 — Base UI Menu Group Fix + Guide Simplification
+
+- Fixed runtime error in `components/editor/editor-shell.tsx` by wrapping `MenuGroupLabel` usages inside `MenuGroup` per Base UI requirements.
+- Verified against Base UI handbook docs under `spec/base-ui/` before patching.
+- Refined `Mindmap Markdown Guide` to be shorter and easier to scan:
+  - reduced section count and copy volume
+  - shifted focus to practical, real-world patterns (meeting prep, feature planning, study notes)
+- Rewrote snippet examples to be more meaningful for actual user workflows:
+  - product plan frontmatter example with goals + delivery streams
+  - weekly agenda fold/foldAll example
+  - kickoff template with timeline + checklist
+- Validation:
+  - `pnpm typecheck` passes.
+  - `get_errors` reports no issues in touched file.
+
+### Session 39 — React/Next Comprehensive Audit + True-Positive Fixes
+
+- Loaded and applied relevant skills before scanning:
+  - `next-best-practices`
+  - `react-useeffect`
+  - `vercel-react-best-practices`
+  - `vercel-composition-patterns`
+  - `coss`
+- Ran full scans:
+  - `pnpm lint`
+  - `npx -y react-doctor@latest .`
+- Fixed confirmed true positives:
+  1. `components/editor/markmap-canvas.tsx`
+     - removed `useEffectEvent` callbacks from hook dependency arrays (`syncZoomPercent`) per React 19 + hooks best practice
+  2. `components/ui/input-group.tsx`
+     - added semantic `role="group"` on addon container with mouse interaction handler to satisfy accessibility semantics
+- Post-fix scan results:
+  - `pnpm lint` now reports 0 warnings / 0 errors
+  - `react-doctor` score improved (95 -> 96) and warning count reduced (122 -> 121)
+- Remaining report items were triaged as advisory/intentional (not immediate defects):
+  - `no-giant-component` warnings for `EditorShell` / `MarkmapCanvas` (architecture suggestion)
+  - `autoFocus` in command input (intentional command-palette UX behavior)
+  - slider index-key warning (thumb order is fixed/index-addressed by primitive API)
+  - broad Knip dead-code flags for `components/ui/*` and exported primitives (expected in upstream snapshot component library surface)
+
+### Session 40 — Composition Refactor + Advisory Revalidation
+
+- Applied composition-skill refactor to split giant editor/map components:
+  - added `components/editor/use-editor-shell-state.ts` to extract state/actions from `EditorShell`
+  - added `components/editor/editor-toolbar.tsx` for top-level actions composition
+  - added `components/editor/mindmap-tips-drawer.tsx` for guide/snippet drawer composition
+  - added `components/editor/editor-templates.ts` for shared template constants/types
+  - added `components/editor/markmap-controls-bar.tsx` for map control bar composition
+- Refactored `components/editor/editor-shell.tsx` and `components/editor/markmap-canvas.tsx` to consume extracted composed parts.
+- Revalidated previously advisory items and fixed additional true positives:
+  - removed `autoFocus` from `components/ui/command.tsx`
+  - replaced `key={index}` in `components/ui/slider.tsx` with stable derived thumb keys
+  - reduced dead-code export noise by narrowing unused exports/functions in:
+    - `lib/editor-exchange.ts`
+    - `lib/storage.ts`
+    - `lib/audio/sound-engine.ts`
+- Validation:
+  - `pnpm lint` passes with 0 warnings/0 errors
+  - `pnpm typecheck` passes
+  - `react-doctor` (changed-file scan) reports no issues, score `100/100`
+
 ---
 
 ## Important Constraints And Reminders

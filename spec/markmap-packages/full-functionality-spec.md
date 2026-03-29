@@ -72,9 +72,25 @@ Implemented in `components/editor/editor-shell.tsx` and `components/editor/markd
 2. Input and canvas stay synchronized.
 3. Debounced local save exists for playground markdown content.
 4. Save-state feedback is visible (saving/saved/error).
-5. Import `.md`, export `.md`, and reset are implemented.
+5. Import supports `.md` and structured `.json` editor bundles.
+6. Export supports `.md` and structured `.json` bundles.
+7. Reset is implemented.
+8. JSON options state is owned in editor shell and persisted with markdown.
+9. Editor surface now uses composed subcomponents/hooks for maintainability (`use-editor-shell-state`, `editor-toolbar`, `mindmap-tips-drawer`, shared templates).
 
-### 2.3 Landing Demo (Intentional Behavior)
+### 2.3 Map Controls
+
+Implemented in `components/editor/markmap-canvas.tsx` with state wiring in `components/editor/editor-shell.tsx`.
+
+1. Viewport controls: zoom in, zoom out, reset scale (100%), fit view.
+2. Option-level toggles: zoom enabled/disabled and drag enabled/disabled.
+3. Restore defaults action for core JSON options.
+4. Option changes propagate through editor state and are persisted.
+5. Zoom percentage now reflects current viewport scale and reset returns to absolute 100%.
+6. Editor reset now triggers map auto-fit.
+7. Control bar rendering is extracted into a dedicated composed component (`markmap-controls-bar`) to keep canvas logic focused.
+
+### 2.4 Landing Demo (Intentional Behavior)
 
 Implemented in `app/(marketing)/ui/demo.tsx`.
 
@@ -88,15 +104,20 @@ Implemented in `app/(marketing)/ui/demo.tsx`.
 
 ### 3.1 JSON Options End-to-End (High)
 
-Not complete yet.
+Status: complete for both editor state options and markdown frontmatter runtime options.
 
-Missing:
+Implemented:
 
 1. `jsonOptions` state in `editor-shell.tsx`.
-2. Option UI and data model for editable map options.
-3. Passing `jsonOptions` into `MarkmapCanvas`.
-4. `mm.setOptions(deriveOptions(jsonOptions))` update path.
-5. Persistence of options alongside markdown.
+2. Passing `jsonOptions` into `MarkmapCanvas`.
+3. `mm.setOptions(deriveOptions(jsonOptions))` update path.
+4. Persistence/load of options alongside markdown in storage helpers.
+5. Runtime merge of parsed markdown `frontmatter.markmap` options into renderer options.
+6. Shared transform snapshot helper to ensure frontmatter is applied consistently in playground and landing demo renderers.
+
+Remaining:
+
+1. Rich, first-class options editing surface beyond compact toolbar toggles.
 
 Why this matters:
 
@@ -105,15 +126,20 @@ Why this matters:
 
 ### 3.2 First-Class Toolbar Controls (High)
 
-Current controls are minimal.
+Status: partially complete.
 
 Missing:
 
+1. Additional authoring-oriented controls as product UX matures.
+
+Implemented now:
+
 1. Zoom in / zoom out.
-2. Reset view / fit view variants.
-3. Expand/collapse helpers (or equivalent UX).
-4. Pan/zoom toggles if exposing option-level controls.
-5. Clear map settings entry point.
+2. Reset view (100%) and fit view.
+3. Collapse all / expand all helpers.
+4. Drag/zoom toggles via JSON options.
+5. Restore defaults action for map options.
+6. File/view actions grouped under a compact menu with icon-based triggers to reduce header clutter.
 
 Why this matters:
 
@@ -121,14 +147,20 @@ Why this matters:
 
 ### 3.3 Import/Export Fidelity Beyond Raw Markdown (High)
 
-Current import/export is markdown-only.
+Status: partially complete.
 
 Missing:
 
-1. Structured export format including markdown + jsonOptions.
-2. Structured import path for same format.
-3. Versioned schema for future compatibility.
-4. Guardrails for malformed imports.
+1. Additional migration entries for future schema versions beyond `1`.
+
+Implemented now:
+
+1. Structured export format includes `{ version, markdown, jsonOptions }`.
+2. Structured import path supports same bundle format.
+3. Versioned schema baseline (`version: 1`) exists.
+4. Import guardrails show explicit failures for empty files, invalid bundle formats, and unsupported bundle versions.
+5. Centralized parser/serializer layer exists for bundle versioning and migrations.
+6. Legacy unversioned JSON bundles are migrated into version `1` on import.
 
 Why this matters:
 
@@ -136,13 +168,22 @@ Why this matters:
 
 ### 3.4 Markmap Authoring Features UX (Medium)
 
-Capabilities exist in markmap stack but product-level support is incomplete.
+Status: baseline complete.
 
-Missing:
+Implemented:
 
 1. In-app guidance/examples for frontmatter `markmap` JSON options.
 2. In-app guidance/examples for magic comments: `fold`, `foldAll`.
-3. Quick template insertion helpers (optional but recommended).
+3. Guide-first authoring flow via bottom drawer, with nested snippet drawer for ready-made examples.
+4. Quick template insertion helpers with explicit success feedback state in snippet actions.
+5. Comprehensive markdown-for-mindmaps guidance covering structure, lists, rich markdown, behavior options, and fold strategies.
+6. Starter snippets are compact and guidance focuses on layout-oriented frontmatter fields with reliable behavior.
+7. Guide now includes explicit markdown-writing basics (headings, lists, inline formatting, links) before markmap-specific behavior.
+8. Drawer typography baseline was increased for better readability across drawers.
+
+Remaining:
+
+1. Optional deeper docs and advanced examples as UX matures.
 
 Why this matters:
 
