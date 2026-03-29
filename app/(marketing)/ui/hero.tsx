@@ -10,16 +10,17 @@ export function HeroSection() {
   return (
     <section>
       <PageContainer>
-        <div className="max-w-5xl space-y-5 sm:space-y-6">
-          <h1 className="hero-delay-0 max-w-4xl animate-hero-enter text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-            Markymap turns plain notes into maps you can actually navigate.
+        <div className="space-y-5 sm:space-y-6">
+          <h1 className="hero-delay-0 animate-hero-enter text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
+            Markymap turns plain notes into maps you can navigate and markdown
+            you can read and edit.
           </h1>
-          <p className="hero-delay-100 max-w-3xl animate-hero-enter text-base text-pretty text-muted-foreground sm:text-lg">
-            Shape your structure fast, keep context attached to every branch,
-            and revisit complex ideas without losing the thread.
+          <p className="hero-delay-100 animate-hero-enter text-base text-pretty text-muted-foreground sm:text-lg">
+            Write in Markdown, view as a mindmap, and switch instantly between
+            both views as you plan and refine.
           </p>
-          <div className="hero-delay-200 flex animate-hero-enter flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
-            <Button render={<Link href="/playground" />}>
+          <div className="hero-delay-200 flex animate-hero-enter flex-row items-center gap-3 sm:gap-4">
+            <Button className="order-1" render={<Link href="/playground" />}>
               Open playground
               <HugeiconsIcon
                 icon={ArrowRight01Icon}
@@ -27,7 +28,7 @@ export function HeroSection() {
                 color="currentColor"
               />
             </Button>
-            <ThemeToggle size="icon" />
+            <ThemeToggle size="icon" className="order-2" />
           </div>
         </div>
       </PageContainer>

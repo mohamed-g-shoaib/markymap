@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { DEMO_SEED } from "@/app/(marketing)/ui/demo-seed"
+import { MarkdownPreview } from "@/components/editor/markdown-preview"
+import { MapMarkdownSwitch } from "@/components/editor/map-markdown-switch"
 import {
   DEFAULT_MARKMAP_JSON_OPTIONS,
   type MarkmapJsonOptions,
@@ -40,6 +42,7 @@ export function LiveDemoSection() {
   const mmRef = React.useRef<Markmap | null>(null)
 
   const [markdown, setMarkdown] = React.useState(DEMO_SEED)
+  const [activeView, setActiveView] = React.useState<"map" | "markdown">("map")
   const [frontmatterOptions, setFrontmatterOptions] =
     React.useState<MarkmapJsonOptions>({})
 
@@ -73,6 +76,7 @@ export function LiveDemoSection() {
   }, [])
 
   React.useEffect(() => {
+    if (activeView !== "map") return
     if (!mmRef.current) return
 
     if (svgRef.current) {
@@ -87,13 +91,14 @@ export function LiveDemoSection() {
 
     setFrontmatterOptions(snapshot.frontmatterOptions)
     mmRef.current.setData(snapshot.root)
-  }, [markdown])
+  }, [activeView, markdown])
 
   React.useEffect(() => {
+    if (activeView !== "map") return
     if (!mmRef.current) return
 
     mmRef.current.setOptions(getDemoOptions(frontmatterOptions))
-  }, [frontmatterOptions])
+  }, [activeView, frontmatterOptions])
 
   const handleResize = React.useEffectEvent(() => {
     if (!svgRef.current || !mmRef.current) return
@@ -103,6 +108,7 @@ export function LiveDemoSection() {
   })
 
   React.useEffect(() => {
+    if (activeView !== "map") return
     if (!svgRef.current || typeof ResizeObserver === "undefined") {
       return
     }
@@ -118,7 +124,7 @@ export function LiveDemoSection() {
     return () => {
       observer.disconnect()
     }
-  }, [])
+  }, [activeView])
 
   const handleMarkdownChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -128,14 +134,14 @@ export function LiveDemoSection() {
 
   return (
     <section id="demo" className="flex min-h-0 flex-1 flex-col">
-      <Card className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        <div className="grid min-h-0 flex-1 grid-cols-1 sm:grid-cols-[1fr_auto_1fr]">
+      <Card className="flex min-h-176 flex-col overflow-hidden sm:min-h-0 sm:flex-1">
+        <div className="grid min-h-0 flex-1 grid-cols-1 grid-rows-[minmax(20rem,1fr)_auto_minmax(20rem,1fr)] sm:grid-cols-[1fr_auto_1fr] sm:grid-rows-1">
           <div className="flex min-h-0 flex-col overflow-hidden">
-            <div className="flex h-10 items-center justify-between border-b bg-background px-4">
+            <div className="flex h-10 items-center justify-between gap-2 border-b bg-background px-3 sm:px-4">
               <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                 Markdown
               </p>
-              <p className="text-xs text-muted-foreground tabular-nums">
+              <p className="min-w-0 truncate text-[11px] text-muted-foreground tabular-nums sm:text-xs">
                 {markdown.length} chars
               </p>
             </div>
@@ -143,7 +149,7 @@ export function LiveDemoSection() {
               <textarea
                 value={markdown}
                 onChange={handleMarkdownChange}
-                className="size-full min-h-0 resize-none overflow-x-hidden overflow-y-auto border-0 bg-transparent p-4 font-mono text-sm text-foreground outline-none"
+                className="scrollbar-subtle size-full min-h-0 resize-none overflow-x-hidden overflow-y-auto border-0 bg-transparent p-4 font-mono text-sm text-foreground outline-none"
               />
             </div>
           </div>
@@ -152,20 +158,40 @@ export function LiveDemoSection() {
           <Separator className="sm:hidden" />
 
           <div className="flex min-h-0 flex-col overflow-hidden">
-            <div className="flex h-10 items-center justify-between border-b bg-background px-4">
-              <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                Map
-              </p>
-              <Button
-                variant="ghost"
-                size="xs"
-                onClick={() => mmRef.current?.fit()}
-              >
-                Fit
-              </Button>
+            <div className="flex min-h-10 flex-wrap items-center justify-between gap-2 border-b bg-background px-3 py-1 sm:h-10 sm:flex-nowrap sm:px-4 sm:py-0">
+              <MapMarkdownSwitch
+                activeView={activeView}
+                onViewChange={setActiveView}
+              />
+              {activeView === "map" ? (
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  onClick={() => mmRef.current?.fit()}
+                >
+                  Fit
+                </Button>
+              ) : null}
             </div>
-            <div className="min-h-0 flex-1 p-2 sm:p-4">
-              <svg ref={svgRef} className="size-full" />
+            <div
+              className={
+                activeView === "map"
+                  ? "min-h-0 flex-1 p-2 sm:p-4"
+                  : "min-h-0 flex-1"
+              }
+            >
+              <div className="size-full">
+                <div
+                  className={
+                    activeView === "map" ? "size-full" : "hidden size-full"
+                  }
+                >
+                  <svg ref={svgRef} className="size-full" />
+                </div>
+                {activeView === "markdown" ? (
+                  <MarkdownPreview markdown={markdown} />
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
