@@ -1,7 +1,199 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "katex/dist/katex.min.css";
 
+html {
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+}
+
+:root {
+  --syntax-fg: #1f2937;
+  --syntax-comment: #64748b;
+  --syntax-keyword: #7c3aed;
+  --syntax-string: #0f766e;
+  --syntax-number: #b45309;
+  --syntax-function: #1d4ed8;
+  --syntax-property: #0369a1;
+  --syntax-tag: #be123c;
+}
+
+.dark {
+  --syntax-fg: #e7edf7;
+  --syntax-comment: #94a3b8;
+  --syntax-keyword: #c4b5fd;
+  --syntax-string: #6ee7b7;
+  --syntax-number: #fdba74;
+  --syntax-function: #93c5fd;
+  --syntax-property: #67e8f9;
+  --syntax-tag: #fda4af;
+}
+
+.markdown-preview-surface .hljs,
+.markmap .hljs,
+.markmap-foreign .hljs,
+.markdown-preview-surface code[class*="language-"],
+.markmap-foreign code[class*="language-"] {
+  display: block;
+  background-color: transparent;
+  color: var(--syntax-fg) !important;
+  padding: 0;
+}
+
+.markdown-preview-surface .hljs-subst,
+.markmap .hljs-subst,
+.markmap-foreign .hljs-subst,
+.markdown-preview-surface .token.punctuation,
+.markmap-foreign .token.punctuation {
+  color: var(--syntax-fg) !important;
+}
+
+.markmap {
+  --markmap-code-color: var(--syntax-fg);
+  --markmap-code-bg: color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+
+.markdown-preview-surface .hljs-comment,
+.markdown-preview-surface .hljs-quote,
+.markmap .hljs-comment,
+.markmap .hljs-quote,
+.markmap-foreign .hljs-comment,
+.markmap-foreign .hljs-quote,
+.markdown-preview-surface .token.comment,
+.markdown-preview-surface .token.prolog,
+.markdown-preview-surface .token.doctype,
+.markdown-preview-surface .token.cdata,
+.markmap-foreign .token.comment,
+.markmap-foreign .token.prolog,
+.markmap-foreign .token.doctype,
+.markmap-foreign .token.cdata {
+  color: var(--syntax-comment);
+}
+
+.markdown-preview-surface .hljs-keyword,
+.markdown-preview-surface .hljs-selector-tag,
+.markdown-preview-surface .hljs-literal,
+.markdown-preview-surface .hljs-type,
+.markdown-preview-surface .hljs-built_in,
+.markdown-preview-surface .hljs-operator,
+.markmap .hljs-keyword,
+.markmap .hljs-selector-tag,
+.markmap .hljs-literal,
+.markmap .hljs-type,
+.markmap .hljs-built_in,
+.markmap .hljs-operator,
+.markmap-foreign .hljs-keyword,
+.markmap-foreign .hljs-selector-tag,
+.markmap-foreign .hljs-literal,
+.markmap-foreign .hljs-type,
+.markmap-foreign .hljs-built_in,
+.markmap-foreign .hljs-operator,
+.markdown-preview-surface .token.keyword,
+.markdown-preview-surface .token.operator,
+.markdown-preview-surface .token.atrule,
+.markdown-preview-surface .token.important,
+.markmap-foreign .token.keyword,
+.markmap-foreign .token.operator,
+.markmap-foreign .token.atrule,
+.markmap-foreign .token.important {
+  color: var(--syntax-keyword) !important;
+}
+
+.markdown-preview-surface .hljs-string,
+.markdown-preview-surface .hljs-doctag,
+.markdown-preview-surface .hljs-regexp,
+.markmap .hljs-string,
+.markmap .hljs-doctag,
+.markmap .hljs-regexp,
+.markmap-foreign .hljs-string,
+.markmap-foreign .hljs-doctag,
+.markmap-foreign .hljs-regexp,
+.markdown-preview-surface .token.string,
+.markdown-preview-surface .token.char,
+.markdown-preview-surface .token.attr-value,
+.markdown-preview-surface .token.inserted,
+.markmap-foreign .token.string,
+.markmap-foreign .token.char,
+.markmap-foreign .token.attr-value,
+.markmap-foreign .token.inserted {
+  color: var(--syntax-string) !important;
+}
+
+.markdown-preview-surface .hljs-number,
+.markdown-preview-surface .hljs-symbol,
+.markdown-preview-surface .hljs-variable,
+.markdown-preview-surface .hljs-params,
+.markdown-preview-surface .hljs-meta,
+.markmap .hljs-number,
+.markmap .hljs-symbol,
+.markmap .hljs-variable,
+.markmap .hljs-params,
+.markmap .hljs-meta,
+.markmap-foreign .hljs-number,
+.markmap-foreign .hljs-symbol,
+.markmap-foreign .hljs-variable,
+.markmap-foreign .hljs-params,
+.markmap-foreign .hljs-meta,
+.markdown-preview-surface .token.number,
+.markdown-preview-surface .token.boolean,
+.markdown-preview-surface .token.constant,
+.markmap-foreign .token.number,
+.markmap-foreign .token.boolean,
+.markmap-foreign .token.constant {
+  color: var(--syntax-number) !important;
+}
+
+.markdown-preview-surface .hljs-function,
+.markdown-preview-surface .hljs-title,
+.markdown-preview-surface .hljs-section,
+.markdown-preview-surface .hljs-title.function_,
+.markdown-preview-surface .hljs-title.class_,
+.markmap .hljs-function,
+.markmap .hljs-title,
+.markmap .hljs-section,
+.markmap .hljs-title.function_,
+.markmap .hljs-title.class_,
+.markmap-foreign .hljs-function,
+.markmap-foreign .hljs-title,
+.markmap-foreign .hljs-section,
+.markmap-foreign .hljs-title.function_,
+.markmap-foreign .hljs-title.class_,
+.markdown-preview-surface .token.function,
+.markdown-preview-surface .token.class-name,
+.markmap-foreign .token.function,
+.markmap-foreign .token.class-name {
+  color: var(--syntax-function) !important;
+}
+
+.markdown-preview-surface .hljs-property,
+.markdown-preview-surface .hljs-attr,
+.markdown-preview-surface .hljs-attribute,
+.markmap .hljs-property,
+.markmap .hljs-attr,
+.markmap .hljs-attribute,
+.markmap-foreign .hljs-property,
+.markmap-foreign .hljs-attr,
+.markmap-foreign .hljs-attribute,
+.markdown-preview-surface .token.property,
+.markdown-preview-surface .token.attr-name,
+.markmap-foreign .token.property,
+.markmap-foreign .token.attr-name {
+  color: var(--syntax-property) !important;
+}
+
+.markdown-preview-surface .token.tag,
+.markdown-preview-surface .token.selector,
+.markdown-preview-surface .hljs-tag,
+.markdown-preview-surface .hljs-name,
+.markmap .hljs-tag,
+.markmap .hljs-name,
+.markmap-foreign .token.tag,
+.markmap-foreign .token.selector,
+.markmap-foreign .hljs-tag,
+.markmap-foreign .hljs-name {
+  color: var(--syntax-tag) !important;
+}
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -63,53 +255,45 @@
 
 :root {
   --radius: 0.625rem;
-  --color-canvas: oklch(0.994 0.001 106.424);
-  --background: var(--color-canvas);
-  --foreground: var(--color-neutral-800);
-  --card: var(--color-white);
-  --card-foreground: var(--color-neutral-800);
-  --popover: var(--color-white);
-  --popover-foreground: var(--color-neutral-800);
-  --primary: var(--color-neutral-800);
-  --primary-foreground: var(--color-neutral-50);
-  --secondary: --alpha(var(--color-black) / 4%);
-  --secondary-foreground: var(--color-neutral-800);
-  --muted: --alpha(var(--color-black) / 4%);
-  --muted-foreground: color-mix(
-    in srgb,
-    var(--color-neutral-500) 90%,
-    var(--color-black)
-  );
-  --accent: --alpha(var(--color-black) / 4%);
-  --accent-foreground: var(--color-neutral-800);
-  --destructive: var(--color-red-500);
-  --destructive-foreground: var(--color-red-700);
+  --color-canvas: oklch(0.9818 0.0054 95.0986);
+  --background: oklch(0.9818 0.0054 95.0986);
+  --foreground: oklch(0.3438 0.0269 95.7226);
+  --card: oklch(0.9818 0.0054 95.0986);
+  --card-foreground: oklch(0.1908 0.002 106.5859);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2671 0.0196 98.939);
+  --primary: oklch(0.6171 0.1375 39.0427);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.9245 0.0138 92.9892);
+  --secondary-foreground: oklch(0.4334 0.0177 98.6048);
+  --muted: oklch(0.9341 0.0153 90.239);
+  --muted-foreground: oklch(0.6059 0.0075 97.4233);
+  --accent: oklch(0.9245 0.0138 92.9892);
+  --accent-foreground: oklch(0.2671 0.0196 98.939);
+  --destructive: oklch(0.1908 0.002 106.5859);
+  --destructive-foreground: oklch(1 0 0);
   --info: var(--color-blue-500);
   --info-foreground: var(--color-blue-700);
   --success: var(--color-emerald-500);
   --success-foreground: var(--color-emerald-700);
   --warning: var(--color-amber-500);
   --warning-foreground: var(--color-amber-700);
-  --border: --alpha(var(--color-black) / 8%);
-  --input: --alpha(var(--color-black) / 10%);
-  --ring: var(--color-neutral-400);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: var(--color-neutral-50);
-  --sidebar-foreground: color-mix(
-    in srgb,
-    var(--color-neutral-800) 64%,
-    var(--sidebar)
-  );
-  --sidebar-primary: var(--color-neutral-800);
-  --sidebar-primary-foreground: var(--color-neutral-50);
-  --sidebar-accent: --alpha(var(--color-black) / 4%);
-  --sidebar-accent-foreground: var(--color-neutral-800);
-  --sidebar-border: --alpha(var(--color-black) / 6%);
-  --sidebar-ring: var(--color-neutral-400);
+  --border: oklch(0.8847 0.0069 97.3627);
+  --input: oklch(0.7621 0.0156 98.3528);
+  --ring: oklch(0.6171 0.1375 39.0427);
+  --chart-1: oklch(0.5583 0.1276 42.9956);
+  --chart-2: oklch(0.6898 0.1581 290.4107);
+  --chart-3: oklch(0.8816 0.0276 93.128);
+  --chart-4: oklch(0.8822 0.0403 298.1792);
+  --chart-5: oklch(0.5608 0.1348 42.0584);
+  --sidebar: oklch(0.9663 0.008 98.8792);
+  --sidebar-foreground: oklch(0.359 0.0051 106.6524);
+  --sidebar-primary: oklch(0.6171 0.1375 39.0427);
+  --sidebar-primary-foreground: oklch(0.9881 0 0);
+  --sidebar-accent: oklch(0.9245 0.0138 92.9892);
+  --sidebar-accent-foreground: oklch(0.325 0 0);
+  --sidebar-border: oklch(0.9401 0 0);
+  --sidebar-ring: oklch(0.7731 0 0);
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --surface-shadow-sm:
@@ -143,64 +327,44 @@
 }
 
 .dark {
-  --background: color-mix(
-    in srgb,
-    var(--color-neutral-950) 95%,
-    var(--color-white)
-  );
-  --foreground: var(--color-neutral-100);
-  --card: color-mix(in srgb, var(--background) 98%, var(--color-white));
-  --card-foreground: var(--color-neutral-100);
-  --popover: color-mix(in srgb, var(--background) 98%, var(--color-white));
-  --popover-foreground: var(--color-neutral-100);
-  --primary: var(--color-neutral-100);
-  --primary-foreground: var(--color-neutral-800);
-  --secondary: --alpha(var(--color-white) / 4%);
-  --secondary-foreground: var(--color-neutral-100);
-  --muted: --alpha(var(--color-white) / 4%);
-  --muted-foreground: color-mix(
-    in srgb,
-    var(--color-neutral-500) 90%,
-    var(--color-white)
-  );
-  --accent: --alpha(var(--color-white) / 4%);
-  --accent-foreground: var(--color-neutral-100);
-  --destructive: color-mix(
-    in srgb,
-    var(--color-red-500) 90%,
-    var(--color-white)
-  );
-  --destructive-foreground: var(--color-red-400);
+  --background: oklch(0.2679 0.0036 106.6427);
+  --foreground: oklch(0.8074 0.0142 93.0137);
+  --card: oklch(0.2679 0.0036 106.6427);
+  --card-foreground: oklch(0.9818 0.0054 95.0986);
+  --popover: oklch(0.3085 0.0035 106.6039);
+  --popover-foreground: oklch(0.9211 0.004 106.4781);
+  --primary: oklch(0.6724 0.1308 38.7559);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.9818 0.0054 95.0986);
+  --secondary-foreground: oklch(0.3085 0.0035 106.6039);
+  --muted: oklch(0.2213 0.0038 106.707);
+  --muted-foreground: oklch(0.7713 0.0169 99.0657);
+  --accent: oklch(0.213 0.0078 95.4245);
+  --accent-foreground: oklch(0.9663 0.008 98.8792);
+  --destructive: oklch(0.6368 0.2078 25.3313);
+  --destructive-foreground: oklch(1 0 0);
   --info: var(--color-blue-500);
   --info-foreground: var(--color-blue-400);
   --success: var(--color-emerald-500);
   --success-foreground: var(--color-emerald-400);
   --warning: var(--color-amber-500);
   --warning-foreground: var(--color-amber-400);
-  --border: --alpha(var(--color-white) / 6%);
-  --input: --alpha(var(--color-white) / 8%);
-  --ring: var(--color-neutral-500);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: color-mix(
-    in srgb,
-    var(--color-neutral-950) 97%,
-    var(--color-white)
-  );
-  --sidebar-foreground: color-mix(
-    in srgb,
-    var(--color-neutral-100) 64%,
-    var(--sidebar)
-  );
-  --sidebar-primary: var(--color-neutral-100);
-  --sidebar-primary-foreground: var(--color-neutral-800);
-  --sidebar-accent: --alpha(var(--color-white) / 4%);
-  --sidebar-accent-foreground: var(--color-neutral-100);
-  --sidebar-border: --alpha(var(--color-white) / 5%);
-  --sidebar-ring: var(--color-neutral-400);
+  --border: oklch(0.3618 0.0101 106.8928);
+  --input: oklch(0.4336 0.0113 100.2195);
+  --ring: oklch(0.6724 0.1308 38.7559);
+  --chart-1: oklch(0.5583 0.1276 42.9956);
+  --chart-2: oklch(0.6898 0.1581 290.4107);
+  --chart-3: oklch(0.213 0.0078 95.4245);
+  --chart-4: oklch(0.3074 0.0516 289.323);
+  --chart-5: oklch(0.5608 0.1348 42.0584);
+  --sidebar: oklch(0.2357 0.0024 67.7077);
+  --sidebar-foreground: oklch(0.8074 0.0142 93.0137);
+  --sidebar-primary: oklch(0.325 0 0);
+  --sidebar-primary-foreground: oklch(0.9881 0 0);
+  --sidebar-accent: oklch(0.168 0.002 106.6177);
+  --sidebar-accent-foreground: oklch(0.8074 0.0142 93.0137);
+  --sidebar-border: oklch(0.9401 0 0);
+  --sidebar-ring: oklch(0.7731 0 0);
   --surface-shadow-sm:
     0 1px 0 0 color-mix(in srgb, var(--color-white) 5%, transparent),
     0 16px 32px -20px color-mix(in srgb, var(--color-black) 52%, transparent);
@@ -274,8 +438,8 @@
       var(--surface-shadow-sm);
   }
   html {
-    scrollbar-color: color-mix(in srgb, var(--foreground) 26%, transparent)
-      color-mix(in srgb, var(--foreground) 6%, transparent);
+    scrollbar-color: var(--primary)
+      color-mix(in srgb, var(--foreground) 8%, transparent);
     scrollbar-width: thin;
   }
 
@@ -291,7 +455,12 @@
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--foreground) 92%, transparent);
+  background: oklch(0.85 0.06 39.0427);
+  color: var(--foreground);
+}
+
+.dark ::selection {
+  background: oklch(0.6724 0.1308 38.7559);
   color: var(--background);
 }
 
@@ -343,29 +512,55 @@
   --markmap-highlight-bg: color-mix(in srgb, var(--warning) 36%, transparent);
 }
 
-::-webkit-scrollbar {
-  width: 0.7rem;
-  height: 0.7rem;
+.markmap-foreign .task-list-item,
+.markdown-preview-surface .task-list-item {
+  list-style: none;
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+.markmap-foreign .task-list-item-checkbox,
+.markmap-foreign input[type="checkbox"],
+.markdown-preview-surface .task-list-item-checkbox,
+.markdown-preview-surface input[type="checkbox"] {
+  display: inline-block;
+  margin-right: 0.45rem;
+  vertical-align: middle;
 }
 
-::-webkit-scrollbar-thumb {
-  border: 0.2rem solid transparent;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--foreground) 18%, transparent);
-  background-clip: padding-box;
+.markmap-foreign .task-list-item > p,
+.markdown-preview-surface .task-list-item > p {
+  display: inline;
+  margin: 0;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in srgb, var(--foreground) 28%, transparent);
-  background-clip: padding-box;
-}
+@utility scrollbar-subtle {
+  scrollbar-color: color-mix(in srgb, var(--foreground) 26%, transparent)
+    color-mix(in srgb, var(--foreground) 6%, transparent);
+  scrollbar-width: thin;
 
-::-webkit-scrollbar-corner {
-  background: transparent;
+  &::-webkit-scrollbar {
+    width: 0.7rem;
+    height: 0.7rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border: 0.2rem solid transparent;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--foreground) 18%, transparent);
+    background-clip: padding-box;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--foreground) 28%, transparent);
+    background-clip: padding-box;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
 }
 
 @utility text-link {
