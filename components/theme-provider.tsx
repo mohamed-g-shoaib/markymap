@@ -318,4 +318,14 @@ function ThemeHotkey() {
   return null
 }
 
-export { ThemeProvider }
+function useTheme() {
+  const themeContext = React.useContext(ThemeContext)
+
+  if (!themeContext) {
+    throw new Error("useTheme must be used within ThemeProvider")
+  }
+
+  return themeContext
+}
+
+export { ThemeProvider, useTheme }

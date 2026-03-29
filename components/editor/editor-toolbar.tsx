@@ -1,9 +1,11 @@
 "use client"
 
-import { ArrowDown01Icon } from "@hugeicons/core-free-icons"
+import Link from "next/link"
+import { ArrowDown01Icon, Home01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 
 import { MindmapTipsDrawer } from "@/components/editor/mindmap-tips-drawer"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import {
   Menu,
@@ -48,15 +50,20 @@ export function EditorToolbar({
       </p>
       <div className="flex items-center justify-end gap-2">
         <Menu>
-          <MenuTrigger render={<Button variant="outline" size="sm" />}>
+          <MenuTrigger
+            className="[&[data-popup-open]_[data-slot=workspace-chevron]]:rotate-180"
+            render={<Button variant="outline" size="sm" />}
+          >
             Workspace
             <HugeiconsIcon
               icon={ArrowDown01Icon}
               size={16}
               color="currentColor"
+              data-slot="workspace-chevron"
+              className="motion-disclosure-chevron"
             />
           </MenuTrigger>
-          <MenuPopup align="end">
+          <MenuPopup align="center">
             <MenuGroup>
               <MenuGroupLabel>Import / Export</MenuGroupLabel>
               <MenuItem onClick={onImportClick}>Import</MenuItem>
@@ -79,6 +86,15 @@ export function EditorToolbar({
           onSnippetsOpenChange={onSnippetsOpenChange}
           onTipsOpenChange={onTipsOpenChange}
         />
+        <Button
+          variant="outline"
+          size="icon-sm"
+          render={<Link href="/" />}
+          aria-label="Go to homepage"
+        >
+          <HugeiconsIcon icon={Home01Icon} size={16} color="currentColor" />
+        </Button>
+        <ThemeToggle />
       </div>
     </div>
   )

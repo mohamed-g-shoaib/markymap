@@ -3,6 +3,7 @@ import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 
 import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { PageContainer } from "@/app/(marketing)/ui/page-container"
 
 export function HeroSection() {
@@ -26,6 +27,7 @@ export function HeroSection() {
                 color="currentColor"
               />
             </Button>
+            <ThemeToggle size="icon" />
           </div>
         </div>
       </PageContainer>

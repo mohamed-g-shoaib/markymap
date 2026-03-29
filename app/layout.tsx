@@ -69,7 +69,7 @@ export default async function RootLayout({
         shouldUseDarkClass && "dark"
       )}
     >
-      <body>
+      <body suppressHydrationWarning>
         <ThemeProvider initialTheme={initialTheme}>{children}</ThemeProvider>
       </body>
     </html>
