@@ -6,6 +6,7 @@ import { Markmap, deriveOptions, loadCSS, loadJS } from "markmap-view"
 import * as markmap from "markmap-view"
 
 import { MarkmapControlsBar } from "@/components/editor/markmap-controls-bar"
+import { MarkdownPreview } from "@/components/editor/markdown-preview"
 import {
   DEFAULT_MARKMAP_JSON_OPTIONS,
   type MarkmapJsonOptions,
@@ -13,6 +14,8 @@ import {
 import { getMarkmapTransformSnapshot } from "@/lib/markmap-transform"
 
 const transformer = new Transformer()
+const LARGE_MARKDOWN_THRESHOLD = 12_000
+const LARGE_MARKDOWN_UPDATE_DELAY_MS = 120
 
 type FoldableMarkmapNode = {
   children?: FoldableMarkmapNode[]
@@ -65,8 +68,11 @@ export function MarkmapCanvas({
   onJsonOptionsChange,
   fitSignal,
 }: MarkmapCanvasProps) {
+  const deferredMarkdown = React.useDeferredValue(markdown)
+  const [activeView, setActiveView] = React.useState<"map" | "markdown">("map")
   const svgRef = React.useRef<SVGSVGElement>(null)
   const mmRef = React.useRef<Markmap | null>(null)
+  const [renderMarkdown, setRenderMarkdown] = React.useState(markdown)
   const [zoomPercent, setZoomPercent] = React.useState(100)
   const [frontmatterOptions, setFrontmatterOptions] =
     React.useState<MarkmapJsonOptions>({})
@@ -84,12 +90,27 @@ export function MarkmapCanvas({
     setZoomPercent(Math.max(20, Math.min(400, Math.round(currentScale * 100))))
   })
 
+  React.useEffect(() => {
+    if (deferredMarkdown.length < LARGE_MARKDOWN_THRESHOLD) {
+      setRenderMarkdown(deferredMarkdown)
+      return
+    }
+
+    const timer = window.setTimeout(() => {
+      setRenderMarkdown(deferredMarkdown)
+    }, LARGE_MARKDOWN_UPDATE_DELAY_MS)
+
+    return () => {
+      window.clearTimeout(timer)
+    }
+  }, [deferredMarkdown])
+
   const initMarkmap = React.useEffectEvent(() => {
     if (!svgRef.current) return
 
     ensureSvgSize(svgRef.current)
 
-    const snapshot = getMarkmapTransformSnapshot(transformer, markdown)
+    const snapshot = getMarkmapTransformSnapshot(transformer, renderMarkdown)
     const assets = transformer.getUsedAssets(snapshot.features)
 
     if (assets.styles) loadCSS(assets.styles)
@@ -118,13 +139,14 @@ export function MarkmapCanvas({
   }, [])
 
   React.useEffect(() => {
+    if (activeView !== "map") return
     if (!mmRef.current) return
 
     if (svgRef.current) {
       ensureSvgSize(svgRef.current)
     }
 
-    const snapshot = getMarkmapTransformSnapshot(transformer, markdown)
+    const snapshot = getMarkmapTransformSnapshot(transformer, renderMarkdown)
     const assets = transformer.getUsedAssets(snapshot.features)
 
     if (assets.styles) loadCSS(assets.styles)
@@ -134,15 +156,17 @@ export function MarkmapCanvas({
 
     setFrontmatterOptions(snapshot.frontmatterOptions)
     mmRef.current.setData(snapshot.root)
-  }, [markdown])
+  }, [activeView, renderMarkdown])
 
   React.useEffect(() => {
+    if (activeView !== "map") return
     if (!mmRef.current) return
 
     mmRef.current.setOptions(getMarkmapOptions(jsonOptions, frontmatterOptions))
-  }, [frontmatterOptions, jsonOptions])
+  }, [activeView, frontmatterOptions, jsonOptions])
 
   React.useEffect(() => {
+    if (activeView !== "map") return
     if (!mmRef.current) return
 
     const mm = mmRef.current
@@ -180,7 +204,7 @@ export function MarkmapCanvas({
     }
 
     mm.svg.on(".zoom", null)
-  }, [resolvedJsonOptions.pan, resolvedJsonOptions.zoom])
+  }, [activeView, resolvedJsonOptions.pan, resolvedJsonOptions.zoom])
 
   const handleZoomStep = React.useCallback((multiplier: number) => {
     if (!mmRef.current) return
@@ -287,6 +311,7 @@ export function MarkmapCanvas({
   })
 
   React.useEffect(() => {
+    if (activeView !== "map") return
     if (!svgRef.current || typeof ResizeObserver === "undefined") {
       return
     }
@@ -302,18 +327,21 @@ export function MarkmapCanvas({
     return () => {
       observer.disconnect()
     }
-  }, [])
+  }, [activeView])
 
   React.useEffect(() => {
+    if (activeView !== "map") return
     handleFitSignal()
-  }, [fitSignal])
+  }, [activeView, fitSignal])
 
   return (
     <div className="flex min-h-0 flex-col overflow-hidden">
       <MarkmapControlsBar
+        activeView={activeView}
         canDrag={Boolean(resolvedJsonOptions.pan)}
         canZoom={Boolean(resolvedJsonOptions.zoom)}
         zoomPercent={zoomPercent}
+        onViewChange={setActiveView}
         onCollapseAll={() => {
           handleFoldAll(true)
         }}
@@ -332,8 +360,21 @@ export function MarkmapCanvas({
           handleZoomStep(0.8)
         }}
       />
-      <div className="min-h-0 flex-1 p-2 sm:p-4">
-        <svg ref={svgRef} className="size-full" />
+      <div
+        className={
+          activeView === "map" ? "min-h-0 flex-1 p-2 sm:p-4" : "min-h-0 flex-1"
+        }
+      >
+        <div className="size-full">
+          <div
+            className={activeView === "map" ? "size-full" : "hidden size-full"}
+          >
+            <svg ref={svgRef} className="size-full" />
+          </div>
+          {activeView === "markdown" ? (
+            <MarkdownPreview markdown={markdown} />
+          ) : null}
+        </div>
       </div>
     </div>
   )
