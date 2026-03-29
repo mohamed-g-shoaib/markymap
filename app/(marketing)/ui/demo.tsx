@@ -9,17 +9,20 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { DEMO_SEED } from "@/app/(marketing)/ui/demo-seed"
+import {
+  DEFAULT_MARKMAP_JSON_OPTIONS,
+  type MarkmapJsonOptions,
+} from "@/lib/markmap-options"
+import { getMarkmapTransformSnapshot } from "@/lib/markmap-transform"
 
 const transformer = new Transformer()
 
-const defaultOptions = {
-  duration: 300,
-  initialExpandLevel: -1,
-  spacingHorizontal: 80,
-  spacingVertical: 5,
-  zoom: true,
-  pan: true,
-} as const
+function getDemoOptions(frontmatterOptions: MarkmapJsonOptions) {
+  return deriveOptions({
+    ...DEFAULT_MARKMAP_JSON_OPTIONS,
+    ...frontmatterOptions,
+  })
+}
 
 function ensureSvgSize(svg: SVGSVGElement) {
   const container = svg.parentElement
@@ -37,22 +40,26 @@ export function LiveDemoSection() {
   const mmRef = React.useRef<Markmap | null>(null)
 
   const [markdown, setMarkdown] = React.useState(DEMO_SEED)
+  const [frontmatterOptions, setFrontmatterOptions] =
+    React.useState<MarkmapJsonOptions>({})
 
   const initMarkmap = React.useEffectEvent(() => {
     if (!svgRef.current) return
 
     ensureSvgSize(svgRef.current)
 
-    const { root, features } = transformer.transform(markdown)
-    const { styles, scripts } = transformer.getUsedAssets(features)
+    const snapshot = getMarkmapTransformSnapshot(transformer, markdown)
+    const { styles, scripts } = transformer.getUsedAssets(snapshot.features)
 
     if (styles) loadCSS(styles)
     if (scripts) loadJS(scripts, { getMarkmap: () => markmap })
 
+    setFrontmatterOptions(snapshot.frontmatterOptions)
+
     mmRef.current = Markmap.create(
       svgRef.current,
-      deriveOptions(defaultOptions),
-      root
+      getDemoOptions(snapshot.frontmatterOptions),
+      snapshot.root
     )
   })
 
@@ -72,14 +79,21 @@ export function LiveDemoSection() {
       ensureSvgSize(svgRef.current)
     }
 
-    const { root, features } = transformer.transform(markdown)
-    const { styles, scripts } = transformer.getUsedAssets(features)
+    const snapshot = getMarkmapTransformSnapshot(transformer, markdown)
+    const { styles, scripts } = transformer.getUsedAssets(snapshot.features)
 
     if (styles) loadCSS(styles)
     if (scripts) loadJS(scripts, { getMarkmap: () => markmap })
 
-    mmRef.current.setData(root)
+    setFrontmatterOptions(snapshot.frontmatterOptions)
+    mmRef.current.setData(snapshot.root)
   }, [markdown])
+
+  React.useEffect(() => {
+    if (!mmRef.current) return
+
+    mmRef.current.setOptions(getDemoOptions(frontmatterOptions))
+  }, [frontmatterOptions])
 
   const handleResize = React.useEffectEvent(() => {
     if (!svgRef.current || !mmRef.current) return
