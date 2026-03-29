@@ -5,9 +5,15 @@ import { LiveDemoSection } from "@/app/(marketing)/ui/demo"
 import { PageContainer } from "@/app/(marketing)/ui/page-container"
 
 export const metadata: Metadata = {
-  title: "Markymap",
+  title: "Markymap: Free Markdown to Mindmap Generator & Editor",
   description:
-    "Write in markdown, switch between map and markdown preview instantly.",
+    "Transform your markdown notes into interactive mindmaps instantly. Markymap is a fast, local-first editor built for visual thinking and productivity.",
+  openGraph: {
+    title: "Markymap: Free Markdown to Mindmap Generator & Editor",
+    description:
+      "Transform your markdown notes into interactive mindmaps instantly. Markymap is a fast, local-first editor built for visual thinking and productivity.",
+    url: "/",
+  },
 }
 
 export default function MarketingPage() {

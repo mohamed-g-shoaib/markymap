@@ -1,4 +1,17 @@
 import { PlaygroundEditorMount } from "@/components/editor/playground-editor-mount"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Playground | Markymap Editor",
+  description:
+    "Create, edit, and export interactive mindmaps in your browser. Auto-saves locally for a smooth markdown authoring experience.",
+  openGraph: {
+    title: "Playground | Markymap Editor",
+    description:
+      "Create, edit, and export interactive mindmaps in your browser. Auto-saves locally for a smooth markdown authoring experience.",
+    url: "/playground",
+  },
+}
 
 export default function PlaygroundPage() {
   return (

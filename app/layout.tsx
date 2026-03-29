@@ -1,3 +1,4 @@
+import type { Metadata, Viewport } from "next"
 import localFont from "next/font/local"
 import { cookies } from "next/headers"
 
@@ -40,6 +41,46 @@ const mono = localFont({
   variable: "--font-mono",
   display: "swap",
 })
+
+export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+  ),
+  title: {
+    default: "Markymap",
+    template: "%s | Markymap",
+  },
+  description:
+    "Write in markdown, switch between map and markdown preview instantly.",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "Markymap",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+}
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
+    { media: "(prefers-color-scheme: dark)", color: "#020617" },
+  ],
+}
 
 export default async function RootLayout({
   children,
