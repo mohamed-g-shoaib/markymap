@@ -39,7 +39,7 @@ export function MindmapTipsDrawer({
   return (
     <Drawer open={isTipsOpen} onOpenChange={onTipsOpenChange}>
       <DrawerTrigger render={<Button variant="outline" size="sm" />}>
-        Markmap Tips
+        Tips
       </DrawerTrigger>
       <DrawerPopup position="bottom" variant="inset" showBar showCloseButton>
         <DrawerHeader allowSelection>
@@ -139,7 +139,7 @@ export function MindmapTipsDrawer({
                       <h3 className="text-base font-semibold text-foreground">
                         Markmap Starter Example
                       </h3>
-                      <pre className="overflow-x-auto rounded-md border bg-background/70 p-3 text-sm text-foreground">
+                      <pre className="scrollbar-subtle overflow-x-auto rounded-md border bg-background/70 p-3 text-sm text-foreground">
                         {STARTER_TEMPLATE}
                       </pre>
                       <Button
@@ -161,7 +161,7 @@ export function MindmapTipsDrawer({
                       <h3 className="text-base font-semibold text-foreground">
                         JSON Frontmatter
                       </h3>
-                      <pre className="overflow-x-auto rounded-md border bg-background/70 p-3 text-sm text-foreground">
+                      <pre className="scrollbar-subtle overflow-x-auto rounded-md border bg-background/70 p-3 text-sm text-foreground">
                         {FRONTMATTER_TEMPLATE}
                       </pre>
                       <Button
@@ -185,7 +185,7 @@ export function MindmapTipsDrawer({
                       <h3 className="text-base font-semibold text-foreground">
                         Magic Comments
                       </h3>
-                      <pre className="overflow-x-auto rounded-md border bg-background/70 p-3 text-sm text-foreground">
+                      <pre className="scrollbar-subtle overflow-x-auto rounded-md border bg-background/70 p-3 text-sm text-foreground">
                         {MAGIC_COMMENTS_TEMPLATE}
                       </pre>
                       <Button
