@@ -10,6 +10,15 @@ export const metadata: Metadata = {
     description:
       "Create, edit, and export interactive mindmaps in your browser. Auto-saves locally for a smooth markdown authoring experience.",
     url: "/playground",
+    siteName: "Markymap",
+    images: [
+      {
+        url: "/playground/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Playground | Markymap Editor",
+      },
+    ],
   },
 }
 

@@ -13,6 +13,15 @@ export const metadata: Metadata = {
     description:
       "Transform your markdown notes into interactive mindmaps instantly. Markymap is a fast, local-first editor built for visual thinking and productivity.",
     url: "/",
+    siteName: "Markymap",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Markymap | Markdown to Mindmap",
+      },
+    ],
   },
 }
 
