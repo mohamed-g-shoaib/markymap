@@ -1,10 +1,8 @@
 ![Markymap](public/marketing-image.jpg)
 
-# Markymap — Markdown to Mindmap
+# Markymap - Markdown to Mindmap
 
 Turn your thoughts into beautiful, interactive mindmaps. Write in Markdown, visualize instantly, and never lose your work.
-
-**Live Demo:** [markymap.vercel.app](https://markymap.vercel.app/)
 
 ---
 
@@ -12,9 +10,9 @@ Turn your thoughts into beautiful, interactive mindmaps. Write in Markdown, visu
 
 Markymap is a modern, high-performance web application that converts Markdown into interactive, zoomable, pannable mindmaps. It solves three critical problems with existing mindmap tools:
 
-1. **Your work is never lost** — Auto-saves to browser storage, so you can close the tab and pick up exactly where you left off.
-2. **Easy collaboration & sharing** — Export your mindmap and re-import it anytime. Share your `.md` files and let others edit them visually.
-3. **Pure Markdown workflow** — No proprietary formats. Write clean Markdown, and Markymap handles the visualization.
+1. **Your work is never lost** - Auto-saves to browser storage, so you can close the tab and pick up exactly where you left off.
+2. **Easy collaboration & sharing** - Export your mindmap and re-import it anytime. Share your `.md` files and let others edit them visually.
+3. **Pure Markdown workflow** - No proprietary formats. Write clean Markdown, and Markymap handles the visualization.
 
 Perfect for brainstorming, planning projects, learning new topics, or documenting ideas in a way that's both visual and text-based.
 
@@ -22,13 +20,13 @@ Perfect for brainstorming, planning projects, learning new topics, or documentin
 
 ## Features
 
-- **Live Markdown Editor** — Write Markdown on the left, see your mindmap update in real-time on the right
-- **Interactive Mindmap** — Zoom, pan, collapse/expand branches with smooth animations
-- **Dark & Light Modes** — Built-in theme toggle with keyboard shortcut (`d` key) and persistent preferences
-- **Sound Design** — Click feedback and theme-switch sounds (optional, fully accessible)
-- **Local Persistence** — Your work auto-saves to `localStorage` — no account needed, no data sent anywhere
-- **Import & Export** — Download your mindmap as Markdown, import it back, or share the file with others
-- **Mobile-Friendly** — Fully responsive design from desktop to mobile
+- **Live Markdown Editor** - Write Markdown on the left, see your mindmap update in real-time on the right
+- **Interactive Mindmap** - Zoom, pan, collapse/expand branches with smooth animations
+- **Dark & Light Modes** - Built-in theme toggle with keyboard shortcut (`d` key) and persistent preferences
+- **Sound Design** - Click feedback and theme-switch sounds (optional, fully accessible)
+- **Local Persistence** - Your work auto-saves to `localStorage` - no account needed, no data sent anywhere
+- **Import & Export** - Download your mindmap as Markdown, import it back, or share the file with others
+- **Mobile-Friendly** - Fully responsive design from desktop to mobile
 
 ---
 
@@ -36,30 +34,30 @@ Perfect for brainstorming, planning projects, learning new topics, or documentin
 
 **Framework & Language:**
 
-- [Next.js 16](https://nextjs.org/) — Modern React framework with App Router
-- [React 19](https://react.dev/) — Latest React with improved performance and APIs
-- [TypeScript 6](https://www.typescriptlang.org/) — Strict type safety across the codebase
+- [Next.js 16](https://nextjs.org/) - Modern React framework with App Router
+- [React 19](https://react.dev/) - Latest React with improved performance and APIs
+- [TypeScript 6](https://www.typescriptlang.org/) - Strict type safety across the codebase
 
 **Styling & UI:**
 
-- [Tailwind CSS v4](https://tailwindcss.com/) — Utility-first CSS with design tokens system
-- [coss UI](https://github.com/coss-ui) — Base UI component library, 51+ components pre-configured
+- [Tailwind CSS v4](https://tailwindcss.com/) - Utility-first CSS with design tokens system
+- [coss UI](https://github.com/coss-ui) - Base UI component library, 51+ components pre-configured
 
 **Mindmap & Data:**
 
-- [markmap-lib](https://markmap.js.org/) — Transforms Markdown into mindmap data structures
-- [markmap-view](https://markmap.js.org/) — Renders interactive SVG mindmaps with zoom/pan
+- [markmap-lib](https://markmap.js.org/) - Transforms Markdown into mindmap data structures
+- [markmap-view](https://markmap.js.org/) - Renders interactive SVG mindmaps with zoom/pan
 
 **Icons & Design:**
 
-- [Hugeicons](https://hugeicons.com/) — Professional icon library
-- [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) — High-performance sound system
+- [Hugeicons](https://hugeicons.com/) - Professional icon library
+- [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) - High-performance sound system
 
 **Developer Tools:**
 
-- [pnpm](https://pnpm.io/) — Fast, disk-space efficient package manager
-- [Oxlint](https://oxc-project.github.io/) — Lightning-fast linter
-- [Oxfmt](https://oxc-project.github.io/) — Consistent code formatter
+- [pnpm](https://pnpm.io/) - Fast, disk-space efficient package manager
+- [Oxlint](https://oxc-project.github.io/) - Lightning-fast linter
+- [Oxfmt](https://oxc-project.github.io/) - Consistent code formatter
 
 ---
 
@@ -86,8 +84,8 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser. The app includes:
 
-- **Home** (`/`) — Interactive hero demo of the mindmap
-- **Playground** (`/playground`) — Full editor with Markdown input, live preview, and controls
+- **Home** (`/`) - Interactive hero section of the mindmap
+- **Playground** (`/playground`) - Full editor with Markdown input, live preview, and controls
 
 ### Build for Production
 
@@ -125,7 +123,7 @@ markymap/
 │   ├── globals.css              # Design tokens, motion utilities, theme
 │   ├── layout.tsx               # Root layout, theme provider, fonts
 │   ├── (marketing)/             # Landing page route
-│   │   ├── page.tsx             # Hero + live demo
+│   │   ├── page.tsx             # Hero section
 │   │   └── ui/                  # Marketing-specific components
 │   └── (playground)/
 │       └── playground/
@@ -168,20 +166,20 @@ markymap/
 
 ### Core Principles
 
-- **Server Components First** — React Server Components where possible; `"use client"` only where needed
-- **No Inline Styles** — Use Tailwind CSS utilities via `cn()` from `lib/utils.ts`
-- **Accessible by Default** — Full keyboard support, WCAG AA compliance, screen reader friendly
-- **Performance Matters** — Lazy loading, code-splitting, optimized animations, Web Audio over `<audio>` elements
-- **Type Safety** — TypeScript strict mode, no `any`, exhaustive checks
+- **Server Components First** - React Server Components where possible; `"use client"` only where needed
+- **No Inline Styles** - Use Tailwind CSS utilities via `cn()` from `lib/utils.ts`
+- **Accessible by Default** - Full keyboard support, WCAG AA compliance, screen reader friendly
+- **Performance Matters** - Lazy loading, code-splitting, optimized animations, Web Audio over `<audio>` elements
+- **Type Safety** - TypeScript strict mode, no `any`, exhaustive checks
 
 ### Key Conventions
 
 | Concern           | Standard                                                      |
 | ----------------- | ------------------------------------------------------------- |
 | **File naming**   | `kebab-case` for all files and directories                    |
-| **Class merging** | Always use `cn()` — never string-concatenate Tailwind classes |
+| **Class merging** | Always use `cn()` - never string-concatenate Tailwind classes |
 | **Icons**         | Hugeicons only; never import from lucide-react                |
-| **UI Components** | coss UI components (`components/ui/`) — do not recreate       |
+| **UI Components** | coss UI components (`components/ui/`) - do not recreate       |
 | **Module system** | ES modules (ESM) — Next.js handles the rest                   |
 
 ### Audio System
@@ -235,7 +233,7 @@ pnpm start
 
 Environment variables:
 
-- `NEXT_PUBLIC_SOUNDS_ENABLED` — Enable/disable audio (default: `true`)
+- `NEXT_PUBLIC_SOUNDS_ENABLED` - Enable/disable audio (default: `true`)
 
 ---
 
@@ -259,7 +257,7 @@ This project welcomes forks and contributions. Before submitting a PR:
 
 1. Read `AGENTS.md` for project conventions
 2. Read `spec/context.md` for architecture details
-3. Run `pnpm lint && pnpm typecheck && pnpm fmt:check` — all must pass
+3. Run `pnpm lint && pnpm typecheck && pnpm fmt:check` - all must pass
 4. Keep changes focused and well-tested
 
 Key areas for contribution:
@@ -281,7 +279,6 @@ Key areas for contribution:
 
 - **Issues:** [GitHub Issues](https://github.com/yourusername/markymap/issues)
 - **Discussions:** [GitHub Discussions](https://github.com/yourusername/markymap/discussions)
-- **Live Demo:** [markymap.vercel.app](https://markymap.vercel.app/)
 
 ---
 
