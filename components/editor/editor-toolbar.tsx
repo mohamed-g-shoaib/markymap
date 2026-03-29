@@ -48,7 +48,7 @@ export function EditorToolbar({
       <p className="text-sm text-muted-foreground">
         Write markdown on the left and explore the live mindmap on the right.
       </p>
-      <div className="flex items-center justify-end gap-2">
+      <div className="flex w-full flex-wrap items-center justify-start gap-2 sm:w-auto sm:justify-end">
         <Menu>
           <MenuTrigger
             className="[&[data-popup-open]_[data-slot=workspace-chevron]]:rotate-180"

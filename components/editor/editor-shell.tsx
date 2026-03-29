@@ -31,7 +31,7 @@ export function EditorShell() {
   } = useEditorShellState()
 
   return (
-    <div className="flex h-full min-h-0 flex-col space-y-3">
+    <div className="flex min-h-0 flex-col space-y-3 sm:h-full">
       <EditorToolbar
         isSnippetsOpen={isSnippetsOpen}
         isTipsOpen={isTipsOpen}
@@ -53,8 +53,8 @@ export function EditorShell() {
           void handleImport(event)
         }}
       />
-      <Card className="min-h-0 flex-1 overflow-hidden motion-fade">
-        <div className="grid h-full min-h-0 grid-cols-1 sm:grid-cols-[1fr_auto_1fr]">
+      <Card className="min-h-176 overflow-hidden motion-fade sm:min-h-0 sm:flex-1">
+        <div className="grid h-full min-h-0 grid-cols-1 grid-rows-[minmax(20rem,1fr)_auto_minmax(20rem,1fr)] sm:grid-cols-[1fr_auto_1fr] sm:grid-rows-1">
           <MarkdownInput
             markdown={markdown}
             onChange={handleChange}

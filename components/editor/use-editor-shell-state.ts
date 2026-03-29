@@ -19,17 +19,13 @@ import {
 import { loadEditorState, saveEditorState } from "@/lib/storage"
 
 export function useEditorShellState() {
-  const [editorState, setEditorState] = React.useState<EditorState>(() => {
-    const savedState = loadEditorState()
-
-    return {
-      markdown: savedState?.markdown ?? DEFAULT_MARKDOWN,
-      jsonOptions: {
-        ...DEFAULT_MARKMAP_JSON_OPTIONS,
-        ...savedState?.jsonOptions,
-      },
-    }
+  const [editorState, setEditorState] = React.useState<EditorState>({
+    markdown: DEFAULT_MARKDOWN,
+    jsonOptions: {
+      ...DEFAULT_MARKMAP_JSON_OPTIONS,
+    },
   })
+  const hasLoadedPersistedStateRef = React.useRef(false)
   const [saveState, setSaveState] = React.useState<SaveState>("idle")
   const [importMessage, setImportMessage] = React.useState<string | null>(null)
   const [isTipsOpen, setIsTipsOpen] = React.useState(false)
@@ -284,6 +280,27 @@ export function useEditorShellState() {
   }, [lastSavedAt, saveState])
 
   const statusLabel = importMessage ?? saveStatusLabel
+
+  React.useEffect(() => {
+    if (hasLoadedPersistedStateRef.current) {
+      return
+    }
+
+    hasLoadedPersistedStateRef.current = true
+    const savedState = loadEditorState()
+
+    if (!savedState) {
+      return
+    }
+
+    setEditorState({
+      markdown: savedState.markdown,
+      jsonOptions: {
+        ...DEFAULT_MARKMAP_JSON_OPTIONS,
+        ...savedState.jsonOptions,
+      },
+    })
+  }, [])
 
   React.useEffect(() => {
     return () => {
