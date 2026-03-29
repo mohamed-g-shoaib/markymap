@@ -859,6 +859,29 @@ High-value files to understand before making any changes:
   - `pnpm typecheck` passes
   - `react-doctor` (changed-file scan) reports no issues, score `100/100`
 
+### Session 41 — Markdown Preview Spec (Safety + Performance)
+
+- Loaded and applied relevant skills for planning:
+  - `next-best-practices`
+  - `vercel-react-best-practices`
+  - `react-useeffect`
+  - `make-interfaces-feel-better`
+- Added new planning spec at `spec/markmap-packages/markdown-preview-spec.md`.
+- The spec defines:
+  - Map/Markdown dual-view architecture in the right panel
+  - package tiers (baseline vs optional feature packs)
+  - explicit security model (sanitize-first, no raw HTML by default)
+  - performance strategy (active-view-only rendering, lazy optional plugins)
+  - edge-case matrix and phased rollout with acceptance criteria
+- Baseline package recommendation in spec:
+  - `react-markdown`
+  - `remark-gfm`
+  - `rehype-sanitize`
+- Optional packs documented in spec:
+  - math: `remark-math`, `rehype-katex`, `katex`
+  - highlighting: `rehype-highlight`, `highlight.js`
+  - line-break compatibility: `remark-breaks`
+
 ---
 
 ## Important Constraints And Reminders
