@@ -8,7 +8,6 @@ type MarkmapControlsBarProps = {
   activeView: "map" | "markdown"
   canDrag: boolean
   canZoom: boolean
-  zoomPercent: number
   onViewChange: (nextView: "map" | "markdown") => void
   onCollapseAll: () => void
   onExpandAll: () => void
@@ -25,7 +24,6 @@ export function MarkmapControlsBar({
   activeView,
   canDrag,
   canZoom,
-  zoomPercent,
   onViewChange,
   onCollapseAll,
   onExpandAll,
@@ -38,11 +36,37 @@ export function MarkmapControlsBar({
   onZoomOut,
 }: MarkmapControlsBarProps) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 border-b bg-background px-2 py-1 sm:h-10 sm:flex-nowrap sm:px-3 sm:py-0">
+    <div className="flex h-10 items-center justify-between gap-2 border-b bg-background px-2 sm:px-3">
       <MapMarkdownSwitch activeView={activeView} onViewChange={onViewChange} />
-      <div className="hidden scrollbar-subtle items-center gap-1 sm:flex sm:overflow-x-auto">
-        {activeView === "map" ? (
-          <>
+      {activeView === "map" ? (
+        <div className="flex items-center gap-1">
+          {/* Mobile: compact essentials */}
+          <Button
+            size="xs"
+            variant="ghost"
+            onClick={onZoomOut}
+            className="sm:hidden"
+          >
+            -
+          </Button>
+          <Button
+            size="xs"
+            variant="ghost"
+            onClick={onZoomIn}
+            className="sm:hidden"
+          >
+            +
+          </Button>
+          <Button
+            size="xs"
+            variant="ghost"
+            onClick={onFitView}
+            className="sm:hidden"
+          >
+            Fit
+          </Button>
+          {/* Desktop: full controls */}
+          <div className="hidden items-center gap-1 sm:flex">
             <Button size="xs" variant="ghost" onClick={onZoomOut}>
               -
             </Button>
@@ -50,7 +74,7 @@ export function MarkmapControlsBar({
               +
             </Button>
             <Button size="xs" variant="ghost" onClick={onResetView}>
-              {zoomPercent}%
+              Reset
             </Button>
             <Button size="xs" variant="ghost" onClick={onFitView}>
               Fit
@@ -81,27 +105,9 @@ export function MarkmapControlsBar({
             >
               {canDrag ? "Drag On" : "Drag Off"}
             </Button>
-          </>
-        ) : null}
-      </div>
-      <div className="flex w-full flex-wrap items-center gap-1 sm:hidden">
-        {activeView === "map" ? (
-          <>
-            <Button size="xs" variant="ghost" onClick={onZoomOut}>
-              -
-            </Button>
-            <Button size="xs" variant="ghost" onClick={onZoomIn}>
-              +
-            </Button>
-            <Button size="xs" variant="ghost" onClick={onResetView}>
-              {zoomPercent}%
-            </Button>
-            <Button size="xs" variant="ghost" onClick={onFitView}>
-              Fit
-            </Button>
-          </>
-        ) : null}
-      </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }

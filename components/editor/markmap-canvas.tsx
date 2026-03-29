@@ -49,7 +49,9 @@ function ensureSvgSize(svg: SVGSVGElement) {
 type MarkmapCanvasProps = {
   markdown: string
   jsonOptions: MarkmapJsonOptions
+  activeView: "map" | "markdown"
   onJsonOptionsChange: (nextOptions: MarkmapJsonOptions) => void
+  onViewChange: (nextView: "map" | "markdown") => void
   fitSignal?: number
 }
 
@@ -65,15 +67,16 @@ function getCurrentScale(svgElement: SVGSVGElement | null) {
 export function MarkmapCanvas({
   markdown,
   jsonOptions,
+  activeView,
   onJsonOptionsChange,
+  onViewChange,
   fitSignal,
 }: MarkmapCanvasProps) {
   const deferredMarkdown = React.useDeferredValue(markdown)
-  const [activeView, setActiveView] = React.useState<"map" | "markdown">("map")
   const svgRef = React.useRef<SVGSVGElement>(null)
   const mmRef = React.useRef<Markmap | null>(null)
   const [renderMarkdown, setRenderMarkdown] = React.useState(markdown)
-  const [zoomPercent, setZoomPercent] = React.useState(100)
+
   const [frontmatterOptions, setFrontmatterOptions] =
     React.useState<MarkmapJsonOptions>({})
   const resolvedJsonOptions = React.useMemo(
@@ -84,11 +87,6 @@ export function MarkmapCanvas({
     }),
     [frontmatterOptions, jsonOptions]
   )
-
-  const syncZoomPercent = React.useEffectEvent(() => {
-    const currentScale = getCurrentScale(svgRef.current)
-    setZoomPercent(Math.max(20, Math.min(400, Math.round(currentScale * 100))))
-  })
 
   React.useEffect(() => {
     if (deferredMarkdown.length < LARGE_MARKDOWN_THRESHOLD) {
@@ -125,8 +123,6 @@ export function MarkmapCanvas({
       getMarkmapOptions(jsonOptions, snapshot.frontmatterOptions),
       snapshot.root
     )
-
-    syncZoomPercent()
   })
 
   React.useEffect(() => {
@@ -213,9 +209,7 @@ export function MarkmapCanvas({
     const targetScale = Math.max(0.2, Math.min(4, currentScale * multiplier))
     const relativeFactor = targetScale / currentScale
 
-    void mmRef.current.rescale(relativeFactor).finally(() => {
-      syncZoomPercent()
-    })
+    void mmRef.current.rescale(relativeFactor)
   }, [])
 
   const handleResetView = React.useCallback(() => {
@@ -224,17 +218,13 @@ export function MarkmapCanvas({
     const currentScale = getCurrentScale(svgRef.current)
     const relativeFactor = 1 / currentScale
 
-    void mmRef.current.rescale(relativeFactor).finally(() => {
-      syncZoomPercent()
-    })
+    void mmRef.current.rescale(relativeFactor)
   }, [])
 
   const handleFitView = React.useCallback(() => {
     if (!mmRef.current) return
 
-    void mmRef.current.fit().finally(() => {
-      syncZoomPercent()
-    })
+    void mmRef.current.fit()
   }, [])
 
   const handleToggleZoom = React.useCallback(() => {
@@ -286,9 +276,7 @@ export function MarkmapCanvas({
 
       setFoldState(root as FoldableMarkmapNode, true)
 
-      void mmRef.current.setData(root).finally(() => {
-        syncZoomPercent()
-      })
+      void mmRef.current.setData(root)
     },
     [markdown]
   )
@@ -297,17 +285,13 @@ export function MarkmapCanvas({
     if (!svgRef.current || !mmRef.current) return
 
     ensureSvgSize(svgRef.current)
-    void mmRef.current.fit().finally(() => {
-      syncZoomPercent()
-    })
+    void mmRef.current.fit()
   })
 
   const handleFitSignal = React.useEffectEvent(() => {
     if (!mmRef.current) return
 
-    void mmRef.current.fit().finally(() => {
-      syncZoomPercent()
-    })
+    void mmRef.current.fit()
   })
 
   React.useEffect(() => {
@@ -340,8 +324,7 @@ export function MarkmapCanvas({
         activeView={activeView}
         canDrag={Boolean(resolvedJsonOptions.pan)}
         canZoom={Boolean(resolvedJsonOptions.zoom)}
-        zoomPercent={zoomPercent}
-        onViewChange={setActiveView}
+        onViewChange={onViewChange}
         onCollapseAll={() => {
           handleFoldAll(true)
         }}

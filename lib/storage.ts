@@ -1,6 +1,5 @@
 import type { MarkmapJsonOptions } from "@/lib/markmap-options"
 
-const CONTENT_KEY = "markymap:content"
 const EDITOR_STATE_KEY = "markymap:editor-state"
 
 type StoredEditorState = {
@@ -8,6 +7,8 @@ type StoredEditorState = {
   markdown: string
   jsonOptions: MarkmapJsonOptions
 }
+
+const VIEW_PREF_KEY = "markymap:view-pref"
 
 function isObjectRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null
@@ -29,15 +30,7 @@ export function loadEditorState() {
       }
     }
 
-    const legacyMarkdown = localStorage.getItem(CONTENT_KEY)
-    if (legacyMarkdown === null) {
-      return null
-    }
-
-    return {
-      markdown: legacyMarkdown,
-      jsonOptions: {},
-    }
+    return null
   } catch {
     return null
   }
@@ -55,10 +48,28 @@ export function saveEditorState(state: {
     }
 
     localStorage.setItem(EDITOR_STATE_KEY, JSON.stringify(serialized))
-    localStorage.setItem(CONTENT_KEY, state.markdown)
     return true
   } catch {
     // Ignore storage failures.
     return false
+  }
+}
+
+export function getViewPreference(): "map" | "markdown" {
+  try {
+    if (typeof window === "undefined") return "map"
+    const value = localStorage.getItem(VIEW_PREF_KEY)
+    return value === "markdown" ? "markdown" : "map"
+  } catch {
+    return "map"
+  }
+}
+
+export function saveViewPreference(view: "map" | "markdown") {
+  try {
+    if (typeof window === "undefined") return
+    localStorage.setItem(VIEW_PREF_KEY, view)
+  } catch {
+    // Ignore storage failures.
   }
 }

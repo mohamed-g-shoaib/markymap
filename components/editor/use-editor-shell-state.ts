@@ -16,7 +16,12 @@ import {
   DEFAULT_MARKMAP_JSON_OPTIONS,
   type MarkmapJsonOptions,
 } from "@/lib/markmap-options"
-import { loadEditorState, saveEditorState } from "@/lib/storage"
+import {
+  getViewPreference,
+  loadEditorState,
+  saveEditorState,
+  saveViewPreference,
+} from "@/lib/storage"
 
 export function useEditorShellState() {
   const [editorState, setEditorState] = React.useState<EditorState>({
@@ -25,6 +30,7 @@ export function useEditorShellState() {
       ...DEFAULT_MARKMAP_JSON_OPTIONS,
     },
   })
+  const [activeView, setActiveView] = React.useState<"map" | "markdown">("map")
   const hasLoadedPersistedStateRef = React.useRef(false)
   const [saveState, setSaveState] = React.useState<SaveState>("idle")
   const [importMessage, setImportMessage] = React.useState<string | null>(null)
@@ -75,6 +81,12 @@ export function useEditorShellState() {
     },
     []
   )
+
+  const handleViewChange = React.useCallback((nextView: "map" | "markdown") => {
+    setActiveView(nextView)
+    saveViewPreference(nextView)
+    setImportMessage(null)
+  }, [])
 
   const handleChange = React.useCallback(
     (nextValue: string) => {
@@ -300,6 +312,9 @@ export function useEditorShellState() {
         ...savedState.jsonOptions,
       },
     })
+
+    const savedView = getViewPreference()
+    setActiveView(savedView)
   }, [])
 
   React.useEffect(() => {
@@ -315,6 +330,7 @@ export function useEditorShellState() {
   }, [])
 
   return {
+    activeView,
     fitSignal,
     importInputRef,
     importedStatusIsError: Boolean(importMessage),
@@ -332,6 +348,7 @@ export function useEditorShellState() {
     handleInsertTemplate,
     handleJsonOptionsChange,
     handleReset,
+    handleViewChange,
     setIsSnippetsOpen,
     setIsTipsOpen,
   }

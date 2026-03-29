@@ -92,8 +92,10 @@ describe("MarkmapCanvas lifecycle", () => {
     const { rerender, unmount } = render(
       <MarkmapCanvas
         markdown="# One"
+        activeView="map"
         jsonOptions={{ zoom: true, pan: true }}
         onJsonOptionsChange={vi.fn()}
+        onViewChange={vi.fn()}
       />
     )
 
@@ -102,8 +104,10 @@ describe("MarkmapCanvas lifecycle", () => {
     rerender(
       <MarkmapCanvas
         markdown="# Two"
+        activeView="map"
         jsonOptions={{ zoom: true, pan: true }}
         onJsonOptionsChange={vi.fn()}
+        onViewChange={vi.fn()}
       />
     )
 

@@ -1,0 +1,7 @@
+
+> markymap@0.0.1 typecheck D:\Developer\markymap
+> tsc --noEmit
+
+components/editor/markmap-canvas.test.tsx(93,8): error TS2739: Type '{ markdown: string; jsonOptions: { zoom: true; pan: true; }; onJsonOptionsChange: Mock<Procedure>; }' is missing the following properties from type 'MarkmapCanvasProps': activeView, onViewChange
+components/editor/markmap-canvas.test.tsx(103,8): error TS2739: Type '{ markdown: string; jsonOptions: { zoom: true; pan: true; }; onJsonOptionsChange: Mock<Procedure>; }' is missing the following properties from type 'MarkmapCanvasProps': activeView, onViewChange
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 1.

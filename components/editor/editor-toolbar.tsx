@@ -16,6 +16,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu"
+import { useMediaQuery } from "@/hooks/use-media-query"
 import type { SnippetKind } from "@/components/editor/editor-templates"
 
 type EditorToolbarProps = {
@@ -43,6 +44,8 @@ export function EditorToolbar({
   onSnippetsOpenChange,
   onTipsOpenChange,
 }: EditorToolbarProps) {
+  const isMobile = useMediaQuery("(max-width: 639px)")
+
   return (
     <div className="flex flex-col gap-2 motion-fade sm:flex-row sm:items-center sm:justify-between">
       <p className="text-sm text-muted-foreground">
@@ -51,19 +54,19 @@ export function EditorToolbar({
       <div className="flex w-full flex-wrap items-center justify-start gap-2 sm:w-auto sm:justify-end">
         <Menu>
           <MenuTrigger
-            className="[&[data-popup-open]_[data-slot=workspace-chevron]]:rotate-180"
+            className="[&[data-popup-open]_[data-slot=options-chevron]]:rotate-180"
             render={<Button variant="outline" size="sm" />}
           >
-            Workspace
+            Options
             <HugeiconsIcon
               icon={ArrowDown01Icon}
               size={16}
               color="currentColor"
-              data-slot="workspace-chevron"
+              data-slot="options-chevron"
               className="motion-disclosure-chevron"
             />
           </MenuTrigger>
-          <MenuPopup align="center">
+          <MenuPopup align={isMobile ? "start" : "center"}>
             <MenuGroup>
               <MenuGroupLabel>Import / Export</MenuGroupLabel>
               <MenuItem onClick={onImportClick}>Import</MenuItem>
