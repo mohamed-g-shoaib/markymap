@@ -134,8 +134,8 @@ export function LiveDemoSection() {
 
   return (
     <section id="demo" className="flex min-h-0 flex-1 flex-col">
-      <Card className="flex min-h-176 flex-col overflow-hidden sm:min-h-0 sm:flex-1">
-        <div className="grid min-h-0 flex-1 grid-cols-1 grid-rows-[minmax(20rem,1fr)_auto_minmax(20rem,1fr)] sm:grid-cols-[1fr_auto_1fr] sm:grid-rows-1">
+      <Card className="flex flex-col overflow-hidden sm:min-h-0 sm:flex-1">
+        <div className="grid grid-cols-1 grid-rows-[32rem_auto_32rem] sm:min-h-0 sm:flex-1 sm:grid-cols-[1fr_auto_1fr] sm:grid-rows-1">
           <div className="flex min-h-0 flex-col overflow-hidden">
             <div className="flex h-10 items-center justify-between gap-2 border-b bg-background px-3 sm:px-4">
               <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">

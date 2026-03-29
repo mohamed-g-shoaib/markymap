@@ -9,6 +9,7 @@ import { useEditorShellState } from "@/components/editor/use-editor-shell-state"
 
 export function EditorShell() {
   const {
+    activeView,
     fitSignal,
     importInputRef,
     importedStatusIsError,
@@ -26,6 +27,7 @@ export function EditorShell() {
     handleInsertTemplate,
     handleJsonOptionsChange,
     handleReset,
+    handleViewChange,
     setIsSnippetsOpen,
     setIsTipsOpen,
   } = useEditorShellState()
@@ -53,8 +55,8 @@ export function EditorShell() {
           void handleImport(event)
         }}
       />
-      <Card className="min-h-176 overflow-hidden motion-fade sm:min-h-0 sm:flex-1">
-        <div className="grid h-full min-h-0 grid-cols-1 grid-rows-[minmax(20rem,1fr)_auto_minmax(20rem,1fr)] sm:grid-cols-[1fr_auto_1fr] sm:grid-rows-1">
+      <Card className="overflow-hidden motion-fade sm:min-h-0 sm:flex-1">
+        <div className="grid grid-cols-1 grid-rows-[32rem_auto_32rem] sm:min-h-0 sm:flex-1 sm:grid-cols-[1fr_auto_1fr] sm:grid-rows-1">
           <MarkdownInput
             markdown={markdown}
             onChange={handleChange}
@@ -66,7 +68,9 @@ export function EditorShell() {
           <MarkmapCanvas
             markdown={markdown}
             jsonOptions={jsonOptions}
+            activeView={activeView}
             onJsonOptionsChange={handleJsonOptionsChange}
+            onViewChange={handleViewChange}
             fitSignal={fitSignal}
           />
         </div>
