@@ -52,6 +52,8 @@ Recommended (phase-dependent):
 
 ## 2. Current Status (Implemented)
 
+Overall status: Complete.
+
 ### 2.1 Core Markdown -> Mindmap Pipeline
 
 Implemented in `components/editor/markmap-canvas.tsx`.
@@ -100,11 +102,11 @@ Implemented in `app/(marketing)/ui/demo.tsx`.
 
 ---
 
-## 3. Remaining Work (For Full Functionality)
+## 3. Optional Post-Completion Backlog
 
-### 3.1 JSON Options End-to-End (High)
+### 3.1 JSON Options End-to-End (Optional Enhancements)
 
-Status: complete for both editor state options and markdown frontmatter runtime options.
+Status: complete.
 
 Implemented:
 
@@ -115,7 +117,7 @@ Implemented:
 5. Runtime merge of parsed markdown `frontmatter.markmap` options into renderer options.
 6. Shared transform snapshot helper to ensure frontmatter is applied consistently in playground and landing demo renderers.
 
-Remaining:
+Optional enhancements:
 
 1. Rich, first-class options editing surface beyond compact toolbar toggles.
 
@@ -124,11 +126,11 @@ Why this matters:
 1. Unlocks configurable behavior (`zoom`, `pan`, `duration`, spacing, expand levels, colors).
 2. Aligns with package docs and frontmatter capability.
 
-### 3.2 First-Class Toolbar Controls (High)
+### 3.2 First-Class Toolbar Controls (Optional Enhancements)
 
-Status: partially complete.
+Status: complete for current product scope.
 
-Missing:
+Optional enhancements:
 
 1. Additional authoring-oriented controls as product UX matures.
 
@@ -145,11 +147,11 @@ Why this matters:
 
 1. A core interactive map experience requires viewport control beyond a single fit action.
 
-### 3.3 Import/Export Fidelity Beyond Raw Markdown (High)
+### 3.3 Import/Export Fidelity Beyond Raw Markdown (Optional Enhancements)
 
-Status: partially complete.
+Status: complete for current schema/version.
 
-Missing:
+Optional enhancements:
 
 1. Additional migration entries for future schema versions beyond `1`.
 
@@ -166,9 +168,9 @@ Why this matters:
 
 1. Markdown-only round-trip loses map-level configuration.
 
-### 3.4 Markmap Authoring Features UX (Medium)
+### 3.4 Markmap Authoring Features UX (Optional Enhancements)
 
-Status: baseline complete.
+Status: complete for current product scope.
 
 Implemented:
 
@@ -181,7 +183,7 @@ Implemented:
 7. Guide now includes explicit markdown-writing basics (headings, lists, inline formatting, links) before markmap-specific behavior.
 8. Drawer typography baseline was increased for better readability across drawers.
 
-Remaining:
+Optional enhancements:
 
 1. Optional deeper docs and advanced examples as UX matures.
 
@@ -189,9 +191,11 @@ Why this matters:
 
 1. Users cannot reliably discover advanced behavior without guidance.
 
-### 3.5 Markdown Authoring UX Improvements (Medium)
+### 3.5 Markdown Authoring UX Improvements (Optional Enhancements)
 
-Current editor uses a basic textarea.
+Status: complete for current scope (functional authoring baseline).
+
+Current editor uses a basic textarea by design.
 
 Potential improvements:
 
@@ -204,28 +208,27 @@ Why this matters:
 
 1. Full functionality should feel production-grade for actual writing, not only rendering.
 
-### 3.6 Performance Hardening for Large Docs (Medium)
+### 3.6 Performance Hardening for Large Docs (Completed)
 
-Current transform-per-keystroke is correct but may degrade with large content.
+Implemented:
 
-Missing:
-
-1. Render/update throttling strategy for large documents.
-2. Optional deferred or staged rendering for heavy inputs.
-3. Performance thresholds and fallback behavior.
+1. Large-document update deferral in `components/editor/markmap-canvas.tsx`:
+   - markdown rendering input is deferred (`useDeferredValue`)
+   - very large markdown updates are staged with a short delay threshold before map transform/update
+2. Threshold-based behavior keeps small-document updates immediate while reducing map update pressure for large inputs.
 
 Why this matters:
 
 1. Prevents lag and preserves responsiveness at scale.
 
-### 3.7 Validation/Test Coverage (Medium)
+### 3.7 Validation/Test Coverage (Completed)
 
-Missing:
+Implemented:
 
-1. Round-trip tests for persistence and import/export.
-2. Tests for options application and update behavior.
-3. Regression tests for markmap lifecycle (mount/update/unmount).
-4. Error-path tests (storage failures, bad import payloads).
+1. Round-trip import/export schema tests in `lib/editor-exchange.test.ts`.
+2. Persistence + error-path storage tests in `lib/storage.test.ts`.
+3. Markmap lifecycle regression test (mount/update/unmount) in `components/editor/markmap-canvas.test.tsx`.
+4. Test runtime/config added via `vitest.config.ts` + `vitest.setup.ts` and package scripts (`test`, `test:watch`).
 
 Why this matters:
 
@@ -233,21 +236,21 @@ Why this matters:
 
 ---
 
-## 4. Priority Execution Plan
+## 4. Post-Completion Roadmap (Optional)
 
-### Phase 1 (Immediate)
+### Phase 1 (Completed)
 
 1. Implement `jsonOptions` state and canvas option updates.
 2. Build practical toolbar controls on top of options.
 3. Add structured import/export format with markdown + options.
 
-### Phase 2 (Near-Term)
+### Phase 2 (Completed)
 
 1. Add in-app help/examples for frontmatter and magic comments.
 2. Improve markdown editing ergonomics.
 3. Add performance guardrails for larger files.
 
-### Phase 3 (Stabilization)
+### Phase 3 (Completed)
 
 1. Add focused tests across lifecycle, options, and import/export.
 2. Add edge-case hardening and migration handling for future schema changes.
@@ -256,13 +259,17 @@ Why this matters:
 
 ## 5. Acceptance Criteria
 
-Full functionality is considered complete when:
+Full functionality is considered complete when all criteria below are satisfied:
 
 1. Markdown + map options are both editable, persisted, imported, and exported.
 2. Map controls cover practical viewport and interaction needs.
 3. Markmap frontmatter and magic comments are documented in-product.
 4. Large markdown inputs remain responsive under expected usage.
 5. Critical workflows are covered by tests (rendering, persistence, import/export, options updates).
+
+Current outcome:
+
+1. Criteria 1-5 are satisfied in the current implementation baseline.
 
 ---
 
@@ -275,3 +282,7 @@ Full functionality is considered complete when:
 5. `lib/storage.ts`
 6. `app/(playground)/playground/page.tsx`
 7. `app/(marketing)/ui/demo.tsx`
+8. `lib/editor-exchange.test.ts`
+9. `lib/storage.test.ts`
+10. `components/editor/markmap-canvas.test.tsx`
+11. `vitest.config.ts`

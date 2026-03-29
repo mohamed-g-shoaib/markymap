@@ -210,3 +210,51 @@ Feature is complete when:
 5. Map behavior and viewport are preserved when returning from Markdown view.
 6. Theme and layout remain consistent across both preview modes.
 7. Typecheck, lint, and runtime diagnostics are clean for touched files.
+
+---
+
+## 11. Status
+
+Overall status: Complete.
+
+### Phase 1 (Completed)
+
+1. Map/Markdown switch is implemented in the right panel header.
+2. Baseline renderer is implemented with:
+   - `react-markdown`
+   - `remark-gfm`
+   - `rehype-sanitize`
+3. Active-view-only behavior is implemented so map updates pause while Markdown view is active.
+
+### Phase 2 (Completed)
+
+1. Frontmatter/comment output policy:
+   - Leading YAML frontmatter is stripped in Markdown preview.
+   - Markmap control comments (`<!-- markmap: fold -->`, `<!-- markmap: foldAll -->`) are stripped in Markdown preview.
+2. Empty-state and overflow handling:
+   - empty state copy is present for blank preview input
+   - preview container keeps overflow scrolling within panel bounds
+3. Visual polish:
+   - segmented switch styling improved for clearer active state and calmer surface integration
+   - markdown typography refined for readability while maintaining full-panel width
+
+### Phase 3 (Completed)
+
+Completed:
+
+1. Math pack is implemented:
+   - `remark-math`
+   - `rehype-katex`
+   - `katex`
+2. KaTeX CSS is integrated globally.
+3. Optional math plugins are lazy-loaded only when math syntax is detected in markdown preview.
+4. Sanitize schema is extended minimally to preserve math marker classes before KaTeX transform.
+5. Code highlight pack is implemented:
+   - `rehype-highlight`
+   - `highlight.js`
+6. Optional highlight plugin is lazy-loaded only when fenced code blocks are detected.
+7. Syntax token styling is implemented through app-level theme-aware CSS for both markdown preview and markmap-rendered code (no global highlight theme stylesheet dependency).
+
+Remaining:
+
+1. None required for this spec.

@@ -882,6 +882,248 @@ High-value files to understand before making any changes:
   - highlighting: `rehype-highlight`, `highlight.js`
   - line-break compatibility: `remark-breaks`
 
+### Session 42 — Markdown Preview Phase 1 Implemented
+
+- Implemented Phase 1 of `spec/markmap-packages/markdown-preview-spec.md` in editor right panel.
+- Added baseline markdown rendering dependencies:
+  - `react-markdown`
+  - `remark-gfm`
+  - `rehype-sanitize`
+- Added new renderer component:
+  - `components/editor/markdown-preview.tsx`
+  - renders GFM markdown with sanitize plugin and includes empty-state handling
+- Updated map header controls to support preview mode switching:
+  - `components/editor/markmap-controls-bar.tsx`
+  - replaced static label with compact `Map | Markdown` segmented switch
+  - map-only controls are hidden while `Markdown` view is active
+- Updated map canvas orchestration:
+  - `components/editor/markmap-canvas.tsx`
+  - introduced `activeView` state (`map` default)
+  - renders markdown preview when selected
+  - skips map update effects while markdown view is active (active-view-only render path)
+  - keeps map instance available for seamless return to map view
+- Validation:
+  - `pnpm typecheck` passes
+  - `pnpm lint` passes (0 warnings / 0 errors)
+
+### Session 43 — Markdown Preview Phase 2 (Policy + UI Polish)
+
+- Completed Phase 2 goals from `spec/markmap-packages/markdown-preview-spec.md`.
+- Updated `components/editor/markdown-preview.tsx`:
+  - strips leading YAML frontmatter from preview output
+  - strips markmap control comments (`fold` / `foldAll`) from preview output
+  - keeps full-width panel rendering and in-panel overflow scrolling
+  - improved empty-state copy for clearer Map/Markdown workflow context
+  - minor markdown typographic refinements for task-list readability
+- Updated `components/editor/markmap-controls-bar.tsx`:
+  - improved segmented control visual integration (`Map | Markdown`) with calmer surface treatment
+  - added motion utility class to tab buttons for consistent interaction transitions
+- Updated `spec/markmap-packages/markdown-preview-spec.md` with explicit implementation status for Phase 1 and Phase 2.
+
+### Session 44 — Markdown Preview Phase 3 (Math + Lazy Loading)
+
+- Implemented Phase 3 math support in markdown preview:
+  - installed `remark-math`, `rehype-katex`, `katex`
+  - integrated KaTeX stylesheet via `app/globals.css`
+- Updated `components/editor/markdown-preview.tsx`:
+  - added math syntax detection (`$...$`, `$$...$$`, `\\(`, `\\[`)
+  - lazy-loads optional math plugins only when math syntax is present
+  - extends sanitize schema minimally to allow `math-inline` / `math-display` classes on code nodes before KaTeX transform
+  - keeps graceful fallback to baseline markdown rendering if optional plugin load fails
+- Updated `spec/markmap-packages/markdown-preview-spec.md` status:
+  - Phase 3 now marked as completed.
+- Added optional code highlighting support:
+  - installed `rehype-highlight` and `highlight.js`
+  - integrated highlight stylesheet in `app/globals.css`
+  - added fenced-code detection and lazy loading for highlight plugin in `components/editor/markdown-preview.tsx`
+  - highlight path gracefully falls back to plain code blocks if optional plugin load fails
+- Validation:
+  - `pnpm typecheck` passes
+  - `pnpm lint` passes (0 warnings / 0 errors)
+
+### Session 45 — Markdown Preview UX Fixes (Dark/Codeblock/Scrollbar)
+
+- Loaded design guidance from:
+  - `make-interfaces-feel-better/surfaces.md`
+  - `make-interfaces-feel-better/animations.md`
+  - `emil-design-eng/SKILL.md`
+- Updated markdown preview/code block UX in `components/editor/markdown-preview.tsx`:
+  - added fenced code block header with detected language label
+  - added per-block `Copy` button with transient `Copied` state
+  - improved code block shell styling (`rounded-xl`, border, header)
+  - kept inline-code styling while preventing style leakage into fenced code
+- Updated map panel layout in `components/editor/markmap-canvas.tsx`:
+  - removed markdown-view outer panel padding so preview scrollbar aligns with editor-side behavior
+- Added highlight theme overrides in `app/globals.css`:
+  - removed white-background issue in dark mode by forcing transparent `.hljs` surface in markdown preview
+  - added theme-aware token color overrides for common highlight groups
+- Validation:
+  - `pnpm typecheck` passes
+  - `pnpm lint` passes (0 warnings / 0 errors)
+
+### Session 46 — Hydration Fix + Codeblock Header/Icon Copy Refinement
+
+- Fixed hydration mismatch in playground editor state initialization:
+  - updated `components/editor/use-editor-shell-state.ts`
+  - localStorage state is now loaded after mount via effect instead of during initial render
+  - avoids server/client text mismatch in header char count and related recoverable hydration errors
+- Fixed markdown preview fenced-code text extraction bug (`[object Object]`):
+  - updated `components/editor/markdown-preview.tsx`
+  - replaced shallow `join` extraction with recursive ReactNode text walker
+- Refined code block chrome in markdown preview:
+  - reduced header height and padding for denser, calmer appearance
+  - replaced text copy button with icon-based action using:
+    - `Copy01Icon`
+    - `Tick02Icon`
+  - copy state now toggles icon feedback while preserving accessibility label
+- Validation:
+  - `pnpm typecheck` passes
+  - `pnpm lint` passes (0 warnings / 0 errors)
+
+### Session 47 — Code Highlight Restoration + Copy Control Visual Fixes
+
+- Addressed follow-up issues in markdown preview code blocks:
+  - restored syntax highlighting by preserving highlighted child nodes from `react-markdown` code elements (instead of flattening to plain text)
+  - kept robust copy-text extraction via recursive ReactNode walker
+  - increased code header density slightly (less aggressive compression)
+  - switched copy/check icon control to consistently visible `Button` outline style
+- Mitigated markmap contrast regression from global highlight stylesheet:
+  - removed global `highlight.js` theme import from `app/globals.css` to avoid cross-surface bleed into map rendering
+  - kept/expanded preview-scoped `.markdown-preview-surface .hljs*` token colors so markdown preview highlighting remains styled
+- Validation:
+  - `pnpm typecheck` passes
+  - `pnpm lint` passes (0 warnings / 0 errors)
+
+### Session 48 — Unified High-Contrast Syntax Palette (Preview + Markmap)
+
+- Replaced narrow preview-only syntax color mapping with a unified, token-based palette in `app/globals.css`:
+  - introduced shared syntax color variables for light/dark (`--syntax-*`)
+  - applied styles to both highlight engines/classes:
+    - Highlight.js (`.hljs-*`)
+    - Prism (`.token.*`)
+  - scoped coverage now includes both surfaces:
+    - markdown preview (`.markdown-preview-surface`)
+    - markmap rendered labels/code (`.markmap`, `.markmap-foreign`)
+- Added explicit markmap code color/background var overrides so map code blocks do not fall back to low-contrast defaults in dark mode.
+- Updated markdown preview copy affordance in `components/editor/markdown-preview.tsx`:
+  - switched copy action to ghost/icon-only visual treatment
+  - removed outlined/chrome-heavy button appearance while retaining accessible label and keyboard focus behavior
+- Validation:
+  - `pnpm typecheck` passes
+  - `pnpm lint` passes (0 warnings / 0 errors)
+
+### Session 49 — JSX Token Contrast Hardening + True Icon-Only Copy Action
+
+- Addressed remaining dark-mode readability issues reported from real TSX samples (e.g. dim JSX tags/prop names like `onExportMarkdown` / `<div className=`):
+  - expanded syntax selectors in `app/globals.css` to include additional Highlight.js token classes used in JSX/TSX:
+    - `.hljs-tag`, `.hljs-name`, `.hljs-attr`, `.hljs-attribute`, `.hljs-operator`, `.hljs-subst`, `.hljs-meta`, `.hljs-title.function_`, `.hljs-title.class_`
+  - kept Prism token support in parallel for markmap/other tokenized HTML paths (`.token.*`)
+  - applied stronger precedence (`!important`) for syntax token color declarations so runtime-injected highlighter styles cannot override app-level contrast choices
+- Updated markdown preview code-block copy affordance in `components/editor/markdown-preview.tsx`:
+  - replaced coss `Button` wrapper with a semantic native `<button type="button">` styled as icon-only (no visible button chrome)
+  - retained accessibility label and keyboard click/focus semantics
+- Validation:
+  - `pnpm typecheck` passes
+  - `pnpm lint` passes (0 warnings / 0 errors)
+
+### Session 50 — Spec Audit + Completion Status Sync
+
+- Audited active spec files with focus on:
+  - `spec/markmap-packages/markdown-preview-spec.md`
+  - `spec/markmap-packages/full-functionality-spec.md`
+- Updated markdown preview spec status to explicitly finalized:
+  - added `Overall status: Complete`
+  - corrected outdated Phase 3 note that previously claimed a global highlight stylesheet dependency
+  - documented current production approach: app-level theme-aware syntax token styling across markdown preview and markmap code
+  - set Remaining to `None required for this spec`
+- Updated full functionality spec to explicitly remain in-progress:
+  - added `Overall status: In progress (not fully complete)`
+  - clarified acceptance criteria completion summary
+  - marked criteria 4-5 as open (large-doc performance hardening and broader test coverage)
+- Decision outcome:
+  - Markdown Preview spec is complete.
+  - Full Functionality spec is not yet complete.
+
+### Session 51 — Full Functionality Spec Finalization (Performance + Tests)
+
+- Closed remaining gaps from `spec/markmap-packages/full-functionality-spec.md` by implementing:
+  - large-document map update guardrail in `components/editor/markmap-canvas.tsx`
+    - `useDeferredValue` input deferral
+    - threshold-based delayed render/update staging for heavy markdown input
+  - automated test coverage for critical workflows using Vitest:
+    - `lib/editor-exchange.test.ts` (versioned import/export parsing + migration/error cases)
+    - `lib/storage.test.ts` (persistence round-trip + storage error paths)
+    - `components/editor/markmap-canvas.test.tsx` (markmap lifecycle: mount/update/unmount)
+  - test runtime/config wiring:
+    - `vitest.config.ts`
+    - `vitest.setup.ts`
+    - `package.json` scripts: `test`, `test:watch`
+- Updated `spec/markmap-packages/full-functionality-spec.md`:
+  - Overall status switched to `Complete`
+  - converted previous remaining sections into optional post-completion backlog/enhancements
+  - marked acceptance criteria 1-5 as satisfied for current implementation baseline
+- Validation:
+  - `pnpm test` passes (all suites)
+  - `pnpm typecheck` passes
+  - `pnpm lint` passes (0 warnings / 0 errors)
+
+### Session 52 — Homepage Messaging + Demo Map/Markdown Switch
+
+- Updated marketing copy to reflect markdown rendering + dual-view workflow:
+  - `app/(marketing)/ui/hero.tsx`
+    - headline now communicates map navigation and markdown verification
+    - support copy now explicitly mentions switching between Map and Markdown
+  - `app/(marketing)/page.tsx`
+    - metadata description updated to mention instant map/markdown switching
+- Added homepage live demo view switching in `app/(marketing)/ui/demo.tsx`:
+  - introduced right-panel `Map | Markdown` segmented control
+  - reused `components/editor/markdown-preview.tsx` for markdown rendering in marketing demo
+  - kept `Fit` action visible only when `Map` view is active
+  - gated markmap update/resize effects behind `activeView === "map"` for active-view-only behavior
+- Validation:
+  - `pnpm typecheck` passes
+  - `pnpm lint` passes (0 warnings / 0 errors)
+
+### Session 53 — Mobile Layout + Toolbar Responsiveness Pass
+
+- Implemented mobile-first layout fixes for homepage and playground parity:
+  - `app/(marketing)/page.tsx` and `app/(playground)/playground/page.tsx`
+    - switched mobile behavior from fixed viewport/no-scroll to `min-h-dvh` + `overflow-y-auto`
+    - preserved desktop behavior with `sm:h-dvh` + `sm:overflow-hidden`
+- Improved stacked pane usability on mobile (equal, touch-friendly panel heights):
+  - `components/editor/editor-shell.tsx`
+  - `app/(marketing)/ui/demo.tsx`
+  - mobile grid rows now use balanced `minmax(...)` layout for markdown/map sections
+  - cards use mobile minimum height to keep both panes interactable before scrolling
+- Fixed mobile top-bar overflow issues:
+  - `components/editor/markdown-input.tsx`: compact/truncating status row and tighter mobile spacing
+  - `components/editor/markmap-controls-bar.tsx`: wrapped mobile control row (no horizontal overflow), full control row remains desktop-only
+  - `app/(marketing)/ui/demo.tsx`: responsive left/right panel header spacing and wrapping
+- Updated editor top toolbar mobile fit:
+  - `components/editor/editor-toolbar.tsx`: control group now wraps and stays within page container on small screens
+  - `components/editor/mindmap-tips-drawer.tsx`: trigger label changed from `Markmap Tips` to `Tips`
+- Explicit CTA/toggle ordering in hero for mobile and desktop consistency:
+  - `app/(marketing)/ui/hero.tsx`: `Open playground` button remains before theme toggle
+- Validation:
+  - `pnpm typecheck` passes
+  - `pnpm lint` passes (0 warnings / 0 errors)
+
+### Session 54 — Tweakcn/Claude Color Theme Integration
+
+- Integrated user-provided tweakcn (Claude) palette into `app/globals.css`.
+- Scope applied: semantic color tokens only (per request), including light + dark values for:
+  - background/foreground/card/popover/primary/secondary/muted/accent/destructive
+  - border/input/ring/chart-1..5/sidebar tokens
+- Explicitly preserved non-color system settings:
+  - radius scale
+  - shadow tokens/surface shadow behavior
+  - spacing/motion/typography patterns
+  - existing app utility architecture
+- Kept project-specific info/success/warning semantic tokens intact because they were not part of provided theme exports and are used by status/feedback UI.
+- Validation:
+  - `pnpm typecheck` passes
+  - `pnpm lint` passes (0 warnings / 0 errors)
+
 ---
 
 ## Important Constraints And Reminders
