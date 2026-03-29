@@ -3,18 +3,33 @@
 type MarkdownInputProps = {
   markdown: string
   onChange: (value: string) => void
+  statusLabel: string
+  isStatusError?: boolean
 }
 
-export function MarkdownInput({ markdown, onChange }: MarkdownInputProps) {
+export function MarkdownInput({
+  markdown,
+  onChange,
+  statusLabel,
+  isStatusError = false,
+}: MarkdownInputProps) {
   return (
     <div className="flex min-h-0 flex-col overflow-hidden">
       <div className="flex h-10 items-center justify-between border-b bg-background px-4">
         <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
           Markdown
         </p>
-        <p className="text-xs text-muted-foreground tabular-nums">
-          {markdown.length} chars
-        </p>
+        <div className="flex items-center gap-2 text-xs tabular-nums">
+          <p
+            className={
+              isStatusError ? "text-destructive" : "text-muted-foreground"
+            }
+          >
+            {statusLabel}
+          </p>
+          <span className="text-muted-foreground/60">|</span>
+          <p className="text-muted-foreground">{markdown.length} chars</p>
+        </div>
       </div>
       <div className="min-h-0 flex-1 overflow-hidden">
         <textarea
