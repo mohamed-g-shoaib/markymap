@@ -18,10 +18,13 @@ export function EditorShell() {
     isTipsOpen,
     jsonOptions,
     markdown,
+    pendingExport,
     statusLabel,
     handleChange,
     handleExportBundle,
+    handleExportMapHtml,
     handleExportMarkdown,
+    handleExportMarkdownPdf,
     handleImport,
     handleImportClick,
     handleInsertTemplate,
@@ -38,8 +41,11 @@ export function EditorShell() {
         isSnippetsOpen={isSnippetsOpen}
         isTipsOpen={isTipsOpen}
         insertedSnippet={insertedSnippet}
+        pendingExport={pendingExport}
         onExportBundle={handleExportBundle}
+        onExportMapHtml={handleExportMapHtml}
         onExportMarkdown={handleExportMarkdown}
+        onExportMarkdownPdf={handleExportMarkdownPdf}
         onImportClick={handleImportClick}
         onInsertTemplate={handleInsertTemplate}
         onReset={handleReset}

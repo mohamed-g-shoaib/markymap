@@ -23,6 +23,8 @@ import {
   saveViewPreference,
 } from "@/lib/storage"
 
+type PendingExport = "map-html" | "markdown-pdf" | null
+
 export function useEditorShellState() {
   const [editorState, setEditorState] = React.useState<EditorState>({
     markdown: DEFAULT_MARKDOWN,
@@ -34,6 +36,9 @@ export function useEditorShellState() {
   const hasLoadedPersistedStateRef = React.useRef(false)
   const [saveState, setSaveState] = React.useState<SaveState>("idle")
   const [importMessage, setImportMessage] = React.useState<string | null>(null)
+  const [exportMessage, setExportMessage] = React.useState<string | null>(null)
+  const [exportMessageIsError, setExportMessageIsError] = React.useState(false)
+  const [pendingExport, setPendingExport] = React.useState<PendingExport>(null)
   const [isTipsOpen, setIsTipsOpen] = React.useState(false)
   const [isSnippetsOpen, setIsSnippetsOpen] = React.useState(false)
   const [insertedSnippet, setInsertedSnippet] =
@@ -48,6 +53,61 @@ export function useEditorShellState() {
 
   const markdown = editorState.markdown
   const jsonOptions = editorState.jsonOptions
+
+  const downloadBlob = React.useCallback((blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement("a")
+
+    anchor.href = url
+    anchor.download = filename
+    anchor.click()
+
+    URL.revokeObjectURL(url)
+  }, [])
+
+  const handleRemoteExport = React.useCallback(
+    async (input: {
+      exportKey: Exclude<PendingExport, null>
+      endpoint: string
+      filename: string
+    }) => {
+      if (pendingExport) {
+        return
+      }
+
+      setPendingExport(input.exportKey)
+      setExportMessage(null)
+      setExportMessageIsError(false)
+
+      try {
+        const response = await fetch(input.endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            markdown,
+            jsonOptions,
+          }),
+        })
+
+        if (!response.ok) {
+          throw new Error("Request failed")
+        }
+
+        const blob = await response.blob()
+        downloadBlob(blob, input.filename)
+        setExportMessage("Export ready.")
+        setExportMessageIsError(false)
+      } catch {
+        setExportMessage("Export failed.")
+        setExportMessageIsError(true)
+      } finally {
+        setPendingExport(null)
+      }
+    },
+    [downloadBlob, jsonOptions, markdown, pendingExport]
+  )
 
   const handleJsonOptionsChange = React.useCallback(
     (nextOptions: MarkmapJsonOptions) => {
@@ -76,6 +136,8 @@ export function useEditorShellState() {
       }
 
       setImportMessage(null)
+      setExportMessage(null)
+      setExportMessageIsError(false)
       setSaveState("saved")
       setLastSavedAt(new Date())
     },
@@ -86,6 +148,8 @@ export function useEditorShellState() {
     setActiveView(nextView)
     saveViewPreference(nextView)
     setImportMessage(null)
+    setExportMessage(null)
+    setExportMessageIsError(false)
   }, [])
 
   const handleChange = React.useCallback(
@@ -111,6 +175,8 @@ export function useEditorShellState() {
         }
 
         setImportMessage(null)
+        setExportMessage(null)
+        setExportMessageIsError(false)
         setSaveState("saved")
         setLastSavedAt(new Date())
       }, 500)
@@ -138,6 +204,8 @@ export function useEditorShellState() {
     }
 
     setImportMessage(null)
+    setExportMessage(null)
+    setExportMessageIsError(false)
     setSaveState("saved")
     setLastSavedAt(new Date())
     setFitSignal((value) => value + 1)
@@ -169,27 +237,29 @@ export function useEditorShellState() {
     const blob = new Blob([JSON.stringify(payload, null, 2)], {
       type: "application/json;charset=utf-8",
     })
-    const url = URL.createObjectURL(blob)
-    const anchor = document.createElement("a")
-
-    anchor.href = url
-    anchor.download = "markymap.json"
-    anchor.click()
-
-    URL.revokeObjectURL(url)
-  }, [jsonOptions, markdown])
+    downloadBlob(blob, "markymap.json")
+  }, [downloadBlob, jsonOptions, markdown])
 
   const handleExportMarkdown = React.useCallback(() => {
     const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" })
-    const url = URL.createObjectURL(blob)
-    const anchor = document.createElement("a")
+    downloadBlob(blob, "markymap.md")
+  }, [downloadBlob, markdown])
 
-    anchor.href = url
-    anchor.download = "markymap.md"
-    anchor.click()
+  const handleExportMapHtml = React.useCallback(() => {
+    return handleRemoteExport({
+      exportKey: "map-html",
+      endpoint: "/api/export/map/html",
+      filename: "markymap-map.html",
+    })
+  }, [handleRemoteExport])
 
-    URL.revokeObjectURL(url)
-  }, [markdown])
+  const handleExportMarkdownPdf = React.useCallback(() => {
+    return handleRemoteExport({
+      exportKey: "markdown-pdf",
+      endpoint: "/api/export/markdown/pdf",
+      filename: "markymap-markdown.pdf",
+    })
+  }, [handleRemoteExport])
 
   const handleImportClick = React.useCallback(() => {
     importInputRef.current?.click()
@@ -258,9 +328,13 @@ export function useEditorShellState() {
         }
 
         setImportMessage(null)
+        setExportMessage(null)
+        setExportMessageIsError(false)
         setSaveState("saved")
         setLastSavedAt(new Date())
       } catch {
+        setExportMessage(null)
+        setExportMessageIsError(false)
         setImportMessage("Import failed: could not read file.")
         setSaveState("error")
       }
@@ -291,7 +365,7 @@ export function useEditorShellState() {
     return "Auto-save enabled"
   }, [lastSavedAt, saveState])
 
-  const statusLabel = importMessage ?? saveStatusLabel
+  const statusLabel = exportMessage ?? importMessage ?? saveStatusLabel
 
   React.useEffect(() => {
     if (hasLoadedPersistedStateRef.current) {
@@ -333,16 +407,19 @@ export function useEditorShellState() {
     activeView,
     fitSignal,
     importInputRef,
-    importedStatusIsError: Boolean(importMessage),
+    importedStatusIsError: exportMessageIsError || Boolean(importMessage),
     insertedSnippet,
     isSnippetsOpen,
     isTipsOpen,
     jsonOptions,
     markdown,
+    pendingExport,
     statusLabel,
     handleChange,
     handleExportBundle,
+    handleExportMapHtml,
     handleExportMarkdown,
+    handleExportMarkdownPdf,
     handleImport,
     handleImportClick,
     handleInsertTemplate,

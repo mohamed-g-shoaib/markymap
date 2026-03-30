@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import Link from "next/link"
 import { ArrowDown01Icon, Home01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -16,6 +17,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu"
+import { Spinner } from "@/components/ui/spinner"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import type { SnippetKind } from "@/components/editor/editor-templates"
 
@@ -23,8 +25,11 @@ type EditorToolbarProps = {
   isSnippetsOpen: boolean
   isTipsOpen: boolean
   insertedSnippet: SnippetKind | null
+  pendingExport: "map-html" | "markdown-pdf" | null
   onExportBundle: () => void
+  onExportMapHtml: () => void | Promise<void>
   onExportMarkdown: () => void
+  onExportMarkdownPdf: () => void | Promise<void>
   onImportClick: () => void
   onInsertTemplate: (template: string, kind: SnippetKind) => void
   onReset: () => void
@@ -36,8 +41,11 @@ export function EditorToolbar({
   isSnippetsOpen,
   isTipsOpen,
   insertedSnippet,
+  pendingExport,
   onExportBundle,
+  onExportMapHtml,
   onExportMarkdown,
+  onExportMarkdownPdf,
   onImportClick,
   onInsertTemplate,
   onReset,
@@ -45,6 +53,37 @@ export function EditorToolbar({
   onTipsOpenChange,
 }: EditorToolbarProps) {
   const isMobile = useMediaQuery("(max-width: 639px)")
+  const [isOptionsOpen, setIsOptionsOpen] = React.useState(false)
+  const hasPendingExport = pendingExport !== null
+  const previousPendingExportRef = React.useRef(pendingExport)
+
+  React.useEffect(() => {
+    if (previousPendingExportRef.current && !pendingExport) {
+      setIsOptionsOpen(false)
+    }
+
+    previousPendingExportRef.current = pendingExport
+  }, [pendingExport])
+
+  const handleOptionsOpenChange = React.useCallback(
+    (open: boolean) => {
+      if (hasPendingExport) {
+        setIsOptionsOpen(true)
+        return
+      }
+
+      setIsOptionsOpen(open)
+    },
+    [hasPendingExport]
+  )
+
+  const handleMenuAction = React.useCallback(
+    (action: () => void | Promise<void>) => {
+      setIsOptionsOpen(true)
+      void action()
+    },
+    []
+  )
 
   return (
     <div className="flex flex-col gap-2 motion-fade sm:flex-row sm:items-center sm:justify-between">
@@ -52,7 +91,10 @@ export function EditorToolbar({
         Write markdown on the left and explore the live mindmap on the right.
       </p>
       <div className="flex w-full flex-wrap items-center justify-start gap-2 sm:w-auto sm:justify-end">
-        <Menu>
+        <Menu
+          onOpenChange={handleOptionsOpenChange}
+          open={hasPendingExport || isOptionsOpen}
+        >
           <MenuTrigger
             className="[&[data-popup-open]_[data-slot=options-chevron]]:rotate-180"
             render={<Button variant="outline" size="sm" />}
@@ -72,6 +114,44 @@ export function EditorToolbar({
               <MenuItem onClick={onImportClick}>Import</MenuItem>
               <MenuItem onClick={onExportBundle}>Export .json</MenuItem>
               <MenuItem onClick={onExportMarkdown}>Export .md</MenuItem>
+            </MenuGroup>
+            <MenuSeparator />
+            <MenuGroup>
+              <MenuGroupLabel>Map Export</MenuGroupLabel>
+              <MenuItem
+                disabled={hasPendingExport}
+                onClick={() => {
+                  handleMenuAction(onExportMapHtml)
+                }}
+              >
+                {pendingExport === "map-html" ? (
+                  <>
+                    <Spinner size={16} />
+                    Exporting map .html
+                  </>
+                ) : (
+                  "Export map .html"
+                )}
+              </MenuItem>
+            </MenuGroup>
+            <MenuSeparator />
+            <MenuGroup>
+              <MenuGroupLabel>Markdown Export</MenuGroupLabel>
+              <MenuItem
+                disabled={hasPendingExport}
+                onClick={() => {
+                  handleMenuAction(onExportMarkdownPdf)
+                }}
+              >
+                {pendingExport === "markdown-pdf" ? (
+                  <>
+                    <Spinner size={16} />
+                    Exporting markdown .pdf
+                  </>
+                ) : (
+                  "Export markdown .pdf"
+                )}
+              </MenuItem>
             </MenuGroup>
             <MenuSeparator />
             <MenuGroup>
