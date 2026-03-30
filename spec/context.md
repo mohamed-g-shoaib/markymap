@@ -1124,6 +1124,233 @@ High-value files to understand before making any changes:
   - `pnpm typecheck` passes
   - `pnpm lint` passes (0 warnings / 0 errors)
 
+### Session 55 — Export HTML/PDF Research + Vercel Implementation Spec
+
+- Researched export architecture for new playground save targets with explicit requirement that deployment runs on Vercel.
+- Decision: use a split export pipeline instead of one generalized client-side exporter:
+  - `markmap-render` for interactive map HTML export
+  - `unified` pipeline for rendered markdown HTML export
+  - PDF generated from export HTML via headless Chromium
+- Vercel-specific decision:
+  - use `puppeteer-core` + `@sparticuz/chromium`
+  - keep PDF generation in Node.js route handlers (`runtime = "nodejs"`)
+  - avoid client-side screenshot/pdf libraries as the primary path
+- Added implementation spec at `spec/markmap-packages/export-html-pdf-spec.md` covering:
+  - goals and acceptance criteria
+  - package choices
+  - route handler architecture
+  - shared server utility layout
+  - toolbar/export UX integration
+  - validation matrix and deployment risks
+- Current status:
+  - Spec complete
+  - Implementation not yet started
+
+### Session 56 — Export Phase 1 Foundation (Shared Server HTML Renderers)
+
+- Started Phase 1 from `spec/markmap-packages/export-html-pdf-spec.md`.
+- Installed new export/server dependencies:
+  - `markmap-render`
+  - `unified`
+  - `remark-parse`
+  - `remark-rehype`
+  - `rehype-stringify`
+  - `puppeteer-core`
+  - `@sparticuz/chromium`
+- Added shared export foundation under `lib/export/`:
+  - `export-types.ts`
+  - `export-validation.ts`
+  - `export-shell.ts`
+  - `render-map-html.ts`
+  - `render-markdown-html.ts`
+- Implementation details:
+  - map HTML renderer reuses existing markmap transform/frontmatter logic via `getMarkmapTransformSnapshot`
+  - exported map options match current playground precedence:
+    - defaults
+    - user json options
+    - frontmatter markmap options
+  - markdown HTML renderer uses a server-side unified pipeline with:
+    - `remark-parse`
+    - `remark-gfm`
+    - `remark-math`
+    - `remark-rehype`
+    - `rehype-sanitize`
+    - `rehype-katex`
+    - `rehype-highlight`
+    - `rehype-stringify`
+  - markdown export strips leading frontmatter and markmap fold comments to match in-app markdown preview behavior
+  - export shell now provides a reusable full HTML document wrapper and markdown document styles
+  - KaTeX CSS is loaded from the installed package and rewritten so font URLs resolve against the package CDN base when opened outside the app
+- Validation:
+  - `corepack pnpm typecheck` passes
+  - `corepack pnpm lint` passes
+- Known follow-up:
+  - no route handlers yet
+  - no toolbar wiring yet
+  - no PDF rendering utility/route yet
+  - direct Node smoke-run of the render helpers was blocked by project `@/` path aliases outside the Next/TS toolchain, but TypeScript + lint passed
+
+### Session 57 — Export Phase 2/3 (Routes + Playground Wiring)
+
+- Added export route handlers:
+  - `app/api/export/map/html/route.ts`
+  - `app/api/export/map/pdf/route.ts`
+  - `app/api/export/markdown/html/route.ts`
+  - `app/api/export/markdown/pdf/route.ts`
+- Added shared PDF renderer:
+  - `lib/export/render-pdf.ts`
+- Route/runtime decisions implemented as planned:
+  - all export endpoints use `runtime = "nodejs"`
+  - HTML routes render from shared server HTML utilities
+  - PDF routes render HTML first, then pass it to Puppeteer/Chromium
+- Chromium/PDF implementation details:
+  - uses `puppeteer-core` + `@sparticuz/chromium`
+  - supports optional `CHROME_EXECUTABLE_PATH` override for local/non-Vercel environments
+  - defaults to landscape for map PDFs and portrait-ish A4 defaults for markdown PDFs
+  - waits for map initialization (`window.mm`) before printing map PDFs
+- Wired playground UI to new export routes:
+  - expanded toolbar options menu with:
+    - `Export map .html`
+    - `Export map .pdf`
+    - `Export markdown .html`
+    - `Export markdown .pdf`
+  - existing `.json` and `.md` export actions remain intact
+- Added client export behavior in `components/editor/use-editor-shell-state.ts`:
+  - POSTs `{ markdown, jsonOptions }` to export routes
+  - downloads returned blobs with correct filenames
+  - prevents duplicate export clicks while an export is in flight
+  - surfaces export progress/failure in the existing editor status area
+- Validation:
+  - `corepack pnpm typecheck` passes
+  - `corepack pnpm lint` passes
+  - `corepack pnpm build` passes
+- Remaining follow-up:
+  - browser-level manual verification of each export action still recommended
+
+### Session 58 — Export Phase 4 Hardening Pass (No Automated Tests Run)
+
+- Continued Phase 4 with code-level hardening only, per request not to run automated tests or open a browser.
+- Added shared response helpers in `lib/export/export-response.ts`:
+  - standardized attachment responses
+  - standardized JSON error responses
+  - `Cache-Control: no-store` for export endpoints
+- Strengthened export payload validation in `lib/export/export-validation.ts`:
+  - reject empty markdown exports
+  - reject oversized markdown payloads via a server-side max length guard
+  - return more specific export error messages/status codes (`400` / `413`)
+- Hardened PDF generation in `lib/export/render-pdf.ts`:
+  - added explicit PDF render timeout guard
+  - set page-level default timeouts
+  - preserved map readiness wait before printing
+  - simplified page typing using Puppeteer `Page` type import
+- Updated all export route handlers to use shared response/error helpers and the improved validation mapping.
+- Validation intentionally not run in this session segment:
+  - no automated tests
+  - no browser verification
+
+### Session 59 — Export Runtime Bug Fixes (Markdown HTML + Local PDF)
+
+- Diagnosed user-reported runtime failures from localhost export routes:
+  - `map/html` worked
+  - `markdown/html` returned `500`
+  - `map/pdf` returned `500`
+  - `markdown/pdf` returned `500`
+- Added dev-only export error details in `lib/export/export-response.ts` to expose route failure causes safely during development.
+- Root causes identified:
+  - markdown HTML export failed because markdown export shell tried to read stylesheet files from disk at runtime and received an undefined path in route execution context
+  - local PDF export failed because driving an installed local Chrome via Puppeteer produced `Protocol error (Page.printToPDF): Target closed`
+- Fixes implemented:
+  - replaced markdown export runtime CSS file reads with CDN stylesheet links for:
+    - KaTeX
+    - highlight.js
+  - kept app-owned layout/typography styles inline in `lib/export/export-shell.ts`
+  - added local-browser PDF fallback in `lib/export/render-pdf.ts`:
+    - if a local Chrome/Edge executable is found (or `CHROME_EXECUTABLE_PATH` is set), use Chrome CLI `--print-to-pdf`
+    - keep Puppeteer + `@sparticuz/chromium` path for Vercel/serverless environments
+  - inject target-aware `@page` print styles for local CLI PDF generation
+- Direct route verification after fixes:
+  - `POST /api/export/markdown/html` → `200`
+  - `POST /api/export/map/pdf` → `200`
+  - `POST /api/export/markdown/pdf` → `200`
+- No automated tests or browser opening were performed during this debugging pass.
+
+### Session 60 — Map PDF Blank-Page Mitigation
+
+- Investigated follow-up issue where map PDF export returned a blank rendered page while other exports worked.
+- Assessment:
+  - the export method itself is still correct
+  - the likely weak spot is the local PDF fallback path printing before async markmap rendering fully settles
+- Mitigations implemented:
+  - `lib/export/render-map-html.ts`
+    - added optional inline base asset mode for PDF generation
+    - inlines the installed browser bundles for:
+      - `d3`
+      - `markmap-view`
+    - keeps standard HTML export behavior unchanged
+  - `app/api/export/map/pdf/route.ts`
+    - now requests map HTML with inline base assets for PDF generation
+  - `lib/export/render-pdf.ts`
+    - local map PDF generation now prefers the full browser-rendered PDF path first
+    - only falls back to CLI `--print-to-pdf` if the local browser-render path throws
+- Notes:
+  - this keeps Vercel/serverless PDF generation on the original Puppeteer/Chromium path
+  - no browser was opened during this fix, so visual confirmation still depends on user-side retest
+
+### Session 61 — Local PDF Fallback Stabilization
+
+- Follow-up logs showed local `map/pdf` requests returning `200` while still emitting noisy `TargetCloseError` / `unhandledRejection` output.
+- Diagnosis:
+  - local map PDF path was first attempting a Puppeteer browser-rendered PDF with the installed local Chrome
+  - that attempt failed with `Protocol error (Page.printToPDF): Target closed`
+  - code then fell back to the local Chrome CLI print path, which succeeded, causing `200` plus noisy server logs
+- Fixes:
+  - removed the local map-PDF "try browser first, then fallback" path
+  - local browser environments now consistently use the stable local CLI print path for PDFs
+  - kept the Puppeteer-rendered path for non-local/serverless Chromium usage
+  - tightened `withTimeout` so timers are cleared on resolve/reject instead of leaving dangling timeout promises behind
+
+### Session 62 — New Map PDF Method (Live SVG Snapshot)
+
+- User requested a new method after map PDFs continued to render as blank pages.
+- Replaced the preferred map PDF source from "re-render markmap into export HTML" to:
+  - serialize the already-rendered live playground SVG
+  - send that SVG markup to the export route
+  - generate the PDF from a static HTML document that embeds the captured SVG directly
+- Implementation details:
+  - `components/editor/markmap-canvas.tsx`
+    - now emits serialized SVG markup through `onSvgMarkupChange`
+  - `components/editor/use-editor-shell-state.ts`
+    - stores latest rendered map SVG markup
+    - includes `svgMarkup` when requesting `map/pdf`
+  - `app/api/export/map/pdf/route.ts`
+    - prefers `svgMarkup` input and builds map PDF from static SVG HTML
+    - falls back to prior render-map-html path only if no SVG snapshot is available
+  - `lib/export/render-map-static-html.ts`
+    - new helper that wraps static SVG in a print-oriented landscape HTML document
+- Rationale:
+  - this avoids async markmap render timing entirely for map PDF generation
+  - exported PDF should now be based on the exact map already visible in the playground
+
+### Session 63 — Map PDF Snapshot Normalization
+
+- User reported that the new static-SVG map PDF path still produced a blank page.
+- Strengthened the map snapshot export path:
+  - `components/editor/markmap-canvas.tsx`
+    - snapshot now clones the live SVG and normalizes it for export
+    - adds explicit:
+      - `xmlns`
+      - `xmlns:xlink`
+      - `width`
+      - `height`
+      - `viewBox`
+      - `preserveAspectRatio`
+    - computes export bounds from the rendered `<g>` bounding box when available, with padding
+  - `lib/export/render-map-static-html.ts`
+    - no longer embeds raw inline SVG directly in the PDF document
+    - instead converts the SVG snapshot into a `data:image/svg+xml` URL and prints it via `<img>`
+- Rationale:
+  - browsers are generally more reliable printing a static image source derived from SVG than printing a live inline SVG node with app-originated attributes/classes
+
 ---
 
 ## Important Constraints And Reminders
@@ -1252,3 +1479,26 @@ Listed in rough priority order:
 - Returns: streaming markdown response or JSON
 - API key stored in `.env.local` as `AI_API_KEY` (or provider-specific name)
 - Never expose the key to the client bundle
+
+---
+
+## Session 64 - Map PDF raster export fallback
+
+- Map PDF export was still producing blank pages when the server printed static SVG markup, so the export path was changed again.
+- The playground now rasterizes the live rendered SVG snapshot to a PNG data URL on the client immediately before `map/pdf` export.
+- `app/api/export/map/pdf/route.ts` now prefers `imageDataUrl` and only falls back to `svgMarkup` or regenerated markmap HTML when a raster snapshot is unavailable.
+- This keeps local/Vercel PDF generation on the same HTML-to-PDF pipeline while avoiding Chrome's unreliable SVG print behavior for the map document.
+
+## Session 65 - Wait for raster image before map PDF print
+
+- Opening the downloaded local PDF showed a broken-image placeholder and Chrome logged a `file:` origin warning.
+- Web research indicated the `file:` warning is a local-file security behavior, while the more relevant issue is that CLI `--print-to-pdf` offers no hook to wait for embedded images to finish decoding before print.
+- Local map PDF export now uses the browser-render path when an `imageDataUrl` snapshot is present, and `render-pdf.ts` explicitly waits for all `<img>` elements to report `complete` with `naturalWidth > 0` before `page.pdf()`.
+
+## Session 66 - Remove unreliable export modes and move loading into menu
+
+- `map/pdf` and `markdown/html` were removed from the playground and from the API surface after repeated reliability issues.
+- Deleted the corresponding route handlers and the map-static PDF helper file, and simplified export payload types/validation back to markdown + optional JSON options only.
+- Removed map SVG snapshot plumbing from the editor canvas and shell state because it only existed to support the dropped map PDF flow.
+- Export loading is no longer shown in the editor shell status bar; the toolbar menu now keeps itself open during an export and replaces the clicked export row with an inline spinner state.
+- Current supported playground exports are now `.json`, `.md`, `map .html`, and `markdown .pdf`.
