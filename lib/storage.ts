@@ -1,9 +1,14 @@
 import type { MarkmapJsonOptions } from "@/lib/markmap-options"
+import {
+  type MarkmapFoldState,
+  isMarkmapFoldState,
+} from "@/lib/markmap-fold-state"
 
 const EDITOR_STATE_KEY = "markymap:editor-state"
 
 type StoredEditorState = {
-  version: 1
+  version: 2
+  foldState?: MarkmapFoldState
   markdown: string
   jsonOptions: MarkmapJsonOptions
 }
@@ -22,6 +27,9 @@ export function loadEditorState() {
 
       if (isObjectRecord(parsed) && typeof parsed.markdown === "string") {
         return {
+          foldState: isMarkmapFoldState(parsed.foldState)
+            ? parsed.foldState
+            : {},
           markdown: parsed.markdown,
           jsonOptions: isObjectRecord(parsed.jsonOptions)
             ? (parsed.jsonOptions as MarkmapJsonOptions)
@@ -37,12 +45,14 @@ export function loadEditorState() {
 }
 
 export function saveEditorState(state: {
+  foldState?: MarkmapFoldState
   markdown: string
   jsonOptions: MarkmapJsonOptions
 }) {
   try {
     const serialized: StoredEditorState = {
-      version: 1,
+      version: 2,
+      foldState: state.foldState ?? {},
       markdown: state.markdown,
       jsonOptions: state.jsonOptions,
     }

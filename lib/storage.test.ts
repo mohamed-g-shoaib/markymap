@@ -14,6 +14,9 @@ describe("storage content", () => {
 
   it("saves and loads markdown with json options", () => {
     const didSave = saveEditorState({
+      foldState: {
+        "root/a:0": 1,
+      },
       markdown: "# Persisted",
       jsonOptions: { zoom: false, pan: false, spacingHorizontal: 120 },
     })
@@ -22,6 +25,9 @@ describe("storage content", () => {
 
     const state = loadEditorState()
     expect(state).toEqual({
+      foldState: {
+        "root/a:0": 1,
+      },
       markdown: "# Persisted",
       jsonOptions: { zoom: false, pan: false, spacingHorizontal: 120 },
     })
@@ -46,6 +52,26 @@ describe("storage content", () => {
       jsonOptions: {},
     })
     expect(didSave).toBe(false)
+  })
+
+  it("defaults fold state when loading older or invalid payloads", () => {
+    localStorage.setItem(
+      "markymap:editor-state",
+      JSON.stringify({
+        version: 1,
+        foldState: {
+          "root/a:0": 2,
+        },
+        markdown: "# Legacy",
+        jsonOptions: {},
+      })
+    )
+
+    expect(loadEditorState()).toEqual({
+      foldState: {},
+      markdown: "# Legacy",
+      jsonOptions: {},
+    })
   })
 })
 

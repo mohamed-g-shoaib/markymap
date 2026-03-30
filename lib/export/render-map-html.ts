@@ -2,7 +2,6 @@ import { readFile, readdir } from "node:fs/promises"
 import { join } from "node:path"
 
 import { Transformer } from "markmap-lib"
-import type { JSItem } from "markmap-common"
 import { fillTemplate } from "markmap-render"
 
 import {
@@ -13,7 +12,14 @@ import { getMarkmapTransformSnapshot } from "@/lib/markmap-transform"
 
 const transformer = new Transformer()
 
-let inlineBaseScriptsPromise: Promise<JSItem[]> | null = null
+type InlineScriptItem = {
+  type: "script"
+  data: {
+    textContent: string
+  }
+}
+
+let inlineBaseScriptsPromise: Promise<InlineScriptItem[]> | null = null
 
 function getExportMapOptions(
   jsonOptions: MarkmapJsonOptions,
@@ -45,7 +51,7 @@ async function getInlineBaseScripts() {
             textContent: markmapViewSource,
           },
         },
-      ] satisfies JSItem[]
+      ] satisfies InlineScriptItem[]
     })
   }
 

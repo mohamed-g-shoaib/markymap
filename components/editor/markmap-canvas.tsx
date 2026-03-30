@@ -8,6 +8,12 @@ import * as markmap from "markmap-view"
 import { MarkmapControlsBar } from "@/components/editor/markmap-controls-bar"
 import { MarkdownPreview } from "@/components/editor/markdown-preview"
 import {
+  applyMarkmapFoldState,
+  captureMarkmapFoldState,
+  type MarkmapFoldState,
+  type PersistableMarkmapNode,
+} from "@/lib/markmap-fold-state"
+import {
   DEFAULT_MARKMAP_JSON_OPTIONS,
   type MarkmapJsonOptions,
 } from "@/lib/markmap-options"
@@ -50,6 +56,8 @@ type MarkmapCanvasProps = {
   markdown: string
   jsonOptions: MarkmapJsonOptions
   activeView: "map" | "markdown"
+  persistedFoldState: MarkmapFoldState
+  onFoldStateChange: (nextState: MarkmapFoldState) => void
   onJsonOptionsChange: (nextOptions: MarkmapJsonOptions) => void
   onViewChange: (nextView: "map" | "markdown") => void
   fitSignal?: number
@@ -68,6 +76,8 @@ export function MarkmapCanvas({
   markdown,
   jsonOptions,
   activeView,
+  persistedFoldState,
+  onFoldStateChange,
   onJsonOptionsChange,
   onViewChange,
   fitSignal,
@@ -75,10 +85,21 @@ export function MarkmapCanvas({
   const deferredMarkdown = React.useDeferredValue(markdown)
   const svgRef = React.useRef<SVGSVGElement>(null)
   const mmRef = React.useRef<Markmap | null>(null)
+  const persistedFoldStateRef = React.useRef(persistedFoldState)
+  const renderMarkdownRef = React.useRef(markdown)
   const [renderMarkdown, setRenderMarkdown] = React.useState(markdown)
 
   const [frontmatterOptions, setFrontmatterOptions] =
     React.useState<MarkmapJsonOptions>({})
+
+  React.useEffect(() => {
+    persistedFoldStateRef.current = persistedFoldState
+  }, [persistedFoldState])
+
+  React.useEffect(() => {
+    renderMarkdownRef.current = renderMarkdown
+  }, [renderMarkdown])
+
   const resolvedJsonOptions = React.useMemo(
     () => ({
       ...DEFAULT_MARKMAP_JSON_OPTIONS,
@@ -103,12 +124,59 @@ export function MarkmapCanvas({
     }
   }, [deferredMarkdown])
 
+  const getSnapshot = React.useEffectEvent((nextMarkdown: string) => {
+    const snapshot = getMarkmapTransformSnapshot(transformer, nextMarkdown)
+
+    applyMarkmapFoldState(
+      snapshot.root as PersistableMarkmapNode,
+      persistedFoldStateRef.current
+    )
+
+    return snapshot
+  })
+
+  const persistCurrentFoldState = React.useEffectEvent(() => {
+    const root = mmRef.current?.state.data
+
+    if (!root) {
+      return
+    }
+
+    const nextFoldState = captureMarkmapFoldState(
+      root as PersistableMarkmapNode
+    )
+
+    persistedFoldStateRef.current = nextFoldState
+    onFoldStateChange(nextFoldState)
+  })
+
+  const syncMarkmapData = React.useEffectEvent((nextMarkdown: string) => {
+    if (!mmRef.current) {
+      return
+    }
+
+    if (svgRef.current) {
+      ensureSvgSize(svgRef.current)
+    }
+
+    const snapshot = getSnapshot(nextMarkdown)
+    const assets = transformer.getUsedAssets(snapshot.features)
+
+    if (assets.styles) loadCSS(assets.styles)
+    if (assets.scripts) {
+      loadJS(assets.scripts, { getMarkmap: () => markmap })
+    }
+
+    setFrontmatterOptions(snapshot.frontmatterOptions)
+    void mmRef.current.setData(snapshot.root)
+  })
+
   const initMarkmap = React.useEffectEvent(() => {
     if (!svgRef.current) return
 
     ensureSvgSize(svgRef.current)
 
-    const snapshot = getMarkmapTransformSnapshot(transformer, renderMarkdown)
+    const snapshot = getSnapshot(renderMarkdown)
     const assets = transformer.getUsedAssets(snapshot.features)
 
     if (assets.styles) loadCSS(assets.styles)
@@ -136,23 +204,13 @@ export function MarkmapCanvas({
 
   React.useEffect(() => {
     if (activeView !== "map") return
-    if (!mmRef.current) return
-
-    if (svgRef.current) {
-      ensureSvgSize(svgRef.current)
-    }
-
-    const snapshot = getMarkmapTransformSnapshot(transformer, renderMarkdown)
-    const assets = transformer.getUsedAssets(snapshot.features)
-
-    if (assets.styles) loadCSS(assets.styles)
-    if (assets.scripts) {
-      loadJS(assets.scripts, { getMarkmap: () => markmap })
-    }
-
-    setFrontmatterOptions(snapshot.frontmatterOptions)
-    mmRef.current.setData(snapshot.root)
+    syncMarkmapData(renderMarkdown)
   }, [activeView, renderMarkdown])
+
+  React.useEffect(() => {
+    if (activeView !== "map") return
+    syncMarkmapData(renderMarkdownRef.current)
+  }, [activeView, persistedFoldState])
 
   React.useEffect(() => {
     if (activeView !== "map") return
@@ -251,7 +309,7 @@ export function MarkmapCanvas({
     (collapsed: boolean) => {
       if (!mmRef.current) return
 
-      const { root, features } = transformer.transform(markdown)
+      const { root, features } = transformer.transform(renderMarkdown)
       const assets = transformer.getUsedAssets(features)
 
       if (assets.styles) loadCSS(assets.styles)
@@ -276,9 +334,15 @@ export function MarkmapCanvas({
 
       setFoldState(root as FoldableMarkmapNode, true)
 
+      const nextFoldState = captureMarkmapFoldState(
+        root as PersistableMarkmapNode
+      )
+
+      persistedFoldStateRef.current = nextFoldState
+      onFoldStateChange(nextFoldState)
       void mmRef.current.setData(root)
     },
-    [markdown]
+    [onFoldStateChange, renderMarkdown]
   )
 
   const handleResize = React.useEffectEvent(() => {
@@ -317,6 +381,35 @@ export function MarkmapCanvas({
     if (activeView !== "map") return
     handleFitSignal()
   }, [activeView, fitSignal])
+
+  React.useEffect(() => {
+    if (!svgRef.current) {
+      return
+    }
+
+    const svgElement = svgRef.current
+    const handleClick = (event: MouseEvent) => {
+      const target = event.target
+
+      if (!(target instanceof Element)) {
+        return
+      }
+
+      if (!target.closest(".markmap-node")) {
+        return
+      }
+
+      queueMicrotask(() => {
+        persistCurrentFoldState()
+      })
+    }
+
+    svgElement.addEventListener("click", handleClick)
+
+    return () => {
+      svgElement.removeEventListener("click", handleClick)
+    }
+  }, [])
 
   return (
     <div className="flex min-h-0 flex-col overflow-hidden">

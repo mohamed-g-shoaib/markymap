@@ -1502,3 +1502,18 @@ Listed in rough priority order:
 - Removed map SVG snapshot plumbing from the editor canvas and shell state because it only existed to support the dropped map PDF flow.
 - Export loading is no longer shown in the editor shell status bar; the toolbar menu now keeps itself open during an export and replaces the clicked export row with an inline spinner state.
 - Current supported playground exports are now `.json`, `.md`, `map .html`, and `markdown .pdf`.
+
+## Session 67 - Export type fix and persisted map fold state
+
+- Fixed the `render-map-html` type error by removing the direct `markmap-common` type import and using a local inline-script type for export asset injection.
+- Added `lib/markmap-fold-state.ts` to capture and reapply markmap fold state using stable content-hash occurrence paths rather than markmap runtime IDs.
+- Persisted fold overrides alongside `markymap:editor-state` so open/closed map nodes survive reloads without forcing React state updates on every toggle.
+- `MarkmapCanvas` now:
+  - reapplies saved fold state before create/update renders
+  - captures fold state after node clicks
+  - persists `Collapse All` / `Expand All` actions
+- Reset and import flows now clear persisted fold overrides to avoid applying stale collapse state to unrelated documents.
+- Validation status:
+  - `corepack pnpm typecheck` passes
+  - `corepack pnpm lint` passes
+  - `corepack pnpm build` compiled successfully, then failed in this environment with `spawn EPERM` during the post-compile build phase

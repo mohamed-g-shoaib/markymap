@@ -19,12 +19,14 @@ export function EditorShell() {
     jsonOptions,
     markdown,
     pendingExport,
+    persistedFoldState,
     statusLabel,
     handleChange,
     handleExportBundle,
     handleExportMapHtml,
     handleExportMarkdown,
     handleExportMarkdownPdf,
+    handleFoldStateChange,
     handleImport,
     handleImportClick,
     handleInsertTemplate,
@@ -75,6 +77,8 @@ export function EditorShell() {
             markdown={markdown}
             jsonOptions={jsonOptions}
             activeView={activeView}
+            persistedFoldState={persistedFoldState}
+            onFoldStateChange={handleFoldStateChange}
             onJsonOptionsChange={handleJsonOptionsChange}
             onViewChange={handleViewChange}
             fitSignal={fitSignal}

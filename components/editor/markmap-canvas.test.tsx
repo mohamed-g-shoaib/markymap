@@ -94,6 +94,8 @@ describe("MarkmapCanvas lifecycle", () => {
         markdown="# One"
         activeView="map"
         jsonOptions={{ zoom: true, pan: true }}
+        persistedFoldState={{}}
+        onFoldStateChange={vi.fn()}
         onJsonOptionsChange={vi.fn()}
         onViewChange={vi.fn()}
       />
@@ -106,6 +108,8 @@ describe("MarkmapCanvas lifecycle", () => {
         markdown="# Two"
         activeView="map"
         jsonOptions={{ zoom: true, pan: true }}
+        persistedFoldState={{}}
+        onFoldStateChange={vi.fn()}
         onJsonOptionsChange={vi.fn()}
         onViewChange={vi.fn()}
       />

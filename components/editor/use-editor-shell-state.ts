@@ -16,6 +16,7 @@ import {
   DEFAULT_MARKMAP_JSON_OPTIONS,
   type MarkmapJsonOptions,
 } from "@/lib/markmap-options"
+import type { MarkmapFoldState } from "@/lib/markmap-fold-state"
 import {
   getViewPreference,
   loadEditorState,
@@ -45,14 +46,20 @@ export function useEditorShellState() {
     React.useState<SnippetKind | null>(null)
   const [fitSignal, setFitSignal] = React.useState(0)
   const [lastSavedAt, setLastSavedAt] = React.useState<Date | null>(null)
+  const foldStateRef = React.useRef<MarkmapFoldState>({})
   const saveTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
   const insertFeedbackTimerRef = React.useRef<ReturnType<
     typeof setTimeout
   > | null>(null)
   const importInputRef = React.useRef<HTMLInputElement | null>(null)
+  const editorStateRef = React.useRef(editorState)
 
   const markdown = editorState.markdown
   const jsonOptions = editorState.jsonOptions
+
+  React.useEffect(() => {
+    editorStateRef.current = editorState
+  }, [editorState])
 
   const downloadBlob = React.useCallback((blob: Blob, filename: string) => {
     const url = URL.createObjectURL(blob)
@@ -127,6 +134,7 @@ export function useEditorShellState() {
       })
 
       const didSave = saveEditorState({
+        foldState: foldStateRef.current,
         markdown: markdownSnapshot,
         jsonOptions: nextOptions,
       })
@@ -166,6 +174,7 @@ export function useEditorShellState() {
 
       saveTimerRef.current = setTimeout(() => {
         const didSave = saveEditorState({
+          foldState: foldStateRef.current,
           markdown: nextValue,
           jsonOptions,
         })
@@ -189,12 +198,14 @@ export function useEditorShellState() {
       clearTimeout(saveTimerRef.current)
     }
 
+    foldStateRef.current = {}
     setEditorState((previous) => ({
       ...previous,
       markdown: DEFAULT_MARKDOWN,
     }))
 
     const didSave = saveEditorState({
+      foldState: foldStateRef.current,
       markdown: DEFAULT_MARKDOWN,
       jsonOptions,
     })
@@ -319,9 +330,13 @@ export function useEditorShellState() {
           saveTimerRef.current = null
         }
 
+        foldStateRef.current = {}
         setEditorState(nextState)
 
-        const didSave = saveEditorState(nextState)
+        const didSave = saveEditorState({
+          foldState: foldStateRef.current,
+          ...nextState,
+        })
         if (!didSave) {
           setSaveState("error")
           return
@@ -367,6 +382,23 @@ export function useEditorShellState() {
 
   const statusLabel = exportMessage ?? importMessage ?? saveStatusLabel
 
+  const handleFoldStateChange = React.useCallback(
+    (nextFoldState: MarkmapFoldState) => {
+      foldStateRef.current = nextFoldState
+
+      const didSave = saveEditorState({
+        foldState: nextFoldState,
+        markdown: editorStateRef.current.markdown,
+        jsonOptions: editorStateRef.current.jsonOptions,
+      })
+
+      if (!didSave) {
+        setSaveState("error")
+      }
+    },
+    []
+  )
+
   React.useEffect(() => {
     if (hasLoadedPersistedStateRef.current) {
       return
@@ -379,6 +411,7 @@ export function useEditorShellState() {
       return
     }
 
+    foldStateRef.current = savedState.foldState
     setEditorState({
       markdown: savedState.markdown,
       jsonOptions: {
@@ -414,12 +447,14 @@ export function useEditorShellState() {
     jsonOptions,
     markdown,
     pendingExport,
+    persistedFoldState: foldStateRef.current,
     statusLabel,
     handleChange,
     handleExportBundle,
     handleExportMapHtml,
     handleExportMarkdown,
     handleExportMarkdownPdf,
+    handleFoldStateChange,
     handleImport,
     handleImportClick,
     handleInsertTemplate,
