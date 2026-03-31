@@ -1517,3 +1517,8 @@ Listed in rough priority order:
   - `corepack pnpm typecheck` passes
   - `corepack pnpm lint` passes
   - `corepack pnpm build` compiled successfully, then failed in this environment with `spawn EPERM` during the post-compile build phase
+
+## Session 68 - Playground split ratio adjustment
+
+- Updated the playground editor split in `components/editor/editor-shell.tsx` so desktop layouts now use a `35% / divider / 65%` grid for markdown and map panels.
+- This change applies only to the playground editor shell; the markdown editor styling/content area and the marketing demo split remain unchanged.

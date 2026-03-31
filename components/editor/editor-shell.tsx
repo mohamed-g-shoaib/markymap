@@ -64,7 +64,7 @@ export function EditorShell() {
         }}
       />
       <Card className="overflow-hidden motion-fade sm:min-h-0 sm:flex-1">
-        <div className="grid grid-cols-1 grid-rows-[32rem_auto_32rem] sm:min-h-0 sm:flex-1 sm:grid-cols-[1fr_auto_1fr] sm:grid-rows-1">
+        <div className="grid grid-cols-1 grid-rows-[32rem_auto_32rem] sm:min-h-0 sm:flex-1 sm:grid-cols-[minmax(0,35%)_auto_minmax(0,65%)] sm:grid-rows-1">
           <MarkdownInput
             markdown={markdown}
             onChange={handleChange}
