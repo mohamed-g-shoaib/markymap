@@ -1612,3 +1612,15 @@ Listed in rough priority order:
 - Validation:
   - `get_errors` reports no issues in touched files
   - `corepack pnpm lint` passes (0 warnings / 0 errors)
+
+## Session 76 - Homepage zoom restricted to mobile only
+
+- Updated `app/(marketing)/ui/demo.tsx` so homepage map zoom interactions are disabled on desktop (`min-width: 1024px`) and allowed only on mobile.
+- Implementation details:
+  - introduced `useMediaQuery("(min-width: 1024px)")` in the demo component
+  - interaction configuration now re-runs when viewport crosses the breakpoint
+  - desktop path fully detaches zoom handlers
+  - mobile path keeps zoom and limits touch zoom to multi-touch gestures (pinch)
+- Validation:
+  - `get_errors` reports no issues in touched file
+  - `corepack pnpm lint` passes (0 warnings / 0 errors)

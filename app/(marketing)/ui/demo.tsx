@@ -8,6 +8,7 @@ import { Transformer } from "markmap-lib"
 import { Card } from "@/components/ui/card"
 import { DEMO_SEED } from "@/app/(marketing)/ui/demo-seed"
 import { MarkdownPreview } from "@/components/editor/markdown-preview"
+import { useMediaQuery } from "@/hooks/use-media-query"
 import {
   DEFAULT_MARKMAP_JSON_OPTIONS,
   type MarkmapJsonOptions,
@@ -15,6 +16,8 @@ import {
 import { getMarkmapTransformSnapshot } from "@/lib/markmap-transform"
 
 const transformer = new Transformer()
+const demoCardHeightClass =
+  "h-107.5 overflow-hidden lg:h-[42dvh] lg:max-h-120 xl:h-[46dvh] 2xl:h-[52dvh]"
 
 function getDemoOptions(frontmatterOptions: MarkmapJsonOptions) {
   return deriveOptions({
@@ -36,12 +39,28 @@ function ensureSvgSize(svg: SVGSVGElement) {
   svg.setAttribute("height", String(height))
 }
 
-function configureMapInteractions(mm: Markmap) {
+function configureMapInteractions(mm: Markmap, isDesktop: boolean) {
+  if (isDesktop) {
+    mm.zoom.filter(() => false)
+    mm.svg.on(".zoom", null)
+    return
+  }
+
   mm.zoom.filter((event: Event) => {
     const interactionEvent = event as Event & {
       button?: number
       ctrlKey?: boolean
       type: string
+      touches?: { length: number }
+    }
+
+    if (
+      interactionEvent.type === "touchstart" ||
+      interactionEvent.type === "touchmove"
+    ) {
+      return Boolean(
+        interactionEvent.touches && interactionEvent.touches.length > 1
+      )
     }
 
     if (interactionEvent.type !== "wheel") {
@@ -59,6 +78,7 @@ function configureMapInteractions(mm: Markmap) {
 }
 
 export function LiveDemoSection() {
+  const isDesktop = useMediaQuery("(min-width: 1024px)")
   const svgRef = React.useRef<SVGSVGElement>(null)
   const mmRef = React.useRef<Markmap | null>(null)
 
@@ -79,7 +99,7 @@ export function LiveDemoSection() {
       snapshot.root
     )
 
-    configureMapInteractions(mm)
+    configureMapInteractions(mm, isDesktop)
     mmRef.current = mm
   })
 
@@ -91,6 +111,12 @@ export function LiveDemoSection() {
       mmRef.current = null
     }
   }, [])
+
+  React.useEffect(() => {
+    if (!mmRef.current) return
+
+    configureMapInteractions(mmRef.current, isDesktop)
+  }, [isDesktop])
 
   const handleResize = React.useEffectEvent(() => {
     if (!svgRef.current || !mmRef.current) return
@@ -120,14 +146,14 @@ export function LiveDemoSection() {
   return (
     <section id="demo" className="flex flex-col">
       <div className="grid gap-3 lg:grid-cols-2">
-        <Card className="h-107.5 overflow-hidden lg:h-140">
+        <Card className={demoCardHeightClass}>
           <div className="size-full p-1">
             <div className="size-full overflow-hidden rounded-xl border border-border/70 bg-background">
               <svg ref={svgRef} className="size-full" />
             </div>
           </div>
         </Card>
-        <Card className="h-107.5 overflow-hidden lg:h-140">
+        <Card className={demoCardHeightClass}>
           <div className="size-full p-1">
             <MarkdownPreview
               markdown={DEMO_SEED}
