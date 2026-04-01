@@ -1534,3 +1534,36 @@ Listed in rough priority order:
 - Updated `app/(marketing)/ui/hero.tsx` copy to align with teaser intent: homepage previews output, while full editing/export happens in playground.
 - Validation:
   - file-level diagnostics clean for touched marketing files (`demo.tsx`, `hero.tsx`)
+
+## Session 70 - Homepage demo split-view redesign (map + markdown side-by-side)
+
+- Refactored `app/(marketing)/ui/demo.tsx` into a simpler split layout:
+  - removed top control bar entirely (no `Map | Markdown` switch, no `Fit` button)
+  - homepage demo now always renders both panes together
+  - mobile: stacked cards
+  - desktop (`lg+`): two columns
+- Updated map behavior in homepage demo:
+  - forced map interactions off (`zoom: false`, `pan: false`)
+  - explicitly disabled zoom/drag handlers on the markmap instance for static preview behavior
+- Implemented same-height wrapped surfaces for both demo panes:
+  - map and markdown each render inside matching bordered rounded wrappers within cards
+- Added reusable scroll-fade system and wired it to markdown preview scrolling:
+  - new component: `components/ui/scroll-fade-effect.tsx`
+  - new global utilities/properties in `app/globals.css`:
+    - `scroll-fade-effect-y`
+    - `scroll-fade-effect-x`
+    - supporting `@property` and keyframes for scroll-linked masks
+  - updated `components/editor/markdown-preview.tsx` to use `ScrollFadeEffect` as the scroll container and accept `className` overrides
+- Validation:
+  - `corepack pnpm typecheck` passes
+  - `corepack pnpm lint` passes (0 warnings / 0 errors)
+  - `get_errors` reports no issues in touched files (`app/(marketing)/ui/demo.tsx`, `components/editor/markdown-preview.tsx`, `components/ui/scroll-fade-effect.tsx`, `app/globals.css`)
+
+## Session 71 - Scroll fade moved off bordered markdown wrapper
+
+- Adjusted `components/editor/markdown-preview.tsx` so border/radius/background classes are applied to an outer wrapper, while the scroll fade mask lives on an inner scroll container.
+- Result: fade effect now affects markdown content edges only and no longer masks the bordered wrapper edge.
+- Updated `app/(marketing)/ui/demo.tsx` to remove direct `scroll-fade-effect-y` usage from the passed `className` and keep only surface styles (`h-full rounded-xl border ...`).
+- Validation:
+  - `get_errors` reports no issues in touched files
+  - `corepack pnpm lint` passes (0 warnings / 0 errors)
