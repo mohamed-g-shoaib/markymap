@@ -705,6 +705,22 @@ html {
   }
 }
 
+@utility scrollbar-hidden {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+
+  &::-webkit-scrollbar-thumb,
+  &::-webkit-scrollbar-track {
+    background: transparent !important;
+  }
+}
+
 @utility text-link {
   display: inline-block;
   max-width: 100%;

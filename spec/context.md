@@ -1575,3 +1575,19 @@ Listed in rough priority order:
 - Validation:
   - `get_errors` reports no issues in touched files
   - `corepack pnpm lint` passes (0 warnings / 0 errors)
+
+## Session 73 - Homepage demo height + scrollbar hide follow-up
+
+- Addressed homepage demo feedback after initial sizing/fade pass.
+- Updated `app/(marketing)/ui/demo.tsx`:
+  - mobile panel heights remain fixed to `430px` (`h-107.5`)
+  - increased desktop panel height to `480px` (`lg:h-120`) to avoid overly short rendering surfaces
+  - kept homepage map behavior as zoom-enabled with drag/pan disabled
+  - homepage markdown preview now requests hidden scrollbars via `scrollClassName="scrollbar-hidden"`
+- Updated `components/editor/markdown-preview.tsx`:
+  - when `scrollbar-hidden` is requested, preview no longer applies `scrollbar-subtle` simultaneously (prevents style conflict)
+- Updated `app/globals.css`:
+  - hardened `scrollbar-hidden` utility for cross-engine behavior (`scrollbar-width: none`, hidden webkit scrollbar + transparent thumb/track)
+- Validation:
+  - `get_errors` reports no issues in touched files
+  - `corepack pnpm lint` passes (0 warnings / 0 errors)

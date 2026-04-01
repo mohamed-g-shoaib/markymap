@@ -20,7 +20,7 @@ function getDemoOptions(frontmatterOptions: MarkmapJsonOptions) {
   return deriveOptions({
     ...DEFAULT_MARKMAP_JSON_OPTIONS,
     ...frontmatterOptions,
-    zoom: false,
+    zoom: true,
     pan: false,
   })
 }
@@ -36,9 +36,26 @@ function ensureSvgSize(svg: SVGSVGElement) {
   svg.setAttribute("height", String(height))
 }
 
-function disableMapInteractions(mm: Markmap) {
-  mm.zoom.filter(() => false)
-  mm.svg.on(".zoom", null)
+function configureMapInteractions(mm: Markmap) {
+  mm.zoom.filter((event: Event) => {
+    const interactionEvent = event as Event & {
+      button?: number
+      ctrlKey?: boolean
+      type: string
+    }
+
+    if (interactionEvent.type !== "wheel") {
+      return false
+    }
+
+    if (mm.options.scrollForPan) {
+      return Boolean(interactionEvent.ctrlKey) && !interactionEvent.button
+    }
+
+    return !interactionEvent.button
+  })
+
+  mm.svg.call(mm.zoom)
 }
 
 export function LiveDemoSection() {
@@ -62,7 +79,7 @@ export function LiveDemoSection() {
       snapshot.root
     )
 
-    disableMapInteractions(mm)
+    configureMapInteractions(mm)
     mmRef.current = mm
   })
 
@@ -101,20 +118,21 @@ export function LiveDemoSection() {
   }, [])
 
   return (
-    <section id="demo" className="flex min-h-0 flex-1 flex-col">
-      <div className="grid gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-2">
-        <Card className="min-h-104 overflow-hidden lg:h-full lg:min-h-0">
+    <section id="demo" className="flex flex-col">
+      <div className="grid gap-3 lg:grid-cols-2">
+        <Card className="h-107.5 overflow-hidden lg:h-140">
           <div className="size-full p-1">
             <div className="size-full overflow-hidden rounded-xl border border-border/70 bg-background">
               <svg ref={svgRef} className="size-full" />
             </div>
           </div>
         </Card>
-        <Card className="min-h-104 overflow-hidden lg:h-full lg:min-h-0">
+        <Card className="h-107.5 overflow-hidden lg:h-140">
           <div className="size-full p-1">
             <MarkdownPreview
               markdown={DEMO_SEED}
               className="h-full rounded-xl border border-border/70 bg-background"
+              scrollClassName="scrollbar-hidden"
             />
           </div>
         </Card>
