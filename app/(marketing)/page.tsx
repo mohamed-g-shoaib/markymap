@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 
 import { HeroSection } from "@/app/(marketing)/ui/hero"
 import { LiveDemoSection } from "@/app/(marketing)/ui/demo"
+import { FooterSection } from "@/app/(marketing)/ui/footer"
 import { PageContainer } from "@/app/(marketing)/ui/page-container"
 
 export const metadata: Metadata = {
@@ -32,6 +33,7 @@ export default function MarketingPage() {
       <PageContainer className="flex min-h-0 flex-col">
         <LiveDemoSection />
       </PageContainer>
+      <FooterSection />
     </main>
   )
 }
