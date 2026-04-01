@@ -1522,3 +1522,15 @@ Listed in rough priority order:
 
 - Updated the playground editor split in `components/editor/editor-shell.tsx` so desktop layouts now use a `35% / divider / 65%` grid for markdown and map panels.
 - This change applies only to the playground editor shell; the markdown editor styling/content area and the marketing demo split remain unchanged.
+
+## Session 69 - Homepage demo converted to render-only teaser (mobile-first)
+
+- Updated `app/(marketing)/ui/demo.tsx` to remove the homepage markdown editor pane while keeping rendered outputs only.
+- Preserved the right-side controls expected for demo clarity:
+  - `Map | Markdown` switch remains available via `MapMarkdownSwitch`
+  - `Fit` button remains available in map mode
+- Removed the extra in-demo `Open playground` button to avoid duplicate CTA competition with the hero CTA.
+- Kept homepage behavior mobile-first by using a single-panel demo surface with responsive sizing (`min-h-104` on small screens, `sm:min-h-0` on larger screens).
+- Updated `app/(marketing)/ui/hero.tsx` copy to align with teaser intent: homepage previews output, while full editing/export happens in playground.
+- Validation:
+  - file-level diagnostics clean for touched marketing files (`demo.tsx`, `hero.tsx`)
