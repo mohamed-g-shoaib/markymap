@@ -1591,3 +1591,12 @@ Listed in rough priority order:
 - Validation:
   - `get_errors` reports no issues in touched files
   - `corepack pnpm lint` passes (0 warnings / 0 errors)
+
+## Session 74 - Homepage vertical centering update
+
+- Updated `app/(marketing)/page.tsx` to center homepage content block on larger screens:
+  - added `sm:justify-center` to the main marketing layout container
+  - removed `flex-1` stretching from the demo wrapper `PageContainer` so hero + demo center together rather than pinning the demo toward the top
+- Validation:
+  - `get_errors` reports no issues in touched files
+  - `corepack pnpm lint` passes (0 warnings / 0 errors)
