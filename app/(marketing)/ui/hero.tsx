@@ -1,10 +1,10 @@
-import Link from "next/link";
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import Link from "next/link"
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 
-import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { PageContainer } from "@/app/(marketing)/ui/page-container";
+import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { PageContainer } from "@/app/(marketing)/ui/page-container"
 
 export function HeroSection() {
   return (
@@ -27,10 +27,10 @@ export function HeroSection() {
                 color="currentColor"
               />
             </Button>
-            <ThemeToggle size="icon" className="order-2" />
+            <ThemeToggle size="icon" className="order-2" useSwitchSound />
           </div>
         </div>
       </PageContainer>
     </section>
-  );
+  )
 }

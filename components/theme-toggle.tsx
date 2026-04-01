@@ -5,18 +5,36 @@ import { HugeiconsIcon } from "@hugeicons/react"
 
 import { useTheme } from "@/components/theme-provider"
 import { Button } from "@/components/ui/button"
+import { useSound } from "@/hooks/use-sound"
+import { switchOffSound } from "@/lib/audio/switch-off"
+import { switchOnSound } from "@/lib/audio/switch-on"
 import { cn } from "@/lib/utils"
 
 type ThemeToggleProps = {
   className?: string
   size?: React.ComponentProps<typeof Button>["size"]
+  useSwitchSound?: boolean
 }
 
-function ThemeToggle({ className, size = "icon-sm" }: ThemeToggleProps) {
+function ThemeToggle({
+  className,
+  size = "icon-sm",
+  useSwitchSound = false,
+}: ThemeToggleProps) {
   const { resolvedTheme, setTheme } = useTheme()
+  const [playSwitchOn] = useSound(switchOnSound, { interrupt: true })
+  const [playSwitchOff] = useSound(switchOffSound, { interrupt: true })
   const isDark = resolvedTheme === "dark"
 
   const handleToggleTheme = () => {
+    if (useSwitchSound) {
+      if (isDark) {
+        playSwitchOn()
+      } else {
+        playSwitchOff()
+      }
+    }
+
     setTheme(isDark ? "light" : "dark")
   }
 
@@ -25,6 +43,7 @@ function ThemeToggle({ className, size = "icon-sm" }: ThemeToggleProps) {
       size={size}
       variant="outline"
       onClick={handleToggleTheme}
+      data-click-sound={useSwitchSound ? "off" : undefined}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       className={cn("relative", className)}
     >
