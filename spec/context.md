@@ -1567,3 +1567,11 @@ Listed in rough priority order:
 - Validation:
   - `get_errors` reports no issues in touched files
   - `corepack pnpm lint` passes (0 warnings / 0 errors)
+
+## Session 72 - Playground scroll fade on text and markdown sides
+
+- Added vertical scroll fade effect to the playground markdown editor text area in `components/editor/markdown-input.tsx` by applying `scroll-fade-effect-y` on the textarea scroll container.
+- Updated playground markdown-preview render in `components/editor/markmap-canvas.tsx` to pass explicit full-height class (`className="h-full"`) while keeping preview-side fade behavior from `MarkdownPreview`.
+- Validation:
+  - `get_errors` reports no issues in touched files
+  - `corepack pnpm lint` passes (0 warnings / 0 errors)

@@ -37,7 +37,7 @@ export function MarkdownInput({
         <textarea
           value={markdown}
           onChange={(event) => onChange(event.target.value)}
-          className="scrollbar-subtle size-full min-h-0 resize-none overflow-x-hidden overflow-y-auto border-0 bg-transparent p-4 font-mono text-sm text-foreground outline-none"
+          className="scrollbar-subtle size-full min-h-0 resize-none overflow-x-hidden overflow-y-auto border-0 bg-transparent scroll-fade-effect-y p-4 font-mono text-sm text-foreground outline-none"
         />
       </div>
     </div>
