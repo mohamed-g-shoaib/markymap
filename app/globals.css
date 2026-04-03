@@ -8,6 +8,106 @@ html {
   scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0ms !important;
+  }
+}
+
+:root {
+  --vt-duration-exit: 150ms;
+  --vt-duration-enter: 210ms;
+  --vt-duration-move: 400ms;
+}
+
+@keyframes vt-fade {
+  from {
+    filter: blur(3px);
+    opacity: 0;
+  }
+
+  to {
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+@keyframes vt-slide-y {
+  from {
+    transform: translateY(var(--vt-slide-y-offset, 10px));
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes vt-slide-x {
+  from {
+    translate: var(--vt-slide-x-offset);
+  }
+
+  to {
+    translate: 0;
+  }
+}
+
+@keyframes vt-via-blur {
+  30% {
+    filter: blur(3px);
+  }
+}
+
+::view-transition-old(.slide-down) {
+  animation:
+    var(--vt-duration-exit) ease-out both vt-fade reverse,
+    var(--vt-duration-exit) ease-out both vt-slide-y reverse;
+}
+
+::view-transition-new(.slide-up) {
+  animation:
+    var(--vt-duration-enter) ease-in var(--vt-duration-exit) both vt-fade,
+    var(--vt-duration-move) ease-in both vt-slide-y;
+}
+
+::view-transition-old(.nav-forward) {
+  --vt-slide-x-offset: -60px;
+  animation:
+    var(--vt-duration-exit) ease-in both vt-fade reverse,
+    var(--vt-duration-move) ease-in-out both vt-slide-x reverse;
+}
+
+::view-transition-new(.nav-forward) {
+  --vt-slide-x-offset: 60px;
+  animation:
+    var(--vt-duration-enter) ease-out var(--vt-duration-exit) both vt-fade,
+    var(--vt-duration-move) ease-in-out both vt-slide-x;
+}
+
+::view-transition-old(.nav-back) {
+  --vt-slide-x-offset: 60px;
+  animation:
+    var(--vt-duration-exit) ease-in both vt-fade reverse,
+    var(--vt-duration-move) ease-in-out both vt-slide-x reverse;
+}
+
+::view-transition-new(.nav-back) {
+  --vt-slide-x-offset: -60px;
+  animation:
+    var(--vt-duration-enter) ease-out var(--vt-duration-exit) both vt-fade,
+    var(--vt-duration-move) ease-in-out both vt-slide-x;
+}
+
+::view-transition-group(.morph) {
+  animation-duration: var(--vt-duration-move);
+}
+
+::view-transition-image-pair(.morph) {
+  animation-name: vt-via-blur;
+}
+
 :root {
   --syntax-fg: #1f2937;
   --syntax-comment: #64748b;
