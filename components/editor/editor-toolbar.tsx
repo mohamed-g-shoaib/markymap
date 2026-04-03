@@ -18,7 +18,6 @@ import {
   MenuTrigger,
 } from "@/components/ui/menu"
 import { Spinner } from "@/components/ui/spinner"
-import { useMediaQuery } from "@/hooks/use-media-query"
 import type { SnippetKind } from "@/components/editor/editor-templates"
 
 type EditorToolbarProps = {
@@ -52,7 +51,6 @@ export function EditorToolbar({
   onSnippetsOpenChange,
   onTipsOpenChange,
 }: EditorToolbarProps) {
-  const isMobile = useMediaQuery("(max-width: 639px)")
   const [isOptionsOpen, setIsOptionsOpen] = React.useState(false)
   const hasPendingExport = pendingExport !== null
   const previousPendingExportRef = React.useRef(pendingExport)
@@ -86,11 +84,14 @@ export function EditorToolbar({
   )
 
   return (
-    <div className="flex flex-col gap-2 motion-fade sm:flex-row sm:items-center sm:justify-between">
-      <p className="text-sm text-muted-foreground">
-        Write markdown on the left and explore the live mindmap on the right.
-      </p>
-      <div className="flex w-full flex-wrap items-center justify-start gap-2 sm:w-auto sm:justify-end">
+    <div className="flex flex-col gap-3 motion-fade">
+      <div className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">Playground</h1>
+        <p className="text-sm text-muted-foreground">
+          Write markdown on the left and explore the live mindmap on the right.
+        </p>
+      </div>
+      <div className="flex w-full flex-wrap items-center justify-start gap-2">
         <Menu
           onOpenChange={handleOptionsOpenChange}
           open={hasPendingExport || isOptionsOpen}
@@ -108,7 +109,7 @@ export function EditorToolbar({
               className="motion-disclosure-chevron"
             />
           </MenuTrigger>
-          <MenuPopup align={isMobile ? "start" : "center"}>
+          <MenuPopup align="start">
             <MenuGroup>
               <MenuGroupLabel>Import / Export</MenuGroupLabel>
               <MenuItem onClick={onImportClick}>Import</MenuItem>
@@ -153,13 +154,12 @@ export function EditorToolbar({
                 )}
               </MenuItem>
             </MenuGroup>
-            <MenuSeparator />
-            <MenuGroup>
-              <MenuGroupLabel>View</MenuGroupLabel>
-              <MenuItem onClick={onReset}>Reset + Auto-fit</MenuItem>
-            </MenuGroup>
           </MenuPopup>
         </Menu>
+
+        <Button variant="outline" size="sm" onClick={onReset}>
+          Reset
+        </Button>
 
         <MindmapTipsDrawer
           isSnippetsOpen={isSnippetsOpen}
@@ -177,7 +177,7 @@ export function EditorToolbar({
         >
           <HugeiconsIcon icon={Home01Icon} size={16} color="currentColor" />
         </Button>
-        <ThemeToggle />
+        <ThemeToggle useSwitchSound />
       </div>
     </div>
   )

@@ -1351,6 +1351,51 @@ High-value files to understand before making any changes:
 - Rationale:
   - browsers are generally more reliable printing a static image source derived from SVG than printing a live inline SVG node with app-originated attributes/classes
 
+### Session 64 — Playground Toolbar Restructure + Theme Toggle Sound Parity
+
+- Updated playground header/control composition in `components/editor/editor-toolbar.tsx`:
+  - merged heading and support copy into a single top block:
+    - `Playground`
+    - `Write markdown on the left and explore the live mindmap on the right.`
+  - moved all controls to a dedicated row below the heading/copy block
+- Updated export/menu actions:
+  - renamed menu trigger label from `Options` to `Export`
+  - removed `Reset + Auto-fit` from the export menu
+  - added standalone `Reset + Auto-fit` button beside export and tips controls
+- Updated playground theme toggle behavior:
+  - changed toolbar theme toggle to `useSwitchSound` so it matches homepage theme-toggle sound behavior
+- Removed duplicate page-level playground heading in `app/(playground)/playground/page.tsx` now that toolbar owns the heading/copy block.
+- Validation:
+  - `get_errors` reports no issues in touched files.
+
+### Session 65 — Export Menu Alignment Unified
+
+- Simplified export menu popup alignment in `components/editor/editor-toolbar.tsx`:
+  - removed viewport-conditional alignment logic (`mobile start` vs `desktop center`)
+  - menu popup now always uses left/start alignment across all breakpoints
+  - removed now-unused `useMediaQuery` dependency from toolbar
+- Validation:
+  - `get_errors` reports no issues in touched file.
+
+### Session 66 — Menu Label Clarity Update
+
+- Updated the playground toolbar menu trigger label in `components/editor/editor-toolbar.tsx` from `Export` to `Import / Export` for clearer affordance.
+- Validation:
+  - `get_errors` reports no issues in touched file.
+
+### Session 67 — Reset Button Copy Simplified
+
+- Updated standalone reset action label in `components/editor/editor-toolbar.tsx` from `Reset + Auto-fit` to `Reset`.
+- Behavior remains unchanged (still performs reset workflow including fit handling).
+- Validation:
+  - `get_errors` reports no issues in touched file.
+
+### Session 68 — Menu Label Rolled Back to Options
+
+- Updated playground toolbar menu trigger label in `components/editor/editor-toolbar.tsx` from `Import / Export` back to `Options`.
+- Validation:
+  - `get_errors` reports no issues in touched file.
+
 ---
 
 ## Important Constraints And Reminders
