@@ -37,7 +37,6 @@
     "react/exhaustive-deps": "warn",
     "react/jsx-no-target-blank": "off",
     "react/no-unknown-property": "off",
-    "react/prop-types": "off",
     "react/react-in-jsx-scope": "off",
     "react/rules-of-hooks": "error",
     "jsx-a11y/alt-text": [

@@ -1396,6 +1396,13 @@ High-value files to understand before making any changes:
 - Validation:
   - `get_errors` reports no issues in touched file.
 
+### Session 69 — Oxlint Config Parse Fix
+
+- Fixed `pnpm run lint` failing to start due to unsupported rule key in `.oxlintrc.json`.
+- Removed `react/prop-types` from configured rules because current `oxlint` (`1.58.0`) does not expose that rule in the React plugin and rejects unknown rule IDs during config parsing.
+- Validation:
+  - `pnpm run lint` now succeeds with `0 warnings` and `0 errors`.
+
 ---
 
 ## Important Constraints And Reminders
