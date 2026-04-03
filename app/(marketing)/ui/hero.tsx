@@ -3,6 +3,7 @@ import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 
 import { Button } from "@/components/ui/button"
+import { SoundToggle } from "@/components/sound-toggle"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { PageContainer } from "@/app/(marketing)/ui/page-container"
 
@@ -18,7 +19,7 @@ export function HeroSection() {
             Preview the map instantly here, then open the playground to edit
             markdown, switch views, and export your final result.
           </p>
-          <div className="hero-delay-200 flex animate-hero-enter flex-row items-center gap-3 sm:gap-4">
+          <div className="hero-delay-200 flex animate-hero-enter flex-row items-center gap-2.5 sm:gap-3">
             <Button
               className="order-1"
               render={
@@ -32,7 +33,10 @@ export function HeroSection() {
                 color="currentColor"
               />
             </Button>
-            <ThemeToggle size="icon" className="order-2" useSwitchSound />
+            <div className="order-2 inline-flex items-center gap-2">
+              <ThemeToggle size="icon" useSwitchSound />
+              <SoundToggle size="icon" />
+            </div>
           </div>
         </div>
       </PageContainer>

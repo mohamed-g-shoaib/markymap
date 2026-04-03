@@ -14,10 +14,15 @@ type ResolvedTheme = "light" | "dark"
 const THEME_COOKIE_KEY = "theme"
 const RESOLVED_THEME_COOKIE_KEY = "theme-resolved"
 const THEME_COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 365
+const SOUND_STORAGE_KEY = "markymap:sound-enabled"
+const DEFAULT_SOUND_ENABLED = process.env.NEXT_PUBLIC_SOUNDS_ENABLED !== "false"
 
 type ThemeContextValue = {
   resolvedTheme: ResolvedTheme
+  soundEnabled: boolean
   setTheme: (theme: Theme) => void
+  setSoundEnabled: (enabled: boolean) => void
+  toggleSoundEnabled: () => void
 }
 
 const ThemeContext = React.createContext<ThemeContextValue | null>(null)
@@ -80,6 +85,32 @@ function setResolvedThemeCookie(resolvedTheme: ResolvedTheme) {
   document.cookie = `${RESOLVED_THEME_COOKIE_KEY}=${encodeURIComponent(resolvedTheme)}; path=/; max-age=${THEME_COOKIE_MAX_AGE_SECONDS}; samesite=lax`
 }
 
+function getStoredSoundEnabled() {
+  if (typeof window === "undefined") {
+    return DEFAULT_SOUND_ENABLED
+  }
+
+  const storedValue = window.localStorage.getItem(SOUND_STORAGE_KEY)
+
+  if (storedValue === "true") {
+    return true
+  }
+
+  if (storedValue === "false") {
+    return false
+  }
+
+  return DEFAULT_SOUND_ENABLED
+}
+
+function persistSoundEnabled(enabled: boolean) {
+  if (typeof window === "undefined") {
+    return
+  }
+
+  window.localStorage.setItem(SOUND_STORAGE_KEY, String(enabled))
+}
+
 function applyTheme(resolvedTheme: ResolvedTheme) {
   const root = document.documentElement
   root.classList.toggle("dark", resolvedTheme === "dark")
@@ -114,6 +145,9 @@ function ThemeProvider({
   const [theme, setThemeState] = React.useState<Theme>(initialTheme)
   const [resolvedTheme, setResolvedTheme] = React.useState<ResolvedTheme>(
     initialTheme === "system" ? "light" : initialTheme
+  )
+  const [soundEnabled, setSoundEnabledState] = React.useState(() =>
+    getStoredSoundEnabled()
   )
 
   React.useEffect(() => {
@@ -161,9 +195,28 @@ function ThemeProvider({
     setResolvedThemeCookie(nextResolvedTheme)
   }, [])
 
+  const setSoundEnabled = React.useCallback((enabled: boolean) => {
+    setSoundEnabledState(enabled)
+    persistSoundEnabled(enabled)
+  }, [])
+
+  const toggleSoundEnabled = React.useCallback(() => {
+    setSoundEnabledState((previousState) => {
+      const nextState = !previousState
+      persistSoundEnabled(nextState)
+      return nextState
+    })
+  }, [])
+
   const contextValue = React.useMemo(
-    () => ({ resolvedTheme, setTheme }),
-    [resolvedTheme, setTheme]
+    () => ({
+      resolvedTheme,
+      soundEnabled,
+      setTheme,
+      setSoundEnabled,
+      toggleSoundEnabled,
+    }),
+    [resolvedTheme, soundEnabled, setTheme, setSoundEnabled, toggleSoundEnabled]
   )
 
   return (
@@ -228,11 +281,22 @@ function getMarkmapToggleTarget(target: EventTarget | null) {
 }
 
 function ClickSound() {
+  const themeContext = React.useContext(ThemeContext)
+
+  if (!themeContext) {
+    throw new Error("ClickSound must be used within ThemeProvider")
+  }
+
+  const { soundEnabled } = themeContext
   const [playClickSound] = useSound(clickSoftSound, { interrupt: true })
   const [playCollapseSound] = useSound(drop001Sound, { interrupt: true })
   const [playExpandSound] = useSound(drop004Sound, { interrupt: true })
 
   const onClick = React.useEffectEvent((event: MouseEvent) => {
+    if (!soundEnabled) {
+      return
+    }
+
     const markmapToggle = getMarkmapToggleTarget(event.target)
     if (markmapToggle) {
       const willExpand =
@@ -272,19 +336,20 @@ function ThemeHotkey() {
     throw new Error("ThemeHotkey must be used within ThemeProvider")
   }
 
-  const { resolvedTheme, setTheme } = themeContext
+  const { resolvedTheme, setTheme, soundEnabled } = themeContext
   const [playSwitchOn] = useSound(switchOnSound, { interrupt: true })
   const [playSwitchOff] = useSound(switchOffSound, { interrupt: true })
 
   const toggleTheme = React.useEffectEvent(() => {
-    if (resolvedTheme === "dark") {
-      playSwitchOn()
-      setTheme("light")
-      return
+    if (soundEnabled) {
+      if (resolvedTheme === "dark") {
+        playSwitchOn()
+      } else {
+        playSwitchOff()
+      }
     }
 
-    playSwitchOff()
-    setTheme("dark")
+    setTheme(resolvedTheme === "dark" ? "light" : "dark")
   })
 
   React.useEffect(() => {

@@ -21,13 +21,13 @@ function ThemeToggle({
   size = "icon-sm",
   useSwitchSound = false,
 }: ThemeToggleProps) {
-  const { resolvedTheme, setTheme } = useTheme()
+  const { resolvedTheme, setTheme, soundEnabled } = useTheme()
   const [playSwitchOn] = useSound(switchOnSound, { interrupt: true })
   const [playSwitchOff] = useSound(switchOffSound, { interrupt: true })
   const isDark = resolvedTheme === "dark"
 
   const handleToggleTheme = () => {
-    if (useSwitchSound) {
+    if (useSwitchSound && soundEnabled) {
       if (isDark) {
         playSwitchOn()
       } else {

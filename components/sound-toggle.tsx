@@ -1,0 +1,57 @@
+"use client"
+
+import { VolumeHighIcon, VolumeOffIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+
+import { useTheme } from "@/components/theme-provider"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+
+type SoundToggleProps = {
+  className?: string
+  size?: React.ComponentProps<typeof Button>["size"]
+}
+
+function SoundToggle({ className, size = "icon-sm" }: SoundToggleProps) {
+  const { soundEnabled, toggleSoundEnabled } = useTheme()
+
+  return (
+    <Button
+      size={size}
+      variant="outline"
+      onClick={toggleSoundEnabled}
+      data-click-sound="off"
+      aria-label={
+        soundEnabled ? "Mute interaction sounds" : "Unmute interaction sounds"
+      }
+      className={cn("relative", className)}
+    >
+      <span className="relative size-4">
+        <span
+          className={cn(
+            "absolute inset-0 flex items-center justify-center transition-[opacity,transform,filter] duration-180 ease-[cubic-bezier(0.2,0,0,1)]",
+            soundEnabled
+              ? "blur-0 scale-100 opacity-100"
+              : "scale-[0.25] opacity-0 blur-xs"
+          )}
+          aria-hidden="true"
+        >
+          <HugeiconsIcon icon={VolumeHighIcon} size={16} color="currentColor" />
+        </span>
+        <span
+          className={cn(
+            "absolute inset-0 flex items-center justify-center transition-[opacity,transform,filter] duration-180 ease-[cubic-bezier(0.2,0,0,1)]",
+            soundEnabled
+              ? "scale-[0.25] opacity-0 blur-xs"
+              : "blur-0 scale-100 opacity-100"
+          )}
+          aria-hidden="true"
+        >
+          <HugeiconsIcon icon={VolumeOffIcon} size={16} color="currentColor" />
+        </span>
+      </span>
+    </Button>
+  )
+}
+
+export { SoundToggle }
