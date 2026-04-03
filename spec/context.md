@@ -1403,6 +1403,83 @@ High-value files to understand before making any changes:
 - Validation:
   - `pnpm run lint` now succeeds with `0 warnings` and `0 errors`.
 
+### Session 70 — Added View Transitions Skill + Applicability Audit
+
+- Added new installed skill to `spec/skills.md`:
+  - `vercel-react-view-transitions` (`.agents/skills/vercel-react-view-transitions/`)
+  - included index row and dedicated section with purpose, top rules, and available files.
+- Ran rule-based applicability audit (not just usage detection) against current app flows.
+- Highest-value candidate areas identified:
+  - route transitions between marketing and playground (`app/(marketing)/ui/hero.tsx`, `components/editor/editor-toolbar.tsx`, `app/layout.tsx`)
+  - map/markdown panel switching in editor (`components/editor/markmap-controls-bar.tsx`, `components/editor/markmap-canvas.tsx`, `components/editor/map-markdown-switch.tsx`)
+  - optional shared-element continuity between landing demo and playground map surface (`app/(marketing)/ui/demo.tsx`, `components/editor/markmap-canvas.tsx`)
+- Key adoption notes from the skill docs for this repo:
+  - enable `experimental.viewTransition` in `next.config.mjs` before using `transitionTypes` on Next links
+  - default new ViewTransition boundaries to `default=\"none\"` and opt in specific triggers only
+  - keep directional route transitions at page level (not layout wrapper) to avoid nested VT suppression
+  - include reduced-motion CSS recipes in global styles for accessibility compliance
+
+### Session 71 — View Transitions Step 1/2 Implemented
+
+- Enabled Next.js View Transition support in `next.config.mjs`:
+  - `experimental.viewTransition: true`
+- Applied typed route navigation intent on cross-route links:
+  - marketing -> playground (`app/(marketing)/ui/hero.tsx`): `transitionTypes={["nav-forward"]}`
+  - playground -> marketing (`components/editor/editor-toolbar.tsx`): `transitionTypes={["nav-back"]}`
+- Added reduced-motion safeguard in `app/globals.css` for view-transition pseudo-elements to avoid motion for users who prefer reduced motion.
+- Validation:
+  - `pnpm run lint` passes (0 warnings / 0 errors)
+  - `pnpm run typecheck` passes
+
+### Session 72 — Map/Markdown View Transition Layer Added
+
+- Implemented first state-change View Transition boundary for playground panel switching.
+- Updated `components/editor/map-markdown-switch.tsx`:
+  - wrapped `onViewChange(...)` calls in `startTransition(...)` so React view transitions are activated by the toggle interactions.
+- Updated `components/editor/markmap-canvas.tsx`:
+  - added `<ViewTransition default="none" enter="slide-up" exit="slide-down">` around markdown panel rendering.
+  - keeps map SVG lifecycle intact (map surface remains mounted logic-wise) while animating markdown panel enter/exit.
+- Updated `app/globals.css`:
+  - added View Transition CSS recipe classes used by the new boundary (`slide-up` / `slide-down`) with local timing variables and keyframes.
+- Validation:
+  - `pnpm run lint` passes (0 warnings / 0 errors)
+  - `pnpm run typecheck` passes
+  - `get_errors` reports no issues in touched files
+
+### Session 73 — Route-Level Directional View Transitions Added
+
+- Implemented page-level directional ViewTransition wrappers (type-keyed, explicit opt-in) for both routes:
+  - `app/(marketing)/page.tsx`
+  - `app/(playground)/playground/page.tsx`
+- Wrapper configuration uses type maps for `nav-forward` / `nav-back` with `default: "none"` and component `default="none"` to avoid unwanted global cross-fades.
+- Added directional CSS recipes in `app/globals.css` for:
+  - `::view-transition-old(.nav-forward)`
+  - `::view-transition-new(.nav-forward)`
+  - `::view-transition-old(.nav-back)`
+  - `::view-transition-new(.nav-back)`
+  - plus supporting horizontal keyframe (`vt-slide-x`)
+- This completes the initial route transition wiring started with typed `transitionTypes` on cross-route links.
+- Validation:
+  - `pnpm run lint` passes (0 warnings / 0 errors)
+  - `pnpm run typecheck` passes
+  - `get_errors` reports no issues in touched files
+
+### Session 74 — Shared-Element Transition (Demo Surface <-> Editor Surface)
+
+- Implemented shared-element continuity between landing demo and playground editor using named ViewTransition pairs:
+  - `app/(marketing)/ui/demo.tsx`
+    - wrapped map demo card with `<ViewTransition name="editor-surface" share="morph" default="none">`
+  - `components/editor/editor-shell.tsx`
+    - wrapped main editor card with matching `<ViewTransition name="editor-surface" share="morph" default="none">`
+- Added morph CSS recipe support in `app/globals.css`:
+  - `::view-transition-group(.morph)` duration control
+  - `::view-transition-image-pair(.morph)` blur-through keyframe (`vt-via-blur`)
+- Result: route transitions now have directional page motion plus shared-surface morph continuity for the primary map/editor card.
+- Validation:
+  - `pnpm run lint` passes (0 warnings / 0 errors)
+  - `pnpm run typecheck` passes
+  - `get_errors` reports no issues in touched files
+
 ---
 
 ## Important Constraints And Reminders

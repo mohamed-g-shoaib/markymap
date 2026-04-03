@@ -18,21 +18,22 @@ Skills in this repository live under `.agents/skills/`. Depending on the skill p
 
 ## Skills Index
 
-| #   | Skill                                                         | Publisher      | Version / Notes                              | Path                                           |
-| --- | ------------------------------------------------------------- | -------------- | -------------------------------------------- | ---------------------------------------------- | --- | --- | ---------------------- | ------- | --------------------------- | ---------------------- |
-| 1   | [Vercel React Best Practices](#1-vercel-react-best-practices) | Vercel         | `v1.0.0`                                     | `.agents/skills/vercel-react-best-practices/`  |
-| 2   | [Next.js Best Practices](#2-nextjs-best-practices)            | Project-local  | Topic index skill                            | `.agents/skills/next-best-practices/`          |
-| 3   | [React Composition Patterns](#3-react-composition-patterns)   | Vercel         | `v1.0.0`                                     | `.agents/skills/vercel-composition-patterns/`  |
-| 4   | [Design Engineering](#4-design-engineering)                   | Project-local  | Single-file skill                            | `.agents/skills/emil-design-eng/`              |
-| 5   | [React useEffect](#5-react-useeffect)                         | Project-local  | Official-docs-inspired guidance              | `.agents/skills/react-useeffect/`              |
-| 6   | [SEO Audit](#6-seo-audit)                                     | Project-local  | `v1.1.0`                                     | `.agents/skills/seo-audit/`                    |
-| 7   | [Make Interfaces Feel Better](#7-make-interfaces-feel-better) | Project-local  | UI polish skill with focused reference files | `.agents/skills/make-interfaces-feel-better/`  |
-| 8   | [User Interface Wiki](#8-user-interface-wiki)                 | Raphael Salaja | `v3.0.0`                                     | `.agents/skills/userinterface-wiki/`           |
-| 9   | [Tailwind CSS Patterns](#9-tailwind-css-patterns)             | Project-local  | Utility-first styling guide                  | `.agents/skills/tailwind-css-patterns/`        |
-| 10  | [Tailwind Design System](#10-tailwind-design-system)          | Project-local  | Tailwind v4 design-system skill              | `.agents/skills/tailwind-design-system/`       |
-| 11  | [TypeScript Advanced Types](#11-typescript-advanced-types)    | Project-local  | Single-file advanced type-system guide       | `.agents/skills/typescript-advanced-types/`    |     | 12  | [coss ui](#12-coss-ui) | cosscom | Components based on Base UI | `.agents/skills/coss/` |
-| 13  | [Fixing Motion Performance](#13-fixing-motion-performance)    | Project-local  | Audit and fix animation jank                 | `.agents/skills/fixing-motion-performance/`    |
-| 14  | [Tailwind Advanced Layouts](#14-tailwind-advanced-layouts)    | Project-local  | Grid and Flexbox mastery                     | `.agents/skills/tailwindcss-advanced-layouts/` |
+| #   | Skill                                                              | Publisher      | Version / Notes                              | Path                                            |
+| --- | ------------------------------------------------------------------ | -------------- | -------------------------------------------- | ----------------------------------------------- | --- | --- | ---------------------- | ------- | --------------------------- | ---------------------- |
+| 1   | [Vercel React Best Practices](#1-vercel-react-best-practices)      | Vercel         | `v1.0.0`                                     | `.agents/skills/vercel-react-best-practices/`   |
+| 2   | [Next.js Best Practices](#2-nextjs-best-practices)                 | Project-local  | Topic index skill                            | `.agents/skills/next-best-practices/`           |
+| 3   | [React Composition Patterns](#3-react-composition-patterns)        | Vercel         | `v1.0.0`                                     | `.agents/skills/vercel-composition-patterns/`   |
+| 4   | [Design Engineering](#4-design-engineering)                        | Project-local  | Single-file skill                            | `.agents/skills/emil-design-eng/`               |
+| 5   | [React useEffect](#5-react-useeffect)                              | Project-local  | Official-docs-inspired guidance              | `.agents/skills/react-useeffect/`               |
+| 6   | [SEO Audit](#6-seo-audit)                                          | Project-local  | `v1.1.0`                                     | `.agents/skills/seo-audit/`                     |
+| 7   | [Make Interfaces Feel Better](#7-make-interfaces-feel-better)      | Project-local  | UI polish skill with focused reference files | `.agents/skills/make-interfaces-feel-better/`   |
+| 8   | [User Interface Wiki](#8-user-interface-wiki)                      | Raphael Salaja | `v3.0.0`                                     | `.agents/skills/userinterface-wiki/`            |
+| 9   | [Tailwind CSS Patterns](#9-tailwind-css-patterns)                  | Project-local  | Utility-first styling guide                  | `.agents/skills/tailwind-css-patterns/`         |
+| 10  | [Tailwind Design System](#10-tailwind-design-system)               | Project-local  | Tailwind v4 design-system skill              | `.agents/skills/tailwind-design-system/`        |
+| 11  | [TypeScript Advanced Types](#11-typescript-advanced-types)         | Project-local  | Single-file advanced type-system guide       | `.agents/skills/typescript-advanced-types/`     |     | 12  | [coss ui](#12-coss-ui) | cosscom | Components based on Base UI | `.agents/skills/coss/` |
+| 13  | [Fixing Motion Performance](#13-fixing-motion-performance)         | Project-local  | Audit and fix animation jank                 | `.agents/skills/fixing-motion-performance/`     |
+| 14  | [Tailwind Advanced Layouts](#14-tailwind-advanced-layouts)         | Project-local  | Grid and Flexbox mastery                     | `.agents/skills/tailwindcss-advanced-layouts/`  |
+| 15  | [Vercel React View Transitions](#15-vercel-react-view-transitions) | Vercel         | `v1.0.0`                                     | `.agents/skills/vercel-react-view-transitions/` |
 
 ---
 
@@ -489,3 +490,39 @@ A deep dive into mastering Grid Template Areas, Subgrid, Auto-fill/fit patterns,
 | File       | Description                                                       |
 | ---------- | ----------------------------------------------------------------- |
 | `SKILL.md` | Self-contained guide with patterns for Grid, Subgrid, and Flexbox |
+
+---
+
+## 15. Vercel React View Transitions
+
+**Publisher:** Vercel  
+**Version:** `1.0.0`  
+**When to load:** Implementing page or state transitions in React/Next.js using native View Transitions, including route transitions, shared elements, list reorder animation, or typed forward/back navigation motion.
+
+### Purpose
+
+Guidance for implementing smooth, native-feeling UI transitions with React's `<ViewTransition>` API and transition types, including Next.js App Router integration patterns and reduced-motion-safe CSS recipes.
+
+### Top 10 Rules by Priority
+
+1. **Implement applicable patterns in order** - shared element, suspense reveal, list identity, state enter/exit, then route change
+2. **Use `<ViewTransition>` for declaration** - never call `document.startViewTransition` directly in app code
+3. **Only transition within React transitions** - transitions are triggered by `startTransition`, `useDeferredValue`, or `Suspense`
+4. **Use `default="none"` by default** - opt into only the specific transition triggers you actually want
+5. **Use transition types for directional navigation** - tag transitions with `addTransitionType` and map typed classes on `enter`/`exit`/`share`
+6. **Use directional slides only for hierarchical or ordered navigation** - avoid false depth cues on lateral navigation
+7. **Use shared element names carefully** - each `name` must be unique per mounted tree segment
+8. **Place `<ViewTransition>` before any DOM wrapper** - wrapper placement can suppress expected enter/exit behavior
+9. **Handle browser back constraints** - `router.back()` / popstate does not trigger view transitions; prefer typed `router.push` flows when animation is required
+10. **Always include reduced-motion behavior** - apply reduced-motion CSS recipes for accessibility and graceful fallback
+
+### Available Files
+
+| File                           | Description                                                                 |
+| ------------------------------ | --------------------------------------------------------------------------- |
+| `SKILL.md`                     | Entry point with core concepts, triggers, typing, and usage constraints     |
+| `AGENTS.md`                    | Full compiled guide with expanded examples and integration guidance         |
+| `references/implementation.md` | Step-by-step implementation workflow and rollout order                      |
+| `references/patterns.md`       | Pattern cookbook (state, list, shared element, suspense, route transitions) |
+| `references/css-recipes.md`    | Ready-to-use CSS pseudo-element recipes and reduced-motion setup            |
+| `references/nextjs.md`         | Next.js-specific setup and App Router integration details                   |
