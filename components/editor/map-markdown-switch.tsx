@@ -1,5 +1,7 @@
 "use client"
 
+import { startTransition } from "react"
+
 import { Button } from "@/components/ui/button"
 
 type MapMarkdownSwitchProps = {
@@ -19,7 +21,9 @@ export function MapMarkdownSwitch({
         className="motion-surface-interaction"
         aria-pressed={activeView === "map"}
         onClick={() => {
-          onViewChange("map")
+          startTransition(() => {
+            onViewChange("map")
+          })
         }}
       >
         Map
@@ -30,7 +34,9 @@ export function MapMarkdownSwitch({
         className="motion-surface-interaction"
         aria-pressed={activeView === "markdown"}
         onClick={() => {
-          onViewChange("markdown")
+          startTransition(() => {
+            onViewChange("markdown")
+          })
         }}
       >
         Markdown

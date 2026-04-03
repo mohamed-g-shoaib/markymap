@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { ViewTransition } from "react"
 import { Transformer } from "markmap-lib"
 import { Markmap, deriveOptions, loadCSS, loadJS } from "markmap-view"
 import * as markmap from "markmap-view"
@@ -458,7 +459,9 @@ export function MarkmapCanvas({
             <svg ref={svgRef} className="size-full" />
           </div>
           {activeView === "markdown" ? (
-            <MarkdownPreview markdown={markdown} className="h-full" />
+            <ViewTransition default="none" enter="slide-up" exit="slide-down">
+              <MarkdownPreview markdown={markdown} className="h-full" />
+            </ViewTransition>
           ) : null}
         </div>
       </div>
