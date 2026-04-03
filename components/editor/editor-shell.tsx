@@ -1,5 +1,7 @@
 "use client"
 
+import { ViewTransition } from "react"
+
 import { Card } from "@/components/ui/card"
 import { EditorToolbar } from "@/components/editor/editor-toolbar"
 import { Separator } from "@/components/ui/separator"
@@ -63,28 +65,30 @@ export function EditorShell() {
           void handleImport(event)
         }}
       />
-      <Card className="overflow-hidden motion-fade sm:min-h-0 sm:flex-1">
-        <div className="grid grid-cols-1 grid-rows-[32rem_auto_32rem] sm:min-h-0 sm:flex-1 sm:grid-cols-[minmax(0,35%)_auto_minmax(0,65%)] sm:grid-rows-1">
-          <MarkdownInput
-            markdown={markdown}
-            onChange={handleChange}
-            statusLabel={statusLabel}
-            isStatusError={importedStatusIsError}
-          />
-          <Separator orientation="vertical" className="hidden sm:block" />
-          <Separator className="sm:hidden" />
-          <MarkmapCanvas
-            markdown={markdown}
-            jsonOptions={jsonOptions}
-            activeView={activeView}
-            persistedFoldState={persistedFoldState}
-            onFoldStateChange={handleFoldStateChange}
-            onJsonOptionsChange={handleJsonOptionsChange}
-            onViewChange={handleViewChange}
-            fitSignal={fitSignal}
-          />
-        </div>
-      </Card>
+      <ViewTransition name="editor-surface" share="morph" default="none">
+        <Card className="overflow-hidden motion-fade sm:min-h-0 sm:flex-1">
+          <div className="grid grid-cols-1 grid-rows-[32rem_auto_32rem] sm:min-h-0 sm:flex-1 sm:grid-cols-[minmax(0,35%)_auto_minmax(0,65%)] sm:grid-rows-1">
+            <MarkdownInput
+              markdown={markdown}
+              onChange={handleChange}
+              statusLabel={statusLabel}
+              isStatusError={importedStatusIsError}
+            />
+            <Separator orientation="vertical" className="hidden sm:block" />
+            <Separator className="sm:hidden" />
+            <MarkmapCanvas
+              markdown={markdown}
+              jsonOptions={jsonOptions}
+              activeView={activeView}
+              persistedFoldState={persistedFoldState}
+              onFoldStateChange={handleFoldStateChange}
+              onJsonOptionsChange={handleJsonOptionsChange}
+              onViewChange={handleViewChange}
+              fitSignal={fitSignal}
+            />
+          </div>
+        </Card>
+      </ViewTransition>
     </div>
   )
 }

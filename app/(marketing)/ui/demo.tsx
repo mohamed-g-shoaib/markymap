@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { ViewTransition } from "react"
 import { Markmap, deriveOptions, loadCSS, loadJS } from "markmap-view"
 import * as markmap from "markmap-view"
 import { Transformer } from "markmap-lib"
@@ -146,13 +147,15 @@ export function LiveDemoSection() {
   return (
     <section id="demo" className="flex flex-col">
       <div className="grid gap-3 lg:grid-cols-2">
-        <Card className={demoCardHeightClass}>
-          <div className="size-full p-1">
-            <div className="size-full overflow-hidden rounded-xl border border-border/70 bg-background">
-              <svg ref={svgRef} className="size-full" />
+        <ViewTransition name="editor-surface" share="morph" default="none">
+          <Card className={demoCardHeightClass}>
+            <div className="size-full p-1">
+              <div className="size-full overflow-hidden rounded-xl border border-border/70 bg-background">
+                <svg ref={svgRef} className="size-full" />
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </ViewTransition>
         <Card className={demoCardHeightClass}>
           <div className="size-full p-1">
             <MarkdownPreview
