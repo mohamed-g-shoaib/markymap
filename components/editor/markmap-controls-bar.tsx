@@ -13,7 +13,6 @@ type MarkmapControlsBarProps = {
   onExpandAll: () => void
   onFitView: () => void
   onResetView: () => void
-  onRestoreDefaults: () => void
   onToggleDrag: () => void
   onToggleZoom: () => void
   onZoomIn: () => void
@@ -29,7 +28,6 @@ export function MarkmapControlsBar({
   onExpandAll,
   onFitView,
   onResetView,
-  onRestoreDefaults,
   onToggleDrag,
   onToggleZoom,
   onZoomIn,
@@ -74,7 +72,7 @@ export function MarkmapControlsBar({
               +
             </Button>
             <Button size="xs" variant="ghost" onClick={onResetView}>
-              Reset
+              Reset zoom
             </Button>
             <Button size="xs" variant="ghost" onClick={onFitView}>
               Fit
@@ -84,9 +82,6 @@ export function MarkmapControlsBar({
             </Button>
             <Button size="xs" variant="ghost" onClick={onExpandAll}>
               Expand All
-            </Button>
-            <Button size="xs" variant="ghost" onClick={onRestoreDefaults}>
-              Defaults
             </Button>
             <Separator orientation="vertical" className="mx-1 h-4" />
             <Button

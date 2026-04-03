@@ -310,12 +310,6 @@ export function MarkmapCanvas({
     })
   }, [jsonOptions, onJsonOptionsChange, resolvedJsonOptions.pan])
 
-  const handleRestoreDefaults = React.useCallback(() => {
-    onJsonOptionsChange({
-      ...DEFAULT_MARKMAP_JSON_OPTIONS,
-    })
-  }, [onJsonOptionsChange])
-
   const handleFoldAll = React.useCallback(
     (collapsed: boolean) => {
       if (!mmRef.current) return
@@ -437,7 +431,6 @@ export function MarkmapCanvas({
         }}
         onFitView={handleFitView}
         onResetView={handleResetView}
-        onRestoreDefaults={handleRestoreDefaults}
         onToggleDrag={handleTogglePan}
         onToggleZoom={handleToggleZoom}
         onZoomIn={() => {

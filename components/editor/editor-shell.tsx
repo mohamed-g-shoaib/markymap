@@ -52,7 +52,7 @@ export function EditorShell() {
         onExportMarkdownPdf={handleExportMarkdownPdf}
         onImportClick={handleImportClick}
         onInsertTemplate={handleInsertTemplate}
-        onReset={handleReset}
+        onResetDocument={handleReset}
         onSnippetsOpenChange={setIsSnippetsOpen}
         onTipsOpenChange={setIsTipsOpen}
       />

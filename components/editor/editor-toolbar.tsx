@@ -6,10 +6,12 @@ import { ArrowDown01Icon, Home01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 
 import { MindmapTipsDrawer } from "@/components/editor/mindmap-tips-drawer"
+import { useTheme } from "@/components/theme-provider"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import {
   Menu,
+  MenuCheckboxItem,
   MenuGroup,
   MenuGroupLabel,
   MenuItem,
@@ -31,7 +33,7 @@ type EditorToolbarProps = {
   onExportMarkdownPdf: () => void | Promise<void>
   onImportClick: () => void
   onInsertTemplate: (template: string, kind: SnippetKind) => void
-  onReset: () => void
+  onResetDocument: () => void
   onSnippetsOpenChange: (open: boolean) => void
   onTipsOpenChange: (open: boolean) => void
 }
@@ -47,10 +49,11 @@ export function EditorToolbar({
   onExportMarkdownPdf,
   onImportClick,
   onInsertTemplate,
-  onReset,
+  onResetDocument,
   onSnippetsOpenChange,
   onTipsOpenChange,
 }: EditorToolbarProps) {
+  const { soundEnabled, setSoundEnabled } = useTheme()
   const [isOptionsOpen, setIsOptionsOpen] = React.useState(false)
   const hasPendingExport = pendingExport !== null
   const previousPendingExportRef = React.useRef(pendingExport)
@@ -111,14 +114,46 @@ export function EditorToolbar({
           </MenuTrigger>
           <MenuPopup align="start">
             <MenuGroup>
-              <MenuGroupLabel>Import / Export</MenuGroupLabel>
+              <MenuGroupLabel className="text-primary/72">
+                Document
+              </MenuGroupLabel>
               <MenuItem onClick={onImportClick}>Import</MenuItem>
-              <MenuItem onClick={onExportBundle}>Export .json</MenuItem>
-              <MenuItem onClick={onExportMarkdown}>Export .md</MenuItem>
+              <MenuItem onClick={onResetDocument}>Reset document</MenuItem>
             </MenuGroup>
             <MenuSeparator />
             <MenuGroup>
-              <MenuGroupLabel>Map Export</MenuGroupLabel>
+              <MenuGroupLabel className="text-primary/72">
+                Project Export
+              </MenuGroupLabel>
+              <MenuItem onClick={onExportBundle}>Export .json</MenuItem>
+            </MenuGroup>
+            <MenuSeparator />
+            <MenuGroup>
+              <MenuGroupLabel className="text-primary/72">
+                Markdown Export
+              </MenuGroupLabel>
+              <MenuItem onClick={onExportMarkdown}>Export .md</MenuItem>
+              <MenuItem
+                disabled={hasPendingExport}
+                onClick={() => {
+                  handleMenuAction(onExportMarkdownPdf)
+                }}
+              >
+                {pendingExport === "markdown-pdf" ? (
+                  <>
+                    <Spinner size={16} />
+                    Exporting markdown .pdf
+                  </>
+                ) : (
+                  "Export markdown .pdf"
+                )}
+              </MenuItem>
+            </MenuGroup>
+            <MenuSeparator />
+            <MenuGroup>
+              <MenuGroupLabel className="text-primary/72">
+                Map Export
+              </MenuGroupLabel>
               <MenuItem
                 disabled={hasPendingExport}
                 onClick={() => {
@@ -137,29 +172,19 @@ export function EditorToolbar({
             </MenuGroup>
             <MenuSeparator />
             <MenuGroup>
-              <MenuGroupLabel>Markdown Export</MenuGroupLabel>
-              <MenuItem
-                disabled={hasPendingExport}
-                onClick={() => {
-                  handleMenuAction(onExportMarkdownPdf)
-                }}
+              <MenuGroupLabel className="text-primary/72">
+                Preferences
+              </MenuGroupLabel>
+              <MenuCheckboxItem
+                checked={soundEnabled}
+                variant="switch"
+                onCheckedChange={setSoundEnabled}
               >
-                {pendingExport === "markdown-pdf" ? (
-                  <>
-                    <Spinner size={16} />
-                    Exporting markdown .pdf
-                  </>
-                ) : (
-                  "Export markdown .pdf"
-                )}
-              </MenuItem>
+                Interaction sounds
+              </MenuCheckboxItem>
             </MenuGroup>
           </MenuPopup>
         </Menu>
-
-        <Button variant="outline" size="sm" onClick={onReset}>
-          Reset
-        </Button>
 
         <MindmapTipsDrawer
           isSnippetsOpen={isSnippetsOpen}

@@ -1753,3 +1753,55 @@ Listed in rough priority order:
 - Validation:
   - `get_errors` reports no issues in touched file
   - `corepack pnpm lint` passes (0 warnings / 0 errors)
+
+## Session 77 - Global interaction sound mute toggle
+
+- Added a persisted global interaction-sound preference in `components/theme-provider.tsx`.
+- Sound enablement now defaults from `NEXT_PUBLIC_SOUNDS_ENABLED` unless a user override exists in `localStorage` under `markymap:sound-enabled`.
+- Global click sounds and theme-switch sounds now respect the shared `soundEnabled` state.
+- Added reusable `components/sound-toggle.tsx` using Hugeicons `VolumeHighIcon` and `VolumeOffIcon`.
+- Homepage update:
+  - added the mute toggle directly after the theme toggle in `app/(marketing)/ui/hero.tsx`
+- Playground update:
+  - added an `Interaction sounds` switch item inside the Options menu in `components/editor/editor-toolbar.tsx`
+- Interaction detail:
+  - mute controls opt out of delegated click sounds via `data-click-sound="off"` so toggling mute does not play an extra click
+
+## Session 78 - Homepage action cluster spacing refinement
+
+- Refined the homepage hero action row in `app/(marketing)/ui/hero.tsx` so the utility buttons no longer feel visually stranded from the main CTA.
+- Grouped theme and sound toggles into a compact secondary inline cluster while slightly tightening the overall row gap.
+- Result: `Open playground` remains the primary action, and theme/sound now read as a related controls pair.
+
+## Session 79 - Playground reset controls clarified
+
+- Removed the map-bar `Defaults` button to reduce duplicate reset affordances around zoom and drag toggles.
+- Renamed the map-bar `Reset` action to `Reset zoom` in `components/editor/markmap-controls-bar.tsx` so it clearly describes viewport-only behavior.
+- Moved the document reset action into the Options menu and renamed it `Reset document` in `components/editor/editor-toolbar.tsx`.
+- Updated `components/editor/editor-shell.tsx` prop naming to match the clearer document-reset behavior.
+
+## Session 80 - Playground options menu regrouped
+
+- Reorganized `components/editor/editor-toolbar.tsx` so the Options menu is grouped by user intent rather than mixed export mechanics.
+- New grouping:
+  - `Document` for import/reset
+  - `Project Export` for `.json`
+  - `Markdown Export` for `.md` and `.pdf`
+  - `Map Export` for map HTML
+  - `Preferences` for interaction sounds
+- This removes the earlier overlap where `.json` and `.md` lived under a generic `Import / Export` section while other export actions were split elsewhere.
+
+## Session 81 - Playground menu labels visually distinguished
+
+- Updated the Options menu group labels in `components/editor/editor-toolbar.tsx` to use a muted primary-tone treatment (`text-primary/72`).
+- Goal: improve section distinction without making the labels compete with the actionable menu items.
+
+## Session 82 - Shared menu items now use pointer cursor
+
+- Updated the root menu primitive in `components/ui/menu.tsx` so interactive menu rows use `cursor-pointer` instead of `cursor-default`.
+- Applied this at the shared component level for:
+  - `MenuItem`
+  - `MenuCheckboxItem`
+  - `MenuRadioItem`
+  - `MenuSubTrigger`
+- Result: all menus inheriting these primitives now show pointer affordance consistently without per-menu overrides.
