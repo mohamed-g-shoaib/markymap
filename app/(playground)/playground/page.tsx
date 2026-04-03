@@ -1,5 +1,6 @@
 import { PlaygroundEditorMount } from "@/components/editor/playground-editor-mount"
 import type { Metadata } from "next"
+import { ViewTransition } from "react"
 
 export const metadata: Metadata = {
   title: "Playground | Markymap Editor",
@@ -24,10 +25,24 @@ export const metadata: Metadata = {
 
 export default function PlaygroundPage() {
   return (
-    <main className="flex min-h-dvh flex-col gap-4 overflow-y-auto px-4 layout-page-inset sm:h-dvh sm:overflow-hidden sm:px-6 lg:px-10">
-      <div className="min-h-0 flex-1">
-        <PlaygroundEditorMount />
-      </div>
-    </main>
+    <ViewTransition
+      enter={{
+        "nav-forward": "nav-forward",
+        "nav-back": "nav-back",
+        default: "none",
+      }}
+      exit={{
+        "nav-forward": "nav-forward",
+        "nav-back": "nav-back",
+        default: "none",
+      }}
+      default="none"
+    >
+      <main className="flex min-h-dvh flex-col gap-4 overflow-y-auto px-4 layout-page-inset sm:h-dvh sm:overflow-hidden sm:px-6 lg:px-10">
+        <div className="min-h-0 flex-1">
+          <PlaygroundEditorMount />
+        </div>
+      </main>
+    </ViewTransition>
   )
 }

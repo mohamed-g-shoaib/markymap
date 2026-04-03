@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { ViewTransition } from "react"
 
 import { HeroSection } from "@/app/(marketing)/ui/hero"
 import { LiveDemoSection } from "@/app/(marketing)/ui/demo"
@@ -28,12 +29,26 @@ export const metadata: Metadata = {
 
 export default function MarketingPage() {
   return (
-    <main className="flex min-h-dvh flex-col gap-5 overflow-y-auto layout-page-inset sm:h-dvh sm:justify-center sm:gap-6 sm:overflow-hidden">
-      <HeroSection />
-      <PageContainer className="flex min-h-0 flex-col">
-        <LiveDemoSection />
-      </PageContainer>
-      <FooterSection />
-    </main>
+    <ViewTransition
+      enter={{
+        "nav-forward": "nav-forward",
+        "nav-back": "nav-back",
+        default: "none",
+      }}
+      exit={{
+        "nav-forward": "nav-forward",
+        "nav-back": "nav-back",
+        default: "none",
+      }}
+      default="none"
+    >
+      <main className="flex min-h-dvh flex-col gap-5 overflow-y-auto layout-page-inset sm:h-dvh sm:justify-center sm:gap-6 sm:overflow-hidden">
+        <HeroSection />
+        <PageContainer className="flex min-h-0 flex-col">
+          <LiveDemoSection />
+        </PageContainer>
+        <FooterSection />
+      </main>
+    </ViewTransition>
   )
 }
