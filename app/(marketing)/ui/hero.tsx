@@ -19,7 +19,12 @@ export function HeroSection() {
             markdown, switch views, and export your final result.
           </p>
           <div className="hero-delay-200 flex animate-hero-enter flex-row items-center gap-3 sm:gap-4">
-            <Button className="order-1" render={<Link href="/playground" />}>
+            <Button
+              className="order-1"
+              render={
+                <Link href="/playground" transitionTypes={["nav-forward"]} />
+              }
+            >
               Open playground
               <HugeiconsIcon
                 icon={ArrowRight01Icon}

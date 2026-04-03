@@ -172,7 +172,7 @@ export function EditorToolbar({
         <Button
           variant="outline"
           size="icon-sm"
-          render={<Link href="/" />}
+          render={<Link href="/" transitionTypes={["nav-back"]} />}
           aria-label="Go to homepage"
         >
           <HugeiconsIcon icon={Home01Icon} size={16} color="currentColor" />
