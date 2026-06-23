@@ -6,7 +6,7 @@ export function FooterSection() {
       <PageContainer>
         <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground sm:justify-start">
           <a
-            href="https://github.com/mohamed-g-shoaib/markymap"
+            href="https://github.com/mohamedgshoaib/markymap"
             target="_blank"
             rel="noreferrer"
             className="text-link"
@@ -14,7 +14,7 @@ export function FooterSection() {
             Source Code
           </a>
           <a
-            href="https://x.com/mo0hamed_gamal"
+            href="https://x.com/mohamedgshoaib"
             target="_blank"
             rel="noreferrer"
             className="text-link"
@@ -22,7 +22,7 @@ export function FooterSection() {
             X
           </a>
           <a
-            href="https://www.linkedin.com/in/mohamed-g-shoaib/"
+            href="https://www.linkedin.com/in/mohamedgshoaib/"
             target="_blank"
             rel="noreferrer"
             className="text-link"

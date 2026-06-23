@@ -1734,9 +1734,9 @@ Listed in rough priority order:
 
 - Added a minimal marketing footer component at `app/(marketing)/ui/footer.tsx`.
 - Footer contains only the requested links:
-  - `Source Code` -> `https://github.com/mohamed-g-shoaib/markymap`
-  - `X` -> `https://x.com/mo0hamed_gamal`
-  - `LinkedIn` -> `https://www.linkedin.com/in/mohamed-g-shoaib/`
+  - `Source Code` -> `https://github.com/mohamedgshoaib/markymap`
+  - `X` -> `https://x.com/mohamedgshoaib`
+  - `LinkedIn` -> `https://www.linkedin.com/in/mohamedgshoaib/`
 - Wired footer into `app/(marketing)/page.tsx` below the demo section.
 - Validation:
   - `get_errors` reports no issues in touched files

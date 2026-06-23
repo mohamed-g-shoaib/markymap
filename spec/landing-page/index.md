@@ -88,7 +88,7 @@ Fixed at top. Full-width. Minimal.
 
 - Left: `RootlyLogo` SVG mark + plain `"Rootly"` text (`text-sm font-medium`), wrapped in `next/link` to `/`.
 - Right:
-  - Outline button: `Star on GitHub` with `Github01Icon` — links to `https://github.com/mohamed-g-shoaib/rootly`, `target="_blank"`. Hidden on mobile (`hidden sm:inline-flex`).
+  - Outline button: `Star on GitHub` with `Github01Icon` — links to `https://github.com/mohamedgshoaib/rootly`, `target="_blank"`. Hidden on mobile (`hidden sm:inline-flex`).
   - Primary button: `Get started` with `ArrowRight02Icon` that translates on hover → `/login`.
 
 ### Behavior
