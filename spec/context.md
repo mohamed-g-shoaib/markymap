@@ -1805,3 +1805,10 @@ Listed in rough priority order:
   - `MenuRadioItem`
   - `MenuSubTrigger`
 - Result: all menus inheriting these primitives now show pointer affordance consistently without per-menu overrides.
+
+## Session 83 - README Rewrite
+
+- Rewrote the root `README.md` using the application/product profile for readers evaluating or running Markymap.
+- Documented the current homepage and playground workflows, browser persistence, import/export formats, map rendering pipeline, setup, commands, project structure, technology, and canonical documentation links.
+- Removed unsupported or overly broad claims about production readiness, performance, data guarantees, and SEO completeness.
+- Preserved the current `public/markymap-cover.webp` banner asset and left unrelated working-tree changes untouched.

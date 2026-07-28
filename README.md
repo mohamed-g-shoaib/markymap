@@ -1,130 +1,110 @@
+![Markymap](public/markymap-cover.webp)
+
 # Markymap
 
-![Markymap banner](public/marketing-image.jpg)
+Markymap turns Markdown into interactive mindmaps in the browser. Write or import structured notes, see the map update as you work, and export the result when it is ready.
 
-Markymap is a high-performance web application that converts Markdown into beautiful, interactive mindmaps instantly. Write in Markdown on the left, visualize your thoughts dynamically on the right, and never lose your work.
+It is a local-first Next.js application for visual thinking, outlining, planning, and Markdown-based authoring. The public homepage includes a live preview, while the playground provides the full editing workflow.
 
-This repository is a cloud-ready Next.js application built with Coss UI, Markmap, and the Next.js App Router.
+## What you can do
 
-## What it does
+- Write Markdown and render it as a zoomable, pannable SVG mindmap.
+- Switch between the mindmap and a rendered Markdown preview.
+- Save editor content, view preferences, map options, and fold state in `localStorage`.
+- Import Markdown files or Markymap JSON project bundles.
+- Export Markdown, JSON project bundles, map HTML, and Markdown PDFs.
+- Collapse and expand branches, fit or reset the map view, and configure map behavior.
+- Use light/dark themes and optional interaction sounds.
+- Try the live homepage demo without opening the editor.
 
-Markymap is designed for frictionless, visual note-taking and brainstorming:
+## Routes
 
-- Live Markdown editor with real-time SVG mindmap rendering
-- Auto-saving to `localStorage` (work is never lost, no login required)
-- Interactive features (zoom, pan, collapse/expand branches)
-- Import/Export `.md` files to share or continue working later
-- Built-in theme toggling with keyboard shortcuts
-- High-performance, Web Audio API sound design for clicks and actions
+| Route         | Purpose                                                                         |
+| ------------- | ------------------------------------------------------------------------------- |
+| `/`           | Marketing homepage with a live Markdown and mindmap preview                     |
+| `/playground` | Full editor for writing, previewing, configuring, importing, and exporting maps |
 
-## Current routes
+## Current status
 
-Public marketing routes:
+The core homepage and playground workflows are implemented and actively maintained. The repository does not currently include the planned AI assistant integration.
 
-- `/` marketing homepage with live hero demo
+## How it works
 
-App routes:
+Markymap uses `markmap-lib` to transform Markdown into a node tree and `markmap-view` to render that tree as an interactive SVG. The playground keeps editing state in the browser, updates the map as Markdown changes, and preserves relevant preferences between sessions.
 
-- `/playground` the core mindmap editor
+Exports are generated through dedicated server routes. The map HTML export preserves the map and its configured options, while Markdown PDF export renders the formatted document for printing.
 
-## Tech stack
+## Run locally
 
-- Next.js 16 with App Router
-- React 19
-- TypeScript
-- Tailwind CSS v4
-- Coss UI on top of Base UI
-- Markmap (`markmap-lib` and `markmap-view`)
-- Hugeicons
-- Web Audio API
-- Oxlint and Oxfmt
+### Requirements
 
-## Design system
+- Node.js compatible with the installed Next.js version
+- pnpm
 
-The app uses Coss UI components in `components/ui`. Treat that layer as owned design-system code:
-
-- compose on top of it
-- do not casually restyle or rewrite it
-- preserve its token system, borders, rings, and layering approach
-
-## SEO and metadata
-
-The project is fully optimized for SEO and social sharing:
-
-- root metadata in `app/layout.tsx`
-- marketing metadata in `app/(marketing)/page.tsx`
-- playground metadata in `app/(playground)/playground/page.tsx`
-- generated `robots.txt` via `app/robots.ts`
-- generated `sitemap.xml` via `app/sitemap.ts`
-- dynamic Open Graph and Twitter images via `app/opengraph-image.tsx` and `app/(playground)/playground/opengraph-image.tsx`
-- explicit `twitter-image.tsx` files for Twitter card support
-
-## Local development
-
-Install dependencies and start the app:
+Install dependencies and start the development server:
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-## Environment variables
+Open [http://localhost:3000](http://localhost:3000) for the homepage or [http://localhost:3000/playground](http://localhost:3000/playground) for the editor.
 
-Create a local env file (`.env.local`) with the variables the app expects:
+### Environment variables
+
+Copy `.env.example` to `.env.local` when you want to configure the site URL:
 
 ```env
-# Your domain for SEO (Used in og-image, twitter-image, and sitemap)
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
-
-# Optional: Disable UI sound effects
-NEXT_PUBLIC_SOUNDS_ENABLED=true
 ```
 
-## Scripts
+The site URL is used by metadata, generated social images, `robots.txt`, and `sitemap.xml`. Interaction sounds are enabled by default unless the user disables them in the interface.
+
+## Commands
 
 ```bash
-pnpm dev
-pnpm build
-pnpm start
-pnpm typecheck
-pnpm lint
-pnpm fmt
+pnpm dev          # Start the Turbopack development server
+pnpm build        # Create a production build
+pnpm start        # Serve the production build
+pnpm typecheck    # Run TypeScript without emitting files
+pnpm lint         # Run Oxlint
+pnpm fmt:check    # Check Oxfmt formatting
+pnpm test         # Run the Vitest test suite
 ```
 
-## Tooling
+## Project structure
 
-### Oxlint
-
-Markymap uses Oxlint for lightning-fast linting.
-Note: `components/ui/` is excluded from linting to preserve upstream compatibility with Coss UI.
-
-```bash
-pnpm lint
+```text
+app/              App Router pages, layouts, metadata, and export routes
+components/editor Editor shell, Markdown input, previews, and map controls
+components/ui/   Coss/Base UI component snapshots
+hooks/            Reusable React hooks
+lib/              Storage, Markmap transformation, export, audio, and utilities
+public/           Static branding assets
+spec/             Product context, architecture notes, and implementation specs
 ```
 
-### Oxfmt
+## Technology
 
-Markymap uses Oxfmt for consistent code formatting.
+- Next.js 16 App Router
+- React 19 and TypeScript in strict mode
+- Tailwind CSS v4
+- Coss UI components built on Base UI
+- Markmap (`markmap-lib` and `markmap-view`)
+- Hugeicons
+- Web Audio API for optional interaction sounds
+- Oxlint, Oxfmt, and Vitest
 
-```bash
-pnpm fmt
-pnpm fmt:check
-```
+## Documentation
 
-## Audio system
+- [`AGENTS.md`](AGENTS.md) — repository conventions and development workflow
+- [`spec/context.md`](spec/context.md) — current product context and implementation history
+- [`spec/skills.md`](spec/skills.md) — project skill index and task-routing guidance
+- [`spec/markmap-packages/`](spec/markmap-packages/) — Markmap integration and feature specifications
+- [`spec/styling.md`](spec/styling.md) — UI tokens and styling guidance
 
-The app uses the Web Audio API for high-performance sound:
+## Design and contribution notes
 
-- Sounds are pre-decoded and cached
-- Global click sounds are delegated from `ThemeProvider`
-- To customize, encode audio to base64, add to `lib/audio/`, and import in `components/theme-provider.tsx`
+The application uses Coss UI primitives from `components/ui/`, Tailwind design tokens, and Hugeicons. New feature code should compose with those existing systems, use `cn()` from `lib/utils.ts` for class merging, and avoid inline styles.
 
-## Project references
-
-Developer documentation and project context live in:
-
-- `AGENTS.md` (Quick reference for AI agents and onboarding)
-- `spec/context.md` (Project memory and architecture)
-- `spec/skills.md` (Agent skill routing)
-
-When docs and code disagree, the actual codebase should be treated as the current source of truth.
+Before submitting a change, run the relevant typecheck, lint, formatting, and test commands. Keep product behavior and implementation claims in this README aligned with the current codebase.
